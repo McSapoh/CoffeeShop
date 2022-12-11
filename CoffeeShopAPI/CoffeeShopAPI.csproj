@@ -25,7 +25,6 @@
     <Folder Include="Images\Snack\" />
     <Folder Include="Images\Sandwich\" />
     <Folder Include="Images\Dessert\" />
-    <Folder Include="Interfaces\" />
   </ItemGroup>
 
 </Project>
