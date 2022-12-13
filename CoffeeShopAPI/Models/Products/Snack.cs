@@ -12,7 +12,7 @@ namespace CoffeeShopAPI.Models.Products
         public string Name { get; set; }
         [Required(ErrorMessage = "Field Description cannot be empty")]
         public string Description { get; set; }
-        public string ImagePath { get; set; } = "/Snack/DefaultSnackImage";
+        public string ImagePath { get; set; } = "/Snack/DefaultSnackImage.png";
         public bool IsActive { get; set; } = true;
 
         public virtual ICollection<SnackSize> Sizes { get; set; }
