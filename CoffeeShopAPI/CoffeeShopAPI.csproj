@@ -20,11 +20,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Images\Coffee\" />
-    <Folder Include="Images\Tea\" />
-    <Folder Include="Images\Snack\" />
-    <Folder Include="Images\Sandwich\" />
-    <Folder Include="Images\Dessert\" />
   </ItemGroup>
 
 </Project>
