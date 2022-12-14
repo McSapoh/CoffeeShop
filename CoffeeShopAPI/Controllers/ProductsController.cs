@@ -60,43 +60,48 @@ namespace CoffeeShopAPI.Controllers
         [HttpPost("SaveCoffee")]
         public async Task<IActionResult> SaveCoffee(Coffee objectFromPage, IFormFile photo)
         {
-            Coffee objectFromDb;
-            var IdIsNull = objectFromPage.Id == 0;
-            if (IdIsNull)
-                objectFromDb = objectFromPage;
-            else
+            if (ModelState.IsValid)
             {
-                objectFromDb = _unitOfWork.CoffeeRepository.GetById(objectFromPage.Id);
-                if (objectFromDb == null)
-                    return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
-                objectFromDb.Name = objectFromPage.Name;
-                objectFromDb.Description = objectFromPage.Description;
-                objectFromDb.IsActive = objectFromPage.IsActive;
-                objectFromDb.Sizes = objectFromPage.Sizes;
-                objectFromDb.ImagePath = "/Coffee/" + photo.FileName;
+                Coffee objectFromDb;
+                var IdIsNull = objectFromPage.Id == 0;
+                if (IdIsNull)
+                    objectFromDb = objectFromPage;
+                else
+                {
+                    objectFromDb = _unitOfWork.CoffeeRepository.GetById(objectFromPage.Id);
+                    if (objectFromDb == null)
+                        return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
+                    objectFromDb.Name = objectFromPage.Name;
+                    objectFromDb.Description = objectFromPage.Description;
+                    objectFromDb.IsActive = objectFromPage.IsActive;
+                    objectFromDb.Sizes = objectFromPage.Sizes;
+                    objectFromDb.ImagePath = "/Coffee/" + photo.FileName;
+                }
+
+                // Saving photos.
+                if (photo != null && photo.Length > 0)
+                {
+                    string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+                    SavePhoto(path + "\\Images\\Coffee", photo);
+                    if (!IdIsNull && objectFromDb.ImagePath != "/Coffee/DefaultCoffeeImage.png")
+                        DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
+                }
+
+
+                // Creating or Updating object.
+                if (IdIsNull)
+                    _unitOfWork.CoffeeRepository.Create(objectFromDb);
+                else
+                    _unitOfWork.CoffeeRepository.Update(objectFromDb);
+
+
+                if (await _unitOfWork.SaveAsync())
+                    return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
+                else
+                    return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
             }
-
-            // Saving photos.
-            if (photo != null && photo.Length > 0)
-            {
-                string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                SavePhoto(path + "\\Images\\Coffee", photo);
-                if (!IdIsNull && objectFromDb.ImagePath != "/Coffee/DefaultCoffeeImage.png")
-                    DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
-            }
-
-
-            // Creating or Updating object.
-            if (IdIsNull)
-                _unitOfWork.CoffeeRepository.Create(objectFromDb);
             else
-                _unitOfWork.CoffeeRepository.Update(objectFromDb);
-
-
-            if (await _unitOfWork.SaveAsync())
-                return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
-            else
-                return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
+                return BadRequest(ModelState);
         }
         [HttpDelete("DeleteCoffee")]
         public async Task<IActionResult> DeleteCoffee(int Id)
@@ -144,43 +149,48 @@ namespace CoffeeShopAPI.Controllers
         [HttpPost("SaveDessert")]
         public async Task<IActionResult> SaveDessert(Dessert objectFromPage, IFormFile photo)
         {
-            Dessert objectFromDb;
-            var IdIsNull = objectFromPage.Id == 0;
-            if (IdIsNull)
-                objectFromDb = objectFromPage;
-            else
+            if (ModelState.IsValid)
             {
-                objectFromDb = _unitOfWork.DessertRepository.GetById(objectFromPage.Id);
-                if (objectFromDb == null)
-                    return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
-                objectFromDb.Name = objectFromPage.Name;
-                objectFromDb.Description = objectFromPage.Description;
-                objectFromDb.IsActive = objectFromPage.IsActive;
-                objectFromDb.Sizes = objectFromPage.Sizes;
-                objectFromDb.ImagePath = "/Dessert/" + photo.FileName;
+                Dessert objectFromDb;
+                var IdIsNull = objectFromPage.Id == 0;
+                if (IdIsNull)
+                    objectFromDb = objectFromPage;
+                else
+                {
+                    objectFromDb = _unitOfWork.DessertRepository.GetById(objectFromPage.Id);
+                    if (objectFromDb == null)
+                        return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
+                    objectFromDb.Name = objectFromPage.Name;
+                    objectFromDb.Description = objectFromPage.Description;
+                    objectFromDb.IsActive = objectFromPage.IsActive;
+                    objectFromDb.Sizes = objectFromPage.Sizes;
+                    objectFromDb.ImagePath = "/Dessert/" + photo.FileName;
+                }
+
+                // Saving photos.
+                if (photo != null && photo.Length > 0)
+                {
+                    string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+                    SavePhoto(path + "\\Images\\Dessert", photo);
+                    if (!IdIsNull && objectFromDb.ImagePath != "/Dessert/DefaultDessertImage.png")
+                        DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
+                }
+
+
+                // Creating or Updating object.
+                if (IdIsNull)
+                    _unitOfWork.DessertRepository.Create(objectFromDb);
+                else
+                    _unitOfWork.DessertRepository.Update(objectFromDb);
+
+
+                if (await _unitOfWork.SaveAsync())
+                    return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
+                else
+                    return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
             }
-
-            // Saving photos.
-            if (photo != null && photo.Length > 0)
-            {
-                string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                SavePhoto(path + "\\Images\\Dessert", photo);
-                if (!IdIsNull && objectFromDb.ImagePath != "/Dessert/DefaultDessertImage.png")
-                    DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
-            }
-
-
-            // Creating or Updating object.
-            if (IdIsNull)
-                _unitOfWork.DessertRepository.Create(objectFromDb);
             else
-                _unitOfWork.DessertRepository.Update(objectFromDb);
-
-
-            if (await _unitOfWork.SaveAsync())
-                return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
-            else
-                return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
+                return BadRequest(ModelState);
         }
         [HttpDelete("DeleteDessert")]
         public async Task<IActionResult> DeleteDessert(int Id)
@@ -228,43 +238,48 @@ namespace CoffeeShopAPI.Controllers
         [HttpPost("SaveSandwich")]
         public async Task<IActionResult> SaveSandwich(Sandwich objectFromPage, IFormFile photo)
         {
-            Sandwich objectFromDb;
-            var IdIsNull = objectFromPage.Id == 0;
-            if (IdIsNull)
-                objectFromDb = objectFromPage;
-            else
+            if (ModelState.IsValid)
             {
-                objectFromDb = _unitOfWork.SandwichRepository.GetById(objectFromPage.Id);
-                if (objectFromDb == null)
-                    return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
-                objectFromDb.Name = objectFromPage.Name;
-                objectFromDb.Description = objectFromPage.Description;
-                objectFromDb.IsActive = objectFromPage.IsActive;
-                objectFromDb.Sizes = objectFromPage.Sizes;
-                objectFromDb.ImagePath = "/Sandwich/" + photo.FileName;
+                Sandwich objectFromDb;
+                var IdIsNull = objectFromPage.Id == 0;
+                if (IdIsNull)
+                    objectFromDb = objectFromPage;
+                else
+                {
+                    objectFromDb = _unitOfWork.SandwichRepository.GetById(objectFromPage.Id);
+                    if (objectFromDb == null)
+                        return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
+                    objectFromDb.Name = objectFromPage.Name;
+                    objectFromDb.Description = objectFromPage.Description;
+                    objectFromDb.IsActive = objectFromPage.IsActive;
+                    objectFromDb.Sizes = objectFromPage.Sizes;
+                    objectFromDb.ImagePath = "/Sandwich/" + photo.FileName;
+                }
+
+                // Saving photos.
+                if (photo != null && photo.Length > 0)
+                {
+                    string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+                    SavePhoto(path + "\\Images\\Sandwich", photo);
+                    if (!IdIsNull && objectFromDb.ImagePath != "/Sandwich/DefaultSandwichImage.png")
+                        DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
+                }
+
+
+                // Creating or Updating object.
+                if (IdIsNull)
+                    _unitOfWork.SandwichRepository.Create(objectFromDb);
+                else
+                    _unitOfWork.SandwichRepository.Update(objectFromDb);
+
+
+                if (await _unitOfWork.SaveAsync())
+                    return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
+                else
+                    return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
             }
-
-            // Saving photos.
-            if (photo != null && photo.Length > 0)
-            {
-                string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                SavePhoto(path + "\\Images\\Sandwich", photo);
-                if (!IdIsNull && objectFromDb.ImagePath != "/Sandwich/DefaultSandwichImage.png")
-                    DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
-            }
-
-
-            // Creating or Updating object.
-            if (IdIsNull)
-                _unitOfWork.SandwichRepository.Create(objectFromDb);
             else
-                _unitOfWork.SandwichRepository.Update(objectFromDb);
-
-
-            if (await _unitOfWork.SaveAsync())
-                return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
-            else
-                return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
+                return BadRequest(ModelState);
         }
         [HttpDelete("DeleteSandwich")]
         public async Task<IActionResult> DeleteSandwich(int Id)
@@ -312,43 +327,48 @@ namespace CoffeeShopAPI.Controllers
         [HttpPost("SaveSnack")]
         public async Task<IActionResult> SaveSnack(Snack objectFromPage, IFormFile photo)
         {
-            Snack objectFromDb;
-            var IdIsNull = objectFromPage.Id == 0;
-            if (IdIsNull)
-                objectFromDb = objectFromPage;
-            else
+            if (ModelState.IsValid)
             {
-                objectFromDb = _unitOfWork.SnackRepository.GetById(objectFromPage.Id);
-                if (objectFromDb == null)
-                    return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
-                objectFromDb.Name = objectFromPage.Name;
-                objectFromDb.Description = objectFromPage.Description;
-                objectFromDb.IsActive = objectFromPage.IsActive;
-                objectFromDb.Sizes = objectFromPage.Sizes;
-                objectFromDb.ImagePath = "/Dessert/" + photo.FileName;
+                Snack objectFromDb;
+                var IdIsNull = objectFromPage.Id == 0;
+                if (IdIsNull)
+                    objectFromDb = objectFromPage;
+                else
+                {
+                    objectFromDb = _unitOfWork.SnackRepository.GetById(objectFromPage.Id);
+                    if (objectFromDb == null)
+                        return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
+                    objectFromDb.Name = objectFromPage.Name;
+                    objectFromDb.Description = objectFromPage.Description;
+                    objectFromDb.IsActive = objectFromPage.IsActive;
+                    objectFromDb.Sizes = objectFromPage.Sizes;
+                    objectFromDb.ImagePath = "/Dessert/" + photo.FileName;
+                }
+
+                // Saving photos.
+                if (photo != null && photo.Length > 0)
+                {
+                    string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+                    SavePhoto(path + "\\Images\\Dessert", photo);
+                    if (!IdIsNull && objectFromDb.ImagePath != "/Dessert/DefaultDessertImage.png")
+                        DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
+                }
+
+
+                // Creating or Updating object.
+                if (IdIsNull)
+                    _unitOfWork.SnackRepository.Create(objectFromDb);
+                else
+                    _unitOfWork.SnackRepository.Update(objectFromDb);
+
+
+                if (await _unitOfWork.SaveAsync())
+                    return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
+                else
+                    return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
             }
-
-            // Saving photos.
-            if (photo != null && photo.Length > 0)
-            {
-                string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                SavePhoto(path + "\\Images\\Dessert", photo);
-                if (!IdIsNull && objectFromDb.ImagePath != "/Dessert/DefaultDessertImage.png")
-                    DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
-            }
-
-
-            // Creating or Updating object.
-            if (IdIsNull)
-                _unitOfWork.SnackRepository.Create(objectFromDb);
             else
-                _unitOfWork.SnackRepository.Update(objectFromDb);
-
-
-            if (await _unitOfWork.SaveAsync())
-                return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
-            else
-                return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
+                return BadRequest(ModelState);
         }
         [HttpDelete("DeleteSnack")]
         public async Task<IActionResult> DeleteSnack(int Id)
@@ -396,43 +416,48 @@ namespace CoffeeShopAPI.Controllers
         [HttpPost("SaveTea")]
         public async Task<IActionResult> SaveTea(Tea objectFromPage, IFormFile photo)
         {
-            Tea objectFromDb;
-            var IdIsNull = objectFromPage.Id == 0;
-            if (IdIsNull)
-                objectFromDb = objectFromPage;
-            else
+            if (ModelState.IsValid)
             {
-                objectFromDb = _unitOfWork.TeaRepository.GetById(objectFromPage.Id);
-                if (objectFromDb == null)
-                    return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
-                objectFromDb.Name = objectFromPage.Name;
-                objectFromDb.Description = objectFromPage.Description;
-                objectFromDb.IsActive = objectFromPage.IsActive;
-                objectFromDb.Sizes = objectFromPage.Sizes;
-                objectFromDb.ImagePath = "/Sandwich/" + photo.FileName;
+                Tea objectFromDb;
+                var IdIsNull = objectFromPage.Id == 0;
+                if (IdIsNull)
+                    objectFromDb = objectFromPage;
+                else
+                {
+                    objectFromDb = _unitOfWork.TeaRepository.GetById(objectFromPage.Id);
+                    if (objectFromDb == null)
+                        return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
+                    objectFromDb.Name = objectFromPage.Name;
+                    objectFromDb.Description = objectFromPage.Description;
+                    objectFromDb.IsActive = objectFromPage.IsActive;
+                    objectFromDb.Sizes = objectFromPage.Sizes;
+                    objectFromDb.ImagePath = "/Sandwich/" + photo.FileName;
+                }
+
+                // Saving photos.
+                if (photo != null && photo.Length > 0)
+                {
+                    string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+                    SavePhoto(path + "\\Images\\Tea", photo);
+                    if (!IdIsNull && objectFromDb.ImagePath != "/Sandwich/DefaultTeaImage.png")
+                        DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
+                }
+
+
+                // Creating or Updating object.
+                if (IdIsNull)
+                    _unitOfWork.TeaRepository.Create(objectFromDb);
+                else
+                    _unitOfWork.TeaRepository.Update(objectFromDb);
+
+
+                if (await _unitOfWork.SaveAsync())
+                    return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
+                else
+                    return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
             }
-
-            // Saving photos.
-            if (photo != null && photo.Length > 0)
-            {
-                string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                SavePhoto(path + "\\Images\\Tea", photo);
-                if (!IdIsNull && objectFromDb.ImagePath != "/Sandwich/DefaultTeaImage.png")
-                    DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
-            }
-
-
-            // Creating or Updating object.
-            if (IdIsNull)
-                _unitOfWork.TeaRepository.Create(objectFromDb);
             else
-                _unitOfWork.TeaRepository.Update(objectFromDb);
-
-
-            if (await _unitOfWork.SaveAsync())
-                return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
-            else
-                return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
+                return BadRequest(ModelState);
         }
         [HttpDelete("DeleteTea")]
         public async Task<IActionResult> DeleteTea(int Id)
