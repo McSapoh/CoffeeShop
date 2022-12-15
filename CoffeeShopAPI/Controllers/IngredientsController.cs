@@ -292,7 +292,7 @@ namespace CoffeeShopAPI.Controllers
             else
                 return Ok(new JsonResult(new { data = objectFromDb }));
         }
-        [HttpGet("GetAllSauce")]
+        [HttpGet("GetAllSyrup")]
         public async Task<IActionResult> GetAllSyrup()
         {
             var objectsFromDb = await _unitOfWork.SyrupRepository.GetAll();
