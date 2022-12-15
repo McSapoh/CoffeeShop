@@ -1,101 +1,59 @@
-﻿using CoffeeShopAPI.Helpers.Paging;
-using CoffeeShopAPI.Interfaces.Repositories;
-using CoffeeShopAPI.Models.Products;
-using Microsoft.AspNetCore.Http;
+﻿using CoffeeShopAPI.Interfaces.Repositories;
+using CoffeeShopAPI.Models.Ingredients;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Controllers
 {
-
     [Route("api/[controller]")]
-    public class ProductsController : Controller
+    public class IngredientsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProductsController(IUnitOfWork unitOfWork)
+        public IngredientsController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        private static async void SavePhoto(string path, IFormFile photo)
+
+        #region Alkohol actions.
+        [HttpGet("GetAlcohol")]
+        public IActionResult GetAlcohol(int Id)
         {
-            string filePath = Path.Combine(path, photo.FileName);
-            using Stream fileStream = new FileStream(filePath, FileMode.Create);
-            await photo.CopyToAsync(fileStream);
-        }
-        private static void DeletePhoto(string path)
-        {
-            System.IO.File.Delete(path);
-        }
-        public dynamic GetMetadata<T>(PagedList<T> objects)
-        {
-            var metadata = new
-            {
-                objects.TotalCount,
-                objects.PageSize,
-                objects.CurrentPage,
-                objects.TotalPages,
-                objects.HasNext,
-                objects.HasPrevious
-            };
-            return metadata;
-        }
-        #region Coffee actions.
-        [HttpGet("GetCoffee")]
-        public IActionResult GetCoffee(int Id)
-        {
-            var objectFromDb = _unitOfWork.CoffeeRepository.GetById(Id);
+            var objectFromDb = _unitOfWork.AlcoholRepository.GetById(Id);
             if (objectFromDb == null)
                 return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
             else
                 return Ok(new JsonResult(new { data = objectFromDb }));
         }
-        [HttpGet("GetCoffees")]
-        public IActionResult GetCoffees([FromQuery] PagingParameters pagingParameters)
+        [HttpGet("GetAllAlcohol")]
+        public async Task<IActionResult> GetAllAlcohol()
         {
-            var objectsFromDb = _unitOfWork.CoffeeRepository.GetPagedList(pagingParameters);
-            var metadata = GetMetadata<Coffee>(objectsFromDb);
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            var objectsFromDb = await _unitOfWork.AlcoholRepository.GetAll();
             return Ok(objectsFromDb);
         }
-        [HttpPost("SaveCoffee")]
-        public async Task<IActionResult> SaveCoffee(Coffee objectFromPage, IFormFile photo)
+        [HttpPost("SaveAlcohol")]
+        public async Task<IActionResult> SaveAlcohol(Alcohol objectFromPage)
         {
             if (ModelState.IsValid)
             {
-                Coffee objectFromDb;
+                Alcohol objectFromDb;
                 var IdIsNull = objectFromPage.Id == 0;
                 if (IdIsNull)
                     objectFromDb = objectFromPage;
                 else
                 {
-                    objectFromDb = _unitOfWork.CoffeeRepository.GetById(objectFromPage.Id);
+                    objectFromDb = _unitOfWork.AlcoholRepository.GetById(objectFromPage.Id);
                     if (objectFromDb == null)
                         return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
                     objectFromDb.Name = objectFromPage.Name;
-                    objectFromDb.Description = objectFromPage.Description;
+                    objectFromDb.Price = objectFromPage.Price;
                     objectFromDb.IsActive = objectFromPage.IsActive;
-                    objectFromDb.Sizes = objectFromPage.Sizes;
-                    objectFromDb.ImagePath = "/Coffee/" + photo.FileName;
                 }
-
-                // Saving photos.
-                if (photo != null && photo.Length > 0)
-                {
-                    string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                    SavePhoto(path + "\\Images\\Coffee", photo);
-                    if (!IdIsNull && objectFromDb.ImagePath != "/Coffee/DefaultCoffeeImage.png")
-                        DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
-                }
-
 
                 // Creating or Updating object.
                 if (IdIsNull)
-                    _unitOfWork.CoffeeRepository.Create(objectFromDb);
+                    _unitOfWork.AlcoholRepository.Create(objectFromDb);
                 else
-                    _unitOfWork.CoffeeRepository.Update(objectFromDb);
+                    _unitOfWork.AlcoholRepository.Update(objectFromDb);
 
 
                 if (await _unitOfWork.SaveAsync())
@@ -106,10 +64,10 @@ namespace CoffeeShopAPI.Controllers
             else
                 return BadRequest(ModelState);
         }
-        [HttpDelete("DeleteCoffee")]
-        public async Task<IActionResult> DeleteCoffee(int Id)
+        [HttpDelete("DeleteAlcohol")]
+        public async Task<IActionResult> DeleteAlcohol(int Id)
         {
-            var objectFromDb = _unitOfWork.CoffeeRepository.GetById(Id);
+            var objectFromDb = _unitOfWork.AlcoholRepository.GetById(Id);
             if (objectFromDb != null)
             {
                 if (!objectFromDb.IsActive)
@@ -123,60 +81,46 @@ namespace CoffeeShopAPI.Controllers
             return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
         }
         #endregion
-        #region Dessert actions.
-        [HttpGet("GetDessert")]
-        public IActionResult GetDessert(int Id)
+        #region Milk actions.
+        [HttpGet("GetMilk")]
+        public IActionResult GetMilk(int Id)
         {
-            var objectFromDb = _unitOfWork.DessertRepository.GetById(Id);
+            var objectFromDb = _unitOfWork.MilkRepository.GetById(Id);
             if (objectFromDb == null)
                 return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
             else
                 return Ok(new JsonResult(new { data = objectFromDb }));
         }
-        [HttpGet("GetDesserts")]
-        public IActionResult GetDesserts([FromQuery] PagingParameters pagingParameters)
+        [HttpGet("GetAllMilk")]
+        public async Task<IActionResult> GetAllMilk()
         {
-            var objectsFromDb = _unitOfWork.DessertRepository.GetPagedList(pagingParameters);
-            var metadata = GetMetadata<Dessert>(objectsFromDb);
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            var objectsFromDb = await _unitOfWork.MilkRepository.GetAll();
             return Ok(objectsFromDb);
         }
-        [HttpPost("SaveDessert")]
-        public async Task<IActionResult> SaveDessert(Dessert objectFromPage, IFormFile photo)
+        [HttpPost("SaveMilk")]
+        public async Task<IActionResult> SaveMilk(Milk objectFromPage)
         {
             if (ModelState.IsValid)
             {
-                Dessert objectFromDb;
+                Milk objectFromDb;
                 var IdIsNull = objectFromPage.Id == 0;
                 if (IdIsNull)
                     objectFromDb = objectFromPage;
                 else
                 {
-                    objectFromDb = _unitOfWork.DessertRepository.GetById(objectFromPage.Id);
+                    objectFromDb = _unitOfWork.MilkRepository.GetById(objectFromPage.Id);
                     if (objectFromDb == null)
                         return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
                     objectFromDb.Name = objectFromPage.Name;
-                    objectFromDb.Description = objectFromPage.Description;
+                    objectFromDb.Price = objectFromPage.Price;
                     objectFromDb.IsActive = objectFromPage.IsActive;
-                    objectFromDb.Sizes = objectFromPage.Sizes;
-                    objectFromDb.ImagePath = "/Dessert/" + photo.FileName;
                 }
-
-                // Saving photos.
-                if (photo != null && photo.Length > 0)
-                {
-                    string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                    SavePhoto(path + "\\Images\\Dessert", photo);
-                    if (!IdIsNull && objectFromDb.ImagePath != "/Dessert/DefaultDessertImage.png")
-                        DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
-                }
-
 
                 // Creating or Updating object.
                 if (IdIsNull)
-                    _unitOfWork.DessertRepository.Create(objectFromDb);
+                    _unitOfWork.MilkRepository.Create(objectFromDb);
                 else
-                    _unitOfWork.DessertRepository.Update(objectFromDb);
+                    _unitOfWork.MilkRepository.Update(objectFromDb);
 
 
                 if (await _unitOfWork.SaveAsync())
@@ -187,10 +131,10 @@ namespace CoffeeShopAPI.Controllers
             else
                 return BadRequest(ModelState);
         }
-        [HttpDelete("DeleteDessert")]
-        public async Task<IActionResult> DeleteDessert(int Id)
+        [HttpDelete("DeleteMilk")]
+        public async Task<IActionResult> DeleteMilk(int Id)
         {
-            var objectFromDb = _unitOfWork.DessertRepository.GetById(Id);
+            var objectFromDb = _unitOfWork.MilkRepository.GetById(Id);
             if (objectFromDb != null)
             {
                 if (!objectFromDb.IsActive)
@@ -204,60 +148,46 @@ namespace CoffeeShopAPI.Controllers
             return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
         }
         #endregion
-        #region Sandwich actions.
-        [HttpGet("GetSandwich")]
-        public IActionResult GetSandwich(int Id)
+        #region Sauce actions.
+        [HttpGet("GetSauce")]
+        public IActionResult GetSauce(int Id)
         {
-            var objectFromDb = _unitOfWork.SandwichRepository.GetById(Id);
+            var objectFromDb = _unitOfWork.SauceRepository.GetById(Id);
             if (objectFromDb == null)
                 return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
             else
                 return Ok(new JsonResult(new { data = objectFromDb }));
         }
-        [HttpGet("GetSandwiches")]
-        public IActionResult GetSandwiches([FromQuery] PagingParameters pagingParameters)
+        [HttpGet("GetAllSauce")]
+        public async Task<IActionResult> GetAllSauce()
         {
-            var objectsFromDb = _unitOfWork.SandwichRepository.GetPagedList(pagingParameters);
-            var metadata = GetMetadata<Sandwich>(objectsFromDb);
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            var objectsFromDb = await _unitOfWork.SauceRepository.GetAll();
             return Ok(objectsFromDb);
         }
-        [HttpPost("SaveSandwich")]
-        public async Task<IActionResult> SaveSandwich(Sandwich objectFromPage, IFormFile photo)
+        [HttpPost("SaveSauce")]
+        public async Task<IActionResult> SaveSauce(Sauce objectFromPage)
         {
             if (ModelState.IsValid)
             {
-                Sandwich objectFromDb;
+                Sauce objectFromDb;
                 var IdIsNull = objectFromPage.Id == 0;
                 if (IdIsNull)
                     objectFromDb = objectFromPage;
                 else
                 {
-                    objectFromDb = _unitOfWork.SandwichRepository.GetById(objectFromPage.Id);
+                    objectFromDb = _unitOfWork.SauceRepository.GetById(objectFromPage.Id);
                     if (objectFromDb == null)
                         return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
                     objectFromDb.Name = objectFromPage.Name;
-                    objectFromDb.Description = objectFromPage.Description;
+                    objectFromDb.Price = objectFromPage.Price;
                     objectFromDb.IsActive = objectFromPage.IsActive;
-                    objectFromDb.Sizes = objectFromPage.Sizes;
-                    objectFromDb.ImagePath = "/Sandwich/" + photo.FileName;
                 }
-
-                // Saving photos.
-                if (photo != null && photo.Length > 0)
-                {
-                    string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                    SavePhoto(path + "\\Images\\Sandwich", photo);
-                    if (!IdIsNull && objectFromDb.ImagePath != "/Sandwich/DefaultSandwichImage.png")
-                        DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
-                }
-
 
                 // Creating or Updating object.
                 if (IdIsNull)
-                    _unitOfWork.SandwichRepository.Create(objectFromDb);
+                    _unitOfWork.SauceRepository.Create(objectFromDb);
                 else
-                    _unitOfWork.SandwichRepository.Update(objectFromDb);
+                    _unitOfWork.SauceRepository.Update(objectFromDb);
 
 
                 if (await _unitOfWork.SaveAsync())
@@ -268,10 +198,10 @@ namespace CoffeeShopAPI.Controllers
             else
                 return BadRequest(ModelState);
         }
-        [HttpDelete("DeleteSandwich")]
-        public async Task<IActionResult> DeleteSandwich(int Id)
+        [HttpDelete("DeleteSauce")]
+        public async Task<IActionResult> DeleteSauce(int Id)
         {
-            var objectFromDb = _unitOfWork.SandwichRepository.GetById(Id);
+            var objectFromDb = _unitOfWork.SauceRepository.GetById(Id);
             if (objectFromDb != null)
             {
                 if (!objectFromDb.IsActive)
@@ -285,60 +215,46 @@ namespace CoffeeShopAPI.Controllers
             return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
         }
         #endregion
-        #region Snack actions.
-        [HttpGet("GetSnack")]
-        public IActionResult GetSnack(int Id)
+        #region Supplements actions.
+        [HttpGet("GetSupplements")]
+        public IActionResult GetSupplements(int Id)
         {
-            var objectFromDb = _unitOfWork.SnackRepository.GetById(Id);
+            var objectFromDb = _unitOfWork.SupplementsRepository.GetById(Id);
             if (objectFromDb == null)
                 return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
             else
                 return Ok(new JsonResult(new { data = objectFromDb }));
         }
-        [HttpGet("GetSnacks")]
-        public IActionResult GetSnacks([FromQuery] PagingParameters pagingParameters)
+        [HttpGet("GetAllSupplements")]
+        public async Task<IActionResult> GetAllSupplements()
         {
-            var objectsFromDb = _unitOfWork.SnackRepository.GetPagedList(pagingParameters);
-            var metadata = GetMetadata<Snack>(objectsFromDb);
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            var objectsFromDb = await _unitOfWork.SupplementsRepository.GetAll();
             return Ok(objectsFromDb);
         }
-        [HttpPost("SaveSnack")]
-        public async Task<IActionResult> SaveSnack(Snack objectFromPage, IFormFile photo)
+        [HttpPost("SaveSupplements")]
+        public async Task<IActionResult> SaveSupplements(Supplements objectFromPage)
         {
             if (ModelState.IsValid)
             {
-                Snack objectFromDb;
+                Supplements objectFromDb;
                 var IdIsNull = objectFromPage.Id == 0;
                 if (IdIsNull)
                     objectFromDb = objectFromPage;
                 else
                 {
-                    objectFromDb = _unitOfWork.SnackRepository.GetById(objectFromPage.Id);
+                    objectFromDb = _unitOfWork.SupplementsRepository.GetById(objectFromPage.Id);
                     if (objectFromDb == null)
                         return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
                     objectFromDb.Name = objectFromPage.Name;
-                    objectFromDb.Description = objectFromPage.Description;
+                    objectFromDb.Price = objectFromPage.Price;
                     objectFromDb.IsActive = objectFromPage.IsActive;
-                    objectFromDb.Sizes = objectFromPage.Sizes;
-                    objectFromDb.ImagePath = "/Dessert/" + photo.FileName;
                 }
-
-                // Saving photos.
-                if (photo != null && photo.Length > 0)
-                {
-                    string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                    SavePhoto(path + "\\Images\\Dessert", photo);
-                    if (!IdIsNull && objectFromDb.ImagePath != "/Dessert/DefaultDessertImage.png")
-                        DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
-                }
-
 
                 // Creating or Updating object.
                 if (IdIsNull)
-                    _unitOfWork.SnackRepository.Create(objectFromDb);
+                    _unitOfWork.SupplementsRepository.Create(objectFromDb);
                 else
-                    _unitOfWork.SnackRepository.Update(objectFromDb);
+                    _unitOfWork.SupplementsRepository.Update(objectFromDb);
 
 
                 if (await _unitOfWork.SaveAsync())
@@ -349,10 +265,10 @@ namespace CoffeeShopAPI.Controllers
             else
                 return BadRequest(ModelState);
         }
-        [HttpDelete("DeleteSnack")]
-        public async Task<IActionResult> DeleteSnack(int Id)
+        [HttpDelete("DeleteSupplements")]
+        public async Task<IActionResult> DeleteSupplements(int Id)
         {
-            var objectFromDb = _unitOfWork.SnackRepository.GetById(Id);
+            var objectFromDb = _unitOfWork.SupplementsRepository.GetById(Id);
             if (objectFromDb != null)
             {
                 if (!objectFromDb.IsActive)
@@ -366,60 +282,46 @@ namespace CoffeeShopAPI.Controllers
             return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
         }
         #endregion
-        #region Tea actions.
-        [HttpGet("GetTea")]
-        public IActionResult GetTea(int Id)
+        #region Syrup actions.
+        [HttpGet("GetSyrup")]
+        public IActionResult GetSyrup(int Id)
         {
-            var objectFromDb = _unitOfWork.TeaRepository.GetById(Id);
+            var objectFromDb = _unitOfWork.SyrupRepository.GetById(Id);
             if (objectFromDb == null)
                 return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
             else
                 return Ok(new JsonResult(new { data = objectFromDb }));
         }
-        [HttpGet("GetTeas")]
-        public IActionResult GetTea([FromQuery] PagingParameters pagingParameters)
+        [HttpGet("GetAllSauce")]
+        public async Task<IActionResult> GetAllSyrup()
         {
-            var objectsFromDb = _unitOfWork.TeaRepository.GetPagedList(pagingParameters);
-            var metadata = GetMetadata<Tea>(objectsFromDb);
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            var objectsFromDb = await _unitOfWork.SyrupRepository.GetAll();
             return Ok(objectsFromDb);
         }
-        [HttpPost("SaveTea")]
-        public async Task<IActionResult> SaveTea(Tea objectFromPage, IFormFile photo)
+        [HttpPost("SaveSyrup")]
+        public async Task<IActionResult> SaveSyrup(Syrup objectFromPage)
         {
             if (ModelState.IsValid)
             {
-                Tea objectFromDb;
+                Syrup objectFromDb;
                 var IdIsNull = objectFromPage.Id == 0;
                 if (IdIsNull)
                     objectFromDb = objectFromPage;
                 else
                 {
-                    objectFromDb = _unitOfWork.TeaRepository.GetById(objectFromPage.Id);
+                    objectFromDb = _unitOfWork.SyrupRepository.GetById(objectFromPage.Id);
                     if (objectFromDb == null)
                         return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
                     objectFromDb.Name = objectFromPage.Name;
-                    objectFromDb.Description = objectFromPage.Description;
+                    objectFromDb.Price = objectFromPage.Price;
                     objectFromDb.IsActive = objectFromPage.IsActive;
-                    objectFromDb.Sizes = objectFromPage.Sizes;
-                    objectFromDb.ImagePath = "/Sandwich/" + photo.FileName;
                 }
-
-                // Saving photos.
-                if (photo != null && photo.Length > 0)
-                {
-                    string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                    SavePhoto(path + "\\Images\\Tea", photo);
-                    if (!IdIsNull && objectFromDb.ImagePath != "/Sandwich/DefaultTeaImage.png")
-                        DeletePhoto(path + "\\Images" + objectFromDb.ImagePath);
-                }
-
 
                 // Creating or Updating object.
                 if (IdIsNull)
-                    _unitOfWork.TeaRepository.Create(objectFromDb);
+                    _unitOfWork.SyrupRepository.Create(objectFromDb);
                 else
-                    _unitOfWork.TeaRepository.Update(objectFromDb);
+                    _unitOfWork.SyrupRepository.Update(objectFromDb);
 
 
                 if (await _unitOfWork.SaveAsync())
@@ -430,10 +332,10 @@ namespace CoffeeShopAPI.Controllers
             else
                 return BadRequest(ModelState);
         }
-        [HttpDelete("DeleteTea")]
-        public async Task<IActionResult> DeleteTea(int Id)
+        [HttpDelete("DeleteSyrup")]
+        public async Task<IActionResult> DeleteSyrup(int Id)
         {
-            var objectFromDb = _unitOfWork.TeaRepository.GetById(Id);
+            var objectFromDb = _unitOfWork.SyrupRepository.GetById(Id);
             if (objectFromDb != null)
             {
                 if (!objectFromDb.IsActive)

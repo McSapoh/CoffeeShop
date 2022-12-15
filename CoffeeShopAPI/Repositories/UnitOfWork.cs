@@ -21,7 +21,7 @@ namespace CoffeeShopAPI.Repositories
         public IMilkRepository MilkRepository { get; set; }
         public ISauceRepository SauceRepository { get; set; }
         public ISupplementsRepository SupplementsRepository { get; set; }
-        public ISyrupRepository SurypRepository { get; set; }
+        public ISyrupRepository SyrupRepository { get; set; }
         #endregion
         #region Order Repositories.
         public Interfaces.Repositories.Orders.ICoffeeOrderRepository CoffeeOrderRepository { get; set; }
@@ -57,7 +57,7 @@ namespace CoffeeShopAPI.Repositories
             MilkRepository = new MilkRepository(context);
             SauceRepository = new SauceRepository(context);
             SupplementsRepository = new SupplementsRepository(context);
-            SurypRepository = new SyrupRepository(context);
+            SyrupRepository = new SyrupRepository(context);
             #endregion
             #region Order Repositories.
             CoffeeOrderRepository = new CoffeeOrderRepository(context);
