@@ -16,6 +16,8 @@ using CoffeeShopAPI.Repositories.Orders;
 using CoffeeShopAPI.Interfaces.Repositories.Orders;
 using CoffeeShopAPI.Repositories.Sizes;
 using CoffeeShopAPI.Interfaces.Repositories.Sizes;
+using CoffeeShopAPI.Interfaces.Services;
+using CoffeeShopAPI.Helpers.Services;
 
 namespace CoffeeShopAPI
 {
@@ -39,6 +41,7 @@ namespace CoffeeShopAPI
             });
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IProductService, ProductService>();
 
             #region Adding ingredients repositories
             services.AddScoped<IAlcoholRepository, AlcoholRepository>();

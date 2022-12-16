@@ -1,20 +1,13 @@
-﻿using CoffeeShopAPI.Models.Sizes;
+﻿using CoffeeShopAPI.Helpers.Services;
+using CoffeeShopAPI.Models.Sizes;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace CoffeeShopAPI.Models.Products
 {
-    public class Tea
+    public class Tea : Product
     {
-        [Key]
-        public int Id { get; set; }
-        [Required(ErrorMessage = "Field Name cannot be empty")]
-        public string Name { get; set; }
-        [Required(ErrorMessage = "Field Description cannot be empty")]
-        public string Description { get; set; }
-        public string ImagePath { get; set; } = "/Tea/DefaultTeaImage.png";
-        public bool IsActive { get; set; } = true;
-
+        public override string ImagePath { get; set; } = "/Tea/DefaultTeaImage.png";
         public virtual ICollection<TeaSize> Sizes { get; set; }
     }
 }

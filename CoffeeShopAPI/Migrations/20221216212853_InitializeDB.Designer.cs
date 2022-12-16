@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoffeeShopAPI.Migrations
 {
     [DbContext(typeof(CoffeeShopContext))]
-    [Migration("20221210203739_InitializeDB")]
+    [Migration("20221216212853_InitializeDB")]
     partial class InitializeDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
