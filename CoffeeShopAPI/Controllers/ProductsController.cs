@@ -40,7 +40,7 @@ namespace CoffeeShopAPI.Controllers
             {
                 case 200 :
                 {
-                    if (serviceResponse.Data == null)
+                    if (serviceResponse.Data != null)
                         return Ok(new JsonResult(new
                         {
                             data = serviceResponse.Data

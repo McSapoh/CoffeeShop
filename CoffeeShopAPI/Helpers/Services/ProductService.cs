@@ -65,7 +65,7 @@ namespace CoffeeShopAPI.Helpers.Services
                 product.ImagePath = $"/Images/{Type}/" + photo.FileName;
             }
             else
-                product.ImagePath = $"/{Type}/Default{Type}Image.png";
+                product.ImagePath = $"/Images/{Type}/Default{Type}Image.png";
 
             // Creating or Updating object.
             switch (Type)
