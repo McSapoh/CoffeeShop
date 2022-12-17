@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CoffeeShopAPI.Migrations
 {
-    public partial class InitializeDB : Migration
+    public partial class IntializeDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

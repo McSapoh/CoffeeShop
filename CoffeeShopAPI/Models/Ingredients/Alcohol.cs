@@ -1,15 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CoffeeShopAPI.Helpers.Services;
 
 namespace CoffeeShopAPI.Models.Ingredients
 {
-    public class Alcohol
+    public class Alcohol : Ingredient
     {
-        [Key]
-        public int Id { get; set; }
-        [Required(ErrorMessage = "Field Name cannot be empty")]
-        public string Name { get; set; }
-        [Required(ErrorMessage = "Field Price cannot be empty")]
-        public int Price { get; set; }
-        public bool IsActive { get; set; } = true;
     }
 }
