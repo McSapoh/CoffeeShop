@@ -104,19 +104,19 @@ namespace CoffeeShopAPI.Helpers.Services
             switch (Type)
             {
                 case "Alcohol":
-                    _unitOfWork.AlcoholRepository.Update((Alcohol)ingredient);
+                    _unitOfWork.AlcoholRepository.Update((Alcohol)ingredientFromDb);
                     break;
                 case "Milk":
-                    _unitOfWork.MilkRepository.Update((Milk)ingredient);
+                    _unitOfWork.MilkRepository.Update((Milk)ingredientFromDb);
                     break;
                 case "Sauce":
-                    _unitOfWork.SauceRepository.Update((Sauce)ingredient);
+                    _unitOfWork.SauceRepository.Update((Sauce)ingredientFromDb);
                     break;
                 case "Supplements":
-                    _unitOfWork.SupplementsRepository.Update((Supplements)ingredient);
+                    _unitOfWork.SupplementsRepository.Update((Supplements)ingredientFromDb);
                     break;
                 case "Syrup":
-                    _unitOfWork.SyrupRepository.Update((Syrup)ingredient);
+                    _unitOfWork.SyrupRepository.Update((Syrup)ingredientFromDb);
                     break;
                 default:
                     return new ServiceResponse(false, $"Cannot find object type {Type}", 404);

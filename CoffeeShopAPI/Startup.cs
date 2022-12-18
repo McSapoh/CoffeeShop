@@ -42,6 +42,7 @@ namespace CoffeeShopAPI
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IIngredientService, IngredientService>();
 
             #region Adding ingredients repositories
             services.AddScoped<IAlcoholRepository, AlcoholRepository>();

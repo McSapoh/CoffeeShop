@@ -1,4 +1,7 @@
-﻿using CoffeeShopAPI.Interfaces.Repositories;
+﻿using CoffeeShopAPI.Helpers;
+using CoffeeShopAPI.Helpers.Paging;
+using CoffeeShopAPI.Interfaces.Repositories;
+using CoffeeShopAPI.Interfaces.Services;
 using CoffeeShopAPI.Models.Ingredients;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -9,345 +12,252 @@ namespace CoffeeShopAPI.Controllers
     public class IngredientsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public IngredientsController(IUnitOfWork unitOfWork)
+        private readonly IIngredientService _ingredientService;
+        public IngredientsController(IUnitOfWork unitOfWork, IIngredientService ingredientService)
         {
             _unitOfWork = unitOfWork;
+            _ingredientService = ingredientService;
+        }
+        private IActionResult GetResult(ServiceResponse serviceResponse)
+        {
+            switch (serviceResponse.Status)
+            {
+                case 200:
+                    {
+                        if (serviceResponse.Data != null)
+                            return Ok(new JsonResult(new
+                            {
+                                data = serviceResponse.Data
+                            }));
+                        return Ok(new JsonResult(new
+                        {
+                            success = serviceResponse.Success,
+                            message = serviceResponse.Message
+                        }));
+                    }
+                case 400:
+                    {
+                        return BadRequest(new JsonResult(new
+                        {
+                            success = serviceResponse.Success,
+                            message = serviceResponse.Message
+                        }));
+                    }
+                case 404:
+                    {
+                        return NotFound(new JsonResult(new
+                        {
+                            success = serviceResponse.Success,
+                            message = serviceResponse.Message
+                        }));
+                    }
+                default:
+                    return BadRequest(new JsonResult(new { success = false, message = "Unknown result" }));
+            }
+        }
+        public dynamic GetMetadata<T>(PagedList<T> objects)
+        {
+            var metadata = new
+            {
+                objects.TotalCount,
+                objects.PageSize,
+                objects.CurrentPage,
+                objects.TotalPages,
+                objects.HasNext,
+                objects.HasPrevious
+            };
+            return metadata;
         }
 
         #region Alkohol actions.
         [HttpGet("GetAlcohol")]
-        public IActionResult GetAlcohol(int Id)
-        {
-            var objectFromDb = _unitOfWork.AlcoholRepository.GetById(Id);
-            if (objectFromDb == null)
-                return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
-            else
-                return Ok(new JsonResult(new { data = objectFromDb }));
-        }
+        public IActionResult GetAlcohol(int Id) =>
+            GetResult(_ingredientService.GetIngredient(Id, "Alcohol"));
         [HttpGet("GetAllAlcohol")]
         public async Task<IActionResult> GetAllAlcohol()
         {
             var objectsFromDb = await _unitOfWork.AlcoholRepository.GetAll();
             return Ok(objectsFromDb);
         }
-        [HttpPost("SaveAlcohol")]
-        public async Task<IActionResult> SaveAlcohol(Alcohol objectFromPage)
+        [HttpPost("CreateAlcohol")]
+        public async Task<IActionResult> CreateAlcohol(Alcohol objectFromPage)
         {
             if (ModelState.IsValid)
             {
-                Alcohol objectFromDb;
-                var IdIsNull = objectFromPage.Id == 0;
-                if (IdIsNull)
-                    objectFromDb = objectFromPage;
-                else
-                {
-                    objectFromDb = _unitOfWork.AlcoholRepository.GetById(objectFromPage.Id);
-                    if (objectFromDb == null)
-                        return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
-                    objectFromDb.Name = objectFromPage.Name;
-                    objectFromDb.Price = objectFromPage.Price;
-                    objectFromDb.IsActive = objectFromPage.IsActive;
-                }
-
-                // Creating or Updating object.
-                if (IdIsNull)
-                    _unitOfWork.AlcoholRepository.Create(objectFromDb);
-                else
-                    _unitOfWork.AlcoholRepository.Update(objectFromDb);
-
-
-                if (await _unitOfWork.SaveAsync())
-                    return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
-                else
-                    return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
+                if (objectFromPage.Id != 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
+                return GetResult(await _ingredientService.CreateIngredient(objectFromPage, "Alcohol"));
+            }
+            else
+                return BadRequest(ModelState);
+        }
+        [HttpPut("UpdateAlcohol")]
+        public async Task<IActionResult> UpdateAlcohol(Alcohol objectFromPage)
+        {
+            if (ModelState.IsValid)
+            {
+                if (objectFromPage.Id == 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
+                return GetResult(await _ingredientService.UpdateIngredient(objectFromPage, "Alcohol"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteAlcohol")]
-        public async Task<IActionResult> DeleteAlcohol(int Id)
-        {
-            var objectFromDb = _unitOfWork.AlcoholRepository.GetById(Id);
-            if (objectFromDb != null)
-            {
-                if (!objectFromDb.IsActive)
-                    return BadRequest(new JsonResult(new { success = false, message = "Cannot delete already deleted object" }));
-                objectFromDb.IsActive = false;
-                if (await _unitOfWork.SaveAsync())
-                    return Ok(new JsonResult(new { success = true, message = "Successfully deleted" }));
-                else
-                    return BadRequest(new JsonResult(new { success = false, message = "Error while deleting" }));
-            }
-            return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
-        }
+        public async Task<IActionResult> DeleteAlcohol(int Id) =>
+            GetResult(await _ingredientService.DeleteIngredient(Id, "Alcohol"));
         #endregion
         #region Milk actions.
         [HttpGet("GetMilk")]
-        public IActionResult GetMilk(int Id)
-        {
-            var objectFromDb = _unitOfWork.MilkRepository.GetById(Id);
-            if (objectFromDb == null)
-                return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
-            else
-                return Ok(new JsonResult(new { data = objectFromDb }));
-        }
+        public IActionResult GetMilk(int Id) =>
+            GetResult(_ingredientService.GetIngredient(Id, "Milk"));
         [HttpGet("GetAllMilk")]
         public async Task<IActionResult> GetAllMilk()
         {
             var objectsFromDb = await _unitOfWork.MilkRepository.GetAll();
             return Ok(objectsFromDb);
         }
-        [HttpPost("SaveMilk")]
-        public async Task<IActionResult> SaveMilk(Milk objectFromPage)
+        [HttpPost("CreateMilk")]
+        public async Task<IActionResult> CreateMilk(Milk objectFromPage)
         {
             if (ModelState.IsValid)
             {
-                Milk objectFromDb;
-                var IdIsNull = objectFromPage.Id == 0;
-                if (IdIsNull)
-                    objectFromDb = objectFromPage;
-                else
-                {
-                    objectFromDb = _unitOfWork.MilkRepository.GetById(objectFromPage.Id);
-                    if (objectFromDb == null)
-                        return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
-                    objectFromDb.Name = objectFromPage.Name;
-                    objectFromDb.Price = objectFromPage.Price;
-                    objectFromDb.IsActive = objectFromPage.IsActive;
-                }
-
-                // Creating or Updating object.
-                if (IdIsNull)
-                    _unitOfWork.MilkRepository.Create(objectFromDb);
-                else
-                    _unitOfWork.MilkRepository.Update(objectFromDb);
-
-
-                if (await _unitOfWork.SaveAsync())
-                    return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
-                else
-                    return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
+                if (objectFromPage.Id != 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
+                return GetResult(await _ingredientService.CreateIngredient(objectFromPage, "Milk"));
+            }
+            else
+                return BadRequest(ModelState);
+        }
+        [HttpPut("UpdateMilk")]
+        public async Task<IActionResult> UpdateMilk(Milk objectFromPage)
+        {
+            if (ModelState.IsValid)
+            {
+                if (objectFromPage.Id == 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
+                return GetResult(await _ingredientService.UpdateIngredient(objectFromPage, "Milk"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteMilk")]
-        public async Task<IActionResult> DeleteMilk(int Id)
-        {
-            var objectFromDb = _unitOfWork.MilkRepository.GetById(Id);
-            if (objectFromDb != null)
-            {
-                if (!objectFromDb.IsActive)
-                    return BadRequest(new JsonResult(new { success = false, message = "Cannot delete already deleted object" }));
-                objectFromDb.IsActive = false;
-                if (await _unitOfWork.SaveAsync())
-                    return Ok(new JsonResult(new { success = true, message = "Successfully deleted" }));
-                else
-                    return BadRequest(new JsonResult(new { success = false, message = "Error while deleting" }));
-            }
-            return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
-        }
+        public async Task<IActionResult> DeleteMilk(int Id) =>
+            GetResult(await _ingredientService.DeleteIngredient(Id, "Milk"));
         #endregion
         #region Sauce actions.
         [HttpGet("GetSauce")]
-        public IActionResult GetSauce(int Id)
-        {
-            var objectFromDb = _unitOfWork.SauceRepository.GetById(Id);
-            if (objectFromDb == null)
-                return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
-            else
-                return Ok(new JsonResult(new { data = objectFromDb }));
-        }
+        public IActionResult GetSauce(int Id) =>
+            GetResult(_ingredientService.GetIngredient(Id, "Sauce"));
         [HttpGet("GetAllSauce")]
         public async Task<IActionResult> GetAllSauce()
         {
             var objectsFromDb = await _unitOfWork.SauceRepository.GetAll();
             return Ok(objectsFromDb);
         }
-        [HttpPost("SaveSauce")]
-        public async Task<IActionResult> SaveSauce(Sauce objectFromPage)
+        [HttpPost("CreateSauce")]
+        public async Task<IActionResult> CreateSauce(Sauce objectFromPage)
         {
             if (ModelState.IsValid)
             {
-                Sauce objectFromDb;
-                var IdIsNull = objectFromPage.Id == 0;
-                if (IdIsNull)
-                    objectFromDb = objectFromPage;
-                else
-                {
-                    objectFromDb = _unitOfWork.SauceRepository.GetById(objectFromPage.Id);
-                    if (objectFromDb == null)
-                        return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
-                    objectFromDb.Name = objectFromPage.Name;
-                    objectFromDb.Price = objectFromPage.Price;
-                    objectFromDb.IsActive = objectFromPage.IsActive;
-                }
-
-                // Creating or Updating object.
-                if (IdIsNull)
-                    _unitOfWork.SauceRepository.Create(objectFromDb);
-                else
-                    _unitOfWork.SauceRepository.Update(objectFromDb);
-
-
-                if (await _unitOfWork.SaveAsync())
-                    return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
-                else
-                    return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
+                if (objectFromPage.Id != 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
+                return GetResult(await _ingredientService.CreateIngredient(objectFromPage, "Sauce"));
+            }
+            else
+                return BadRequest(ModelState);
+        }
+        [HttpPut("UpdateSauce")]
+        public async Task<IActionResult> UpdateSauce(Sauce objectFromPage)
+        {
+            if (ModelState.IsValid)
+            {
+                if (objectFromPage.Id == 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
+                return GetResult(await _ingredientService.UpdateIngredient(objectFromPage, "Sauce"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteSauce")]
-        public async Task<IActionResult> DeleteSauce(int Id)
-        {
-            var objectFromDb = _unitOfWork.SauceRepository.GetById(Id);
-            if (objectFromDb != null)
-            {
-                if (!objectFromDb.IsActive)
-                    return BadRequest(new JsonResult(new { success = false, message = "Cannot delete already deleted object" }));
-                objectFromDb.IsActive = false;
-                if (await _unitOfWork.SaveAsync())
-                    return Ok(new JsonResult(new { success = true, message = "Successfully deleted" }));
-                else
-                    return BadRequest(new JsonResult(new { success = false, message = "Error while deleting" }));
-            }
-            return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
-        }
+        public async Task<IActionResult> DeleteSauce(int Id) =>
+            GetResult(await _ingredientService.DeleteIngredient(Id, "Milk"));
         #endregion
         #region Supplements actions.
         [HttpGet("GetSupplements")]
-        public IActionResult GetSupplements(int Id)
-        {
-            var objectFromDb = _unitOfWork.SupplementsRepository.GetById(Id);
-            if (objectFromDb == null)
-                return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
-            else
-                return Ok(new JsonResult(new { data = objectFromDb }));
-        }
+        public IActionResult GetSupplements(int Id) =>
+            GetResult(_ingredientService.GetIngredient(Id, "Supplements"));
         [HttpGet("GetAllSupplements")]
         public async Task<IActionResult> GetAllSupplements()
         {
             var objectsFromDb = await _unitOfWork.SupplementsRepository.GetAll();
             return Ok(objectsFromDb);
         }
-        [HttpPost("SaveSupplements")]
-        public async Task<IActionResult> SaveSupplements(Supplements objectFromPage)
+        [HttpPost("CreateSupplements")]
+        public async Task<IActionResult> CreateSupplements(Supplements objectFromPage)
         {
             if (ModelState.IsValid)
             {
-                Supplements objectFromDb;
-                var IdIsNull = objectFromPage.Id == 0;
-                if (IdIsNull)
-                    objectFromDb = objectFromPage;
-                else
-                {
-                    objectFromDb = _unitOfWork.SupplementsRepository.GetById(objectFromPage.Id);
-                    if (objectFromDb == null)
-                        return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
-                    objectFromDb.Name = objectFromPage.Name;
-                    objectFromDb.Price = objectFromPage.Price;
-                    objectFromDb.IsActive = objectFromPage.IsActive;
-                }
-
-                // Creating or Updating object.
-                if (IdIsNull)
-                    _unitOfWork.SupplementsRepository.Create(objectFromDb);
-                else
-                    _unitOfWork.SupplementsRepository.Update(objectFromDb);
-
-
-                if (await _unitOfWork.SaveAsync())
-                    return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
-                else
-                    return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
+                if (objectFromPage.Id != 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
+                return GetResult(await _ingredientService.CreateIngredient(objectFromPage, "Supplements"));
+            }
+            else
+                return BadRequest(ModelState);
+        }
+        [HttpPut("UpdateSupplements")]
+        public async Task<IActionResult> UpdateSupplements(Supplements objectFromPage)
+        {
+            if (ModelState.IsValid)
+            {
+                if (objectFromPage.Id == 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
+                return GetResult(await _ingredientService.UpdateIngredient(objectFromPage, "Supplements"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteSupplements")]
-        public async Task<IActionResult> DeleteSupplements(int Id)
-        {
-            var objectFromDb = _unitOfWork.SupplementsRepository.GetById(Id);
-            if (objectFromDb != null)
-            {
-                if (!objectFromDb.IsActive)
-                    return BadRequest(new JsonResult(new { success = false, message = "Cannot delete already deleted object" }));
-                objectFromDb.IsActive = false;
-                if (await _unitOfWork.SaveAsync())
-                    return Ok(new JsonResult(new { success = true, message = "Successfully deleted" }));
-                else
-                    return BadRequest(new JsonResult(new { success = false, message = "Error while deleting" }));
-            }
-            return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
-        }
+        public async Task<IActionResult> DeleteSupplements(int Id) =>
+            GetResult(await _ingredientService.DeleteIngredient(Id, "Supplemets"));
         #endregion
         #region Syrup actions.
         [HttpGet("GetSyrup")]
-        public IActionResult GetSyrup(int Id)
-        {
-            var objectFromDb = _unitOfWork.SyrupRepository.GetById(Id);
-            if (objectFromDb == null)
-                return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
-            else
-                return Ok(new JsonResult(new { data = objectFromDb }));
-        }
+        public IActionResult GetSyrup(int Id) =>
+            GetResult(_ingredientService.GetIngredient(Id, "Syrup"));
         [HttpGet("GetAllSyrup")]
         public async Task<IActionResult> GetAllSyrup()
         {
             var objectsFromDb = await _unitOfWork.SyrupRepository.GetAll();
             return Ok(objectsFromDb);
         }
-        [HttpPost("SaveSyrup")]
-        public async Task<IActionResult> SaveSyrup(Syrup objectFromPage)
+        [HttpPost("CreateSyrup")]
+        public async Task<IActionResult> CreateSyrup(Syrup objectFromPage)
         {
             if (ModelState.IsValid)
             {
-                Syrup objectFromDb;
-                var IdIsNull = objectFromPage.Id == 0;
-                if (IdIsNull)
-                    objectFromDb = objectFromPage;
-                else
-                {
-                    objectFromDb = _unitOfWork.SyrupRepository.GetById(objectFromPage.Id);
-                    if (objectFromDb == null)
-                        return NotFound(new JsonResult(new { success = false, message = "Cannot find this object in database" }));
-                    objectFromDb.Name = objectFromPage.Name;
-                    objectFromDb.Price = objectFromPage.Price;
-                    objectFromDb.IsActive = objectFromPage.IsActive;
-                }
-
-                // Creating or Updating object.
-                if (IdIsNull)
-                    _unitOfWork.SyrupRepository.Create(objectFromDb);
-                else
-                    _unitOfWork.SyrupRepository.Update(objectFromDb);
-
-
-                if (await _unitOfWork.SaveAsync())
-                    return Ok(new JsonResult(new { success = true, message = "Successfully saved" }));
-                else
-                    return BadRequest(new JsonResult(new { success = false, message = "Error while saving" }));
+                if (objectFromPage.Id != 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
+                return GetResult(await _ingredientService.CreateIngredient(objectFromPage, "Syrup"));
+            }
+            else
+                return BadRequest(ModelState);
+        }
+        [HttpPut("UpdateSyrup")]
+        public async Task<IActionResult> UpdateSyrup(Syrup objectFromPage)
+        {
+            if (ModelState.IsValid)
+            {
+                if (objectFromPage.Id == 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
+                return GetResult(await _ingredientService.UpdateIngredient(objectFromPage, "Syrup"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteSyrup")]
-        public async Task<IActionResult> DeleteSyrup(int Id)
-        {
-            var objectFromDb = _unitOfWork.SyrupRepository.GetById(Id);
-            if (objectFromDb != null)
-            {
-                if (!objectFromDb.IsActive)
-                    return BadRequest(new JsonResult(new { success = false, message = "Cannot delete already deleted object" }));
-                objectFromDb.IsActive = false;
-                if (await _unitOfWork.SaveAsync())
-                    return Ok(new JsonResult(new { success = true, message = "Successfully deleted" }));
-                else
-                    return BadRequest(new JsonResult(new { success = false, message = "Error while deleting" }));
-            }
-            return NotFound(new JsonResult(new { success = false, message = $"Cannot find object with id = {Id}" }));
-        }
+        public async Task<IActionResult> DeleteSyrup(int Id) =>
+            GetResult(await _ingredientService.DeleteIngredient(Id, "Syrup"));
         #endregion
     }
 }
