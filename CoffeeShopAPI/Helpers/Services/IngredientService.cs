@@ -13,7 +13,7 @@ namespace CoffeeShopAPI.Helpers.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public ServiceResponse GetIngredient(int id, string Type)
+        public ServiceResponse Get(int id, string Type)
         {
             Ingredient ingredient;
             switch (Type)
@@ -41,7 +41,7 @@ namespace CoffeeShopAPI.Helpers.Services
             else
                 return new ServiceResponse(true, "", 200) { Data = ingredient };
         }
-        public async Task<ServiceResponse> CreateIngredient(Ingredient ingredient, string Type)
+        public async Task<ServiceResponse> Create(Ingredient ingredient, string Type)
         {
             // Creating or Updating object.
             switch (Type)
@@ -70,7 +70,7 @@ namespace CoffeeShopAPI.Helpers.Services
             else
                 return new ServiceResponse(false,"Error while saving", 400);
         }
-        public async Task<ServiceResponse> UpdateIngredient(Ingredient ingredient, string Type)
+        public async Task<ServiceResponse> Update(Ingredient ingredient, string Type)
         {
             Ingredient ingredientFromDb;
             // Getting object from database object.
@@ -127,7 +127,7 @@ namespace CoffeeShopAPI.Helpers.Services
             else
                 return new ServiceResponse(false, "Error while updating", 400);
         }
-        public async Task<ServiceResponse> DeleteIngredient(int id, string Type)
+        public async Task<ServiceResponse> Delete(int id, string Type)
         {
             Ingredient ingredient;
             switch (Type)

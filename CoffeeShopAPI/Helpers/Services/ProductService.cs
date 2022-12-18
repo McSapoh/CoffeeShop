@@ -27,7 +27,7 @@ namespace CoffeeShopAPI.Helpers.Services
             System.IO.File.Delete(path);
         }
 
-        public ServiceResponse GetProduct(int Id, string Type)
+        public ServiceResponse Get(int Id, string Type)
         {
             Product product;
             switch (Type)
@@ -55,7 +55,7 @@ namespace CoffeeShopAPI.Helpers.Services
             else
                 return new ServiceResponse(true, "", 200) { Data = product };
         }
-        public async Task<ServiceResponse> CreateProduct(Product product, IFormFile photo, string Type)
+        public async Task<ServiceResponse> Create(Product product, IFormFile photo, string Type)
         {
             // Saving photos.
             if (photo != null && photo.Length > 0)
@@ -94,7 +94,7 @@ namespace CoffeeShopAPI.Helpers.Services
             else
                 return new ServiceResponse(false,"Error while saving", 400);
         }
-        public async Task<ServiceResponse> UpdateProduct(Product product, IFormFile photo, string Type)
+        public async Task<ServiceResponse> Update(Product product, IFormFile photo, string Type)
         {
             Product productFromDb;
             // Getting object from database object.
@@ -163,7 +163,7 @@ namespace CoffeeShopAPI.Helpers.Services
             else
                 return new ServiceResponse(false, "Error while updating", 400);
         }
-        public async Task<ServiceResponse> DeleteProduct(int id, string Type)
+        public async Task<ServiceResponse> Delete(int id, string Type)
         {
             Product product;
             switch (Type)

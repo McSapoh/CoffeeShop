@@ -72,7 +72,7 @@ namespace CoffeeShopAPI.Controllers
         #region Alkohol actions.
         [HttpGet("GetAlcohol")]
         public IActionResult GetAlcohol(int Id) =>
-            GetResult(_ingredientService.GetIngredient(Id, "Alcohol"));
+            GetResult(_ingredientService.Get(Id, "Alcohol"));
         [HttpGet("GetAllAlcohol")]
         public async Task<IActionResult> GetAllAlcohol()
         {
@@ -86,7 +86,7 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.CreateIngredient(objectFromPage, "Alcohol"));
+                return GetResult(await _ingredientService.Create(objectFromPage, "Alcohol"));
             }
             else
                 return BadRequest(ModelState);
@@ -98,19 +98,19 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.UpdateIngredient(objectFromPage, "Alcohol"));
+                return GetResult(await _ingredientService.Update(objectFromPage, "Alcohol"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteAlcohol")]
         public async Task<IActionResult> DeleteAlcohol(int Id) =>
-            GetResult(await _ingredientService.DeleteIngredient(Id, "Alcohol"));
+            GetResult(await _ingredientService.Delete(Id, "Alcohol"));
         #endregion
         #region Milk actions.
         [HttpGet("GetMilk")]
         public IActionResult GetMilk(int Id) =>
-            GetResult(_ingredientService.GetIngredient(Id, "Milk"));
+            GetResult(_ingredientService.Get(Id, "Milk"));
         [HttpGet("GetAllMilk")]
         public async Task<IActionResult> GetAllMilk()
         {
@@ -124,7 +124,7 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.CreateIngredient(objectFromPage, "Milk"));
+                return GetResult(await _ingredientService.Create(objectFromPage, "Milk"));
             }
             else
                 return BadRequest(ModelState);
@@ -136,19 +136,19 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.UpdateIngredient(objectFromPage, "Milk"));
+                return GetResult(await _ingredientService.Update(objectFromPage, "Milk"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteMilk")]
         public async Task<IActionResult> DeleteMilk(int Id) =>
-            GetResult(await _ingredientService.DeleteIngredient(Id, "Milk"));
+            GetResult(await _ingredientService.Delete(Id, "Milk"));
         #endregion
         #region Sauce actions.
         [HttpGet("GetSauce")]
         public IActionResult GetSauce(int Id) =>
-            GetResult(_ingredientService.GetIngredient(Id, "Sauce"));
+            GetResult(_ingredientService.Get(Id, "Sauce"));
         [HttpGet("GetAllSauce")]
         public async Task<IActionResult> GetAllSauce()
         {
@@ -162,7 +162,7 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.CreateIngredient(objectFromPage, "Sauce"));
+                return GetResult(await _ingredientService.Create(objectFromPage, "Sauce"));
             }
             else
                 return BadRequest(ModelState);
@@ -174,19 +174,19 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.UpdateIngredient(objectFromPage, "Sauce"));
+                return GetResult(await _ingredientService.Update(objectFromPage, "Sauce"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteSauce")]
         public async Task<IActionResult> DeleteSauce(int Id) =>
-            GetResult(await _ingredientService.DeleteIngredient(Id, "Milk"));
+            GetResult(await _ingredientService.Delete(Id, "Milk"));
         #endregion
         #region Supplements actions.
         [HttpGet("GetSupplements")]
         public IActionResult GetSupplements(int Id) =>
-            GetResult(_ingredientService.GetIngredient(Id, "Supplements"));
+            GetResult(_ingredientService.Get(Id, "Supplements"));
         [HttpGet("GetAllSupplements")]
         public async Task<IActionResult> GetAllSupplements()
         {
@@ -200,7 +200,7 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.CreateIngredient(objectFromPage, "Supplements"));
+                return GetResult(await _ingredientService.Create(objectFromPage, "Supplements"));
             }
             else
                 return BadRequest(ModelState);
@@ -212,19 +212,19 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.UpdateIngredient(objectFromPage, "Supplements"));
+                return GetResult(await _ingredientService.Update(objectFromPage, "Supplements"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteSupplements")]
         public async Task<IActionResult> DeleteSupplements(int Id) =>
-            GetResult(await _ingredientService.DeleteIngredient(Id, "Supplemets"));
+            GetResult(await _ingredientService.Delete(Id, "Supplemets"));
         #endregion
         #region Syrup actions.
         [HttpGet("GetSyrup")]
         public IActionResult GetSyrup(int Id) =>
-            GetResult(_ingredientService.GetIngredient(Id, "Syrup"));
+            GetResult(_ingredientService.Get(Id, "Syrup"));
         [HttpGet("GetAllSyrup")]
         public async Task<IActionResult> GetAllSyrup()
         {
@@ -238,7 +238,7 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.CreateIngredient(objectFromPage, "Syrup"));
+                return GetResult(await _ingredientService.Create(objectFromPage, "Syrup"));
             }
             else
                 return BadRequest(ModelState);
@@ -250,14 +250,14 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.UpdateIngredient(objectFromPage, "Syrup"));
+                return GetResult(await _ingredientService.Update(objectFromPage, "Syrup"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteSyrup")]
         public async Task<IActionResult> DeleteSyrup(int Id) =>
-            GetResult(await _ingredientService.DeleteIngredient(Id, "Syrup"));
+            GetResult(await _ingredientService.Delete(Id, "Syrup"));
         #endregion
     }
 }

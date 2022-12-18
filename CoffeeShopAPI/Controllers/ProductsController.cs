@@ -87,7 +87,7 @@ namespace CoffeeShopAPI.Controllers
         #region Coffee actions.
         [HttpGet("GetCoffee")]
         public IActionResult GetCoffee(int Id) =>
-            GetResult(_productService.GetProduct(Id, "Coffee"));
+            GetResult(_productService.Get(Id, "Coffee"));
         [HttpGet("GetCoffees")]
         public IActionResult GetCoffees([FromQuery] PagingParameters pagingParameters)
         {
@@ -103,7 +103,7 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _productService.CreateProduct(objectFromPage, photo, "Coffee"));
+                return GetResult(await _productService.Create(objectFromPage, photo, "Coffee"));
             }
             else
                 return BadRequest(ModelState);
@@ -115,19 +115,19 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _productService.UpdateProduct(objectFromPage, photo, "Coffee"));
+                return GetResult(await _productService.Update(objectFromPage, photo, "Coffee"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteCoffee")]
         public async Task<IActionResult> DeleteCoffee(int Id) =>
-            GetResult(await _productService.DeleteProduct(Id, "Coffee"));
+            GetResult(await _productService.Delete(Id, "Coffee"));
         #endregion
         #region Dessert actions.
         [HttpGet("GetDessert")]
         public IActionResult GetDessert(int Id) =>
-            GetResult(_productService.GetProduct(Id, "Dessert"));
+            GetResult(_productService.Get(Id, "Dessert"));
         [HttpGet("GetDesserts")]
         public IActionResult GetDesserts([FromQuery] PagingParameters pagingParameters)
         {
@@ -143,7 +143,7 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _productService.CreateProduct(objectFromPage, photo, "Dessert"));
+                return GetResult(await _productService.Create(objectFromPage, photo, "Dessert"));
             }
             else
                 return BadRequest(ModelState);
@@ -155,19 +155,19 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _productService.UpdateProduct(objectFromPage, photo, "Dessert"));
+                return GetResult(await _productService.Update(objectFromPage, photo, "Dessert"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteDessert")]
         public async Task<IActionResult> DeleteDessert(int Id) =>
-            GetResult(await _productService.DeleteProduct(Id, "Dessert"));
+            GetResult(await _productService.Delete(Id, "Dessert"));
         #endregion
         #region Sandwich actions.
         [HttpGet("GetSandwich")]
         public IActionResult GetSandwich(int Id) =>
-            GetResult(_productService.GetProduct(Id, "Sandwich"));
+            GetResult(_productService.Get(Id, "Sandwich"));
         [HttpGet("GetSandwiches")]
         public IActionResult GetSandwiches([FromQuery] PagingParameters pagingParameters)
         {
@@ -183,7 +183,7 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _productService.CreateProduct(objectFromPage, photo, "Sandwich"));
+                return GetResult(await _productService.Create(objectFromPage, photo, "Sandwich"));
             }
             else
                 return BadRequest(ModelState);
@@ -195,19 +195,19 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _productService.UpdateProduct(objectFromPage, photo, "Sandwich"));
+                return GetResult(await _productService.Update(objectFromPage, photo, "Sandwich"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteSandwich")]
         public async Task<IActionResult> DeleteSandwich(int Id) =>
-            GetResult(await _productService.DeleteProduct(Id, "Sandwich"));
+            GetResult(await _productService.Delete(Id, "Sandwich"));
         #endregion
         #region Snack actions.
         [HttpGet("GetSnack")]
         public IActionResult GetSnack(int Id) =>
-            GetResult(_productService.GetProduct(Id, "Snack"));
+            GetResult(_productService.Get(Id, "Snack"));
         [HttpGet("GetSnacks")]
         public IActionResult GetSnacks([FromQuery] PagingParameters pagingParameters)
         {
@@ -223,7 +223,7 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _productService.CreateProduct(objectFromPage, photo, "Snack"));
+                return GetResult(await _productService.Create(objectFromPage, photo, "Snack"));
             }
             else
                 return BadRequest(ModelState);
@@ -235,19 +235,19 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _productService.UpdateProduct(objectFromPage, photo, "Snack"));
+                return GetResult(await _productService.Update(objectFromPage, photo, "Snack"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteSnack")]
         public async Task<IActionResult> DeleteSnack(int Id) =>
-            GetResult(await _productService.DeleteProduct(Id, "Snack"));
+            GetResult(await _productService.Delete(Id, "Snack"));
         #endregion
         #region Tea actions.
         [HttpGet("GetTea")]
         public IActionResult GetTea(int Id) =>
-            GetResult(_productService.GetProduct(Id, "Tea"));
+            GetResult(_productService.Get(Id, "Tea"));
         [HttpGet("GetTeas")]
         public IActionResult GetTea([FromQuery] PagingParameters pagingParameters)
         {
@@ -263,7 +263,7 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _productService.CreateProduct(objectFromPage, photo, "Tea"));
+                return GetResult(await _productService.Create(objectFromPage, photo, "Tea"));
             }
             else
                 return BadRequest(ModelState);
@@ -275,14 +275,14 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _productService.UpdateProduct(objectFromPage, photo, "Tea"));
+                return GetResult(await _productService.Update(objectFromPage, photo, "Tea"));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteTea")]
         public async Task<IActionResult> DeleteTea(int Id) => 
-            GetResult(await _productService.DeleteProduct(Id, "Tea"));
+            GetResult(await _productService.Delete(Id, "Tea"));
         #endregion
     }
 }

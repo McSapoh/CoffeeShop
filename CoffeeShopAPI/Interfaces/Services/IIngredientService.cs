@@ -6,9 +6,9 @@ namespace CoffeeShopAPI.Interfaces.Services
 {
     public interface IIngredientService
     {
-        public ServiceResponse GetIngredient(int id, string Type);
-        public Task<ServiceResponse> CreateIngredient(Ingredient ingredient, string Type);
-        public Task<ServiceResponse> UpdateIngredient(Ingredient ingredient, string Type);
-        public Task<ServiceResponse> DeleteIngredient(int id, string Type);
+        public ServiceResponse Get(int id, string Type);
+        public Task<ServiceResponse> Create(Ingredient ingredient, string Type);
+        public Task<ServiceResponse> Update(Ingredient ingredient, string Type);
+        public Task<ServiceResponse> Delete(int id, string Type);
     }
 }
