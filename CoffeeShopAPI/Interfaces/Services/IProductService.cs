@@ -1,5 +1,5 @@
 ﻿using CoffeeShopAPI.Helpers;
-using CoffeeShopAPI.Helpers.Services;
+using CoffeeShopAPI.Models;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 

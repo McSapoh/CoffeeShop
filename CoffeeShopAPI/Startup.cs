@@ -1,8 +1,6 @@
 using CoffeeShopAPI.Repositories;
 using CoffeeShopAPI.Interfaces.Repositories;
-using CoffeeShopAPI.Interfaces.Repositories.Products;
 using CoffeeShopAPI.Models;
-using CoffeeShopAPI.Repositories.Products;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,12 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using CoffeeShopAPI.Repositories.Ingredients;
-using CoffeeShopAPI.Interfaces.Repositories.Ingredients;
-using CoffeeShopAPI.Repositories.Orders;
-using CoffeeShopAPI.Interfaces.Repositories.Orders;
-using CoffeeShopAPI.Repositories.Sizes;
-using CoffeeShopAPI.Interfaces.Repositories.Sizes;
 using CoffeeShopAPI.Interfaces.Services;
 using CoffeeShopAPI.Helpers.Services;
 
@@ -44,34 +36,14 @@ namespace CoffeeShopAPI
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IIngredientService, IngredientService>();
 
-            #region Adding ingredients repositories
-            services.AddScoped<IAlcoholRepository, AlcoholRepository>();
-            services.AddScoped<IMilkRepository, MilkRepository>();
-            services.AddScoped<ISauceRepository, SauceRepository>();
-            services.AddScoped<ISupplementsRepository, SupplementsRepository>();
-            services.AddScoped<ISyrupRepository, SyrupRepository>();
-            #endregion
-            #region Adding orders repositories
+            #region Adding repositories
+            services.AddScoped<IIngredientRepository, IngredientRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
-            services.AddScoped<ICoffeeOrderRepository, CoffeeOrderRepository>();
-            services.AddScoped<IDessertOrderRepository, DessertOrderRepository>();
-            services.AddScoped<ISandwichOrderRepository, SandwichOrderRepository>();
-            services.AddScoped<ISnackOrderRepository, SnackOrderRepository>();
-            services.AddScoped<ITeaOrderRepository, TeaOrderRepository>();
-            #endregion
-            #region Adding products repositories
-            services.AddScoped<ICoffeeRepository, CoffeeRepository>();
-            services.AddScoped<IDessertRepository, DessertRepository>();
-            services.AddScoped<ISandwichRepository, SandwichRepository>();
-            services.AddScoped<ISnackRepository, SnackRepository>();
-            services.AddScoped<ITeaRepository, TeaRepository>();
-            #endregion
-            #region Adding sizes repositories
-            services.AddScoped<ICoffeeSizeRepository, CoffeeSizeRepository>();
-            services.AddScoped<IDessertSizeRepository, DessertSizeRepository>();
-            services.AddScoped<ISandwichSizeRepository, SandwichSizeRepository>();
-            services.AddScoped<ISnackSizeRepository, SnackSizeRepository>();
-            services.AddScoped<ITeaSizeRepository, TeaSizeRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductOrderRepository, ProductOrderRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ISizeRepository, SizeRepository>();
+            services.AddScoped<IUserRepository,UserRepository>();
             #endregion
 
             services.AddDbContext<CoffeeShopContext>(options => 

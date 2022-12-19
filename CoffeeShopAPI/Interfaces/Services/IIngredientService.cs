@@ -1,5 +1,5 @@
 ﻿using CoffeeShopAPI.Helpers;
-using CoffeeShopAPI.Helpers.Services;
+using CoffeeShopAPI.Models;
 using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Interfaces.Services
