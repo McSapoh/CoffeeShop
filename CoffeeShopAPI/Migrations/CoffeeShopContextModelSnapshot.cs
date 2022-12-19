@@ -26,6 +26,9 @@ namespace CoffeeShopAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("IngredientType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -85,8 +88,8 @@ namespace CoffeeShopAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductType")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -242,7 +245,7 @@ namespace CoffeeShopAPI.Migrations
             modelBuilder.Entity("CoffeeShopAPI.Models.Size", b =>
                 {
                     b.HasOne("CoffeeShopAPI.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("Sizes")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -253,6 +256,11 @@ namespace CoffeeShopAPI.Migrations
             modelBuilder.Entity("CoffeeShopAPI.Models.Order", b =>
                 {
                     b.Navigation("ProductOrders");
+                });
+
+            modelBuilder.Entity("CoffeeShopAPI.Models.Product", b =>
+                {
+                    b.Navigation("Sizes");
                 });
 
             modelBuilder.Entity("CoffeeShopAPI.Models.User", b =>
