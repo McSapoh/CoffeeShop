@@ -27,26 +27,26 @@ namespace CoffeeShopAPI.Helpers.Services
             System.IO.File.Delete(path);
         }
 
-        public ServiceResponse Get(int Id, string Type)
+        public ServiceResponse Get(int id, string type)
         {
             Product product;
-            product = _unitOfWork.ProductRepository.GetById(Id);
+            product = _unitOfWork.ProductRepository.GetById(id);
             if (product == null)
-                return new ServiceResponse(false, $"Cannot find object with id = {Id}", 404);
+                return new ServiceResponse(false, $"Cannot find object with id = {id}", 404);
             else
                 return new ServiceResponse(true, "", 200) { Data = product };
         }
-        public async Task<ServiceResponse> Create(Product product, IFormFile photo, string Type)
+        public async Task<ServiceResponse> Create(Product product, IFormFile photo)
         {
             // Saving photos.
             if (photo != null && photo.Length > 0)
             {
                 string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                SavePhoto(path + $"\\Images\\{Type}", photo);
-                product.ImagePath = $"/Images/{Type}/" + photo.FileName;
+                SavePhoto(path + $"\\Images\\{product.ProductType}", photo);
+                product.ImagePath = $"/Images/{product.ProductType}/" + photo.FileName;
             }
             else
-                product.ImagePath = $"/Images/{Type}/Default{Type}Image.png";
+                product.ImagePath = $"/Images/{product.ProductType}/Default{product.ProductType}Image.png";
 
             // Creating or Updating object.
             _unitOfWork.ProductRepository.Create(product);
@@ -55,7 +55,7 @@ namespace CoffeeShopAPI.Helpers.Services
             else
                 return new ServiceResponse(false,"Error while saving", 400);
         }
-        public async Task<ServiceResponse> Update(Product product, IFormFile photo, string Type)
+        public async Task<ServiceResponse> Update(Product product, IFormFile photo)
         {
             var productFromDb = _unitOfWork.ProductRepository.GetById(product.Id);
 
@@ -69,13 +69,13 @@ namespace CoffeeShopAPI.Helpers.Services
             if (photo != null && photo.Length > 0)
             {
                 string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                SavePhoto(path + $"\\Images\\{Type}", photo);
-                if (productFromDb.ImagePath != $"/{Type}/Default{Type}Image.png")
+                SavePhoto(path + $"\\Images\\{product.ProductType}", photo);
+                if (productFromDb.ImagePath != $"/{product.ProductType}/Default{product.ProductType}Image.png")
                     DeletePhoto(path + "\\Images" + productFromDb.ImagePath);
-                productFromDb.ImagePath = $"/Images/{Type}/" + photo.FileName;
+                productFromDb.ImagePath = $"/Images/{product.ProductType}/" + photo.FileName;
             }
             else
-                productFromDb.ImagePath = $"/{Type}/Default{Type}Image.png";
+                productFromDb.ImagePath = $"/{product.ProductType}/Default{product.ProductType}Image.png";
 
             // Updating product.
             _unitOfWork.ProductRepository.Update(productFromDb);
@@ -84,7 +84,7 @@ namespace CoffeeShopAPI.Helpers.Services
             else
                 return new ServiceResponse(false, "Error while updating", 400);
         }
-        public async Task<ServiceResponse> Delete(int id, string Type)
+        public async Task<ServiceResponse> Delete(int id)
         {
             var product = _unitOfWork.ProductRepository.GetById(id);
 
