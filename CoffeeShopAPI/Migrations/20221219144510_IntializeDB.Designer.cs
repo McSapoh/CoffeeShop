@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoffeeShopAPI.Migrations
 {
     [DbContext(typeof(CoffeeShopContext))]
-    [Migration("20221219140521_IntializeDB")]
+    [Migration("20221219144510_IntializeDB")]
     partial class IntializeDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,9 +189,6 @@ namespace CoffeeShopAPI.Migrations
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

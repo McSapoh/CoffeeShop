@@ -18,8 +18,6 @@ namespace CoffeeShopAPI.Models
         public DateTime RegistrationDate { get; set; }
         [MinLength(4), Required(ErrorMessage = "Please enter Your password")]
         public string Password { get; set; }
-        public string Role { get; set; } = "User";
-
 
         public virtual ICollection<Order> Orders { get; set; }
     }
