@@ -1,4 +1,5 @@
 ﻿using CoffeeShopAPI.Helpers;
+using CoffeeShopAPI.Helpers.DTO;
 using CoffeeShopAPI.Helpers.Paging;
 using CoffeeShopAPI.Interfaces.Repositories;
 using CoffeeShopAPI.Interfaces.Services;
@@ -6,6 +7,7 @@ using CoffeeShopAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -86,41 +88,48 @@ namespace CoffeeShopAPI.Controllers
         [HttpGet("GetProduct")]
         public IActionResult GetProduct(int id, string type) =>
             GetResult(_productService.Get(id, type));
-        [HttpGet("GetProducts")]
-        public IActionResult GetProducts([FromQuery] PagingParameters pagingParameters)
+        [HttpDelete("DeleteProduct")]
+        public async Task<IActionResult> DeleteProduct(int Id) =>
+            GetResult(await _productService.Delete(Id));
+        #endregion
+        #region Coffee actions
+        [HttpGet("Coffees")]
+        public IActionResult GetCoffees([FromQuery] PagingParameters pagingParameters)
         {
-            var objectsFromDb = _unitOfWork.ProductRepository.GetPagedList(pagingParameters);
+            var objectsFromDb = _unitOfWork.ProductRepository
+                .GetPagedList(pagingParameters, ProductType.Coffee.ToString());
             var metadata = GetMetadata<Product>(objectsFromDb);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(objectsFromDb);
         }
-        [HttpPost("CreateProduct")]
-        public async Task<IActionResult> CreateProduct(Product objectFromPage, IFormFile photo)
+        [HttpPost("CreateCoffee")]
+        public async Task<IActionResult> CreateCoffee(ProductDTO objectFromPage, IFormFile photo)
         {
             if (ModelState.IsValid)
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _productService.Create(objectFromPage, photo));
+                
+                var product = Product.GetByDTO(objectFromPage, ProductType.Coffee);
+                return GetResult(await _productService.Create(product, photo));
             }
             else
                 return BadRequest(ModelState);
         }
-        [HttpPut("UpdateProduct")]
-        public async Task<IActionResult> UpdateProduct(Product objectFromPage, IFormFile photo)
+        [HttpPut("UpdateCoffee")]
+        public async Task<IActionResult> UpdateCoffee([FromForm] ProductDTO objectFromPage, IFormFile photo)
         {
             if (ModelState.IsValid)
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _productService.Update(objectFromPage, photo));
+                
+                var product = Product.GetByDTO(objectFromPage, ProductType.Coffee);
+                return GetResult(await _productService.Update(product, photo));
             }
             else
                 return BadRequest(ModelState);
         }
-        [HttpDelete("DeleteProduct")]
-        public async Task<IActionResult> DeleteProduct(int Id) =>
-            GetResult(await _productService.Delete(Id));
         #endregion
     }
 }

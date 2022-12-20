@@ -22,6 +22,6 @@ namespace CoffeeShopAPI.Repositories
             ).ToList();
             return new PagedList<T>(items, _dbSet.Count(), pagingParameters.PageSize, pagingParameters.PageSize);
         }
-        public T GetById(int Id) => _dbSet.Find(Id);
+        public virtual T GetById(int Id) => _dbSet.Find(Id);
     }
 }

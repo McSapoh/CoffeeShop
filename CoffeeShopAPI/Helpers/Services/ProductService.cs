@@ -64,9 +64,10 @@ namespace CoffeeShopAPI.Helpers.Services
             productFromDb.Name = product.Name;
             productFromDb.Description = product.Description;
             productFromDb.IsActive = product.IsActive;
+                        
 
             // Saving photos.
-            if (photo != null && photo.Length > 0)
+            if (productFromDb.ImagePath != null && photo != null && photo.Length > 0)
             {
                 string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
                 SavePhoto(path + $"\\Images\\{product.ProductType}", photo);
@@ -78,6 +79,67 @@ namespace CoffeeShopAPI.Helpers.Services
                 productFromDb.ImagePath = $"/{product.ProductType}/Default{product.ProductType}Image.png";
 
             // Updating product.
+            if (product.Sizes.Count > 0)
+            {
+                if (productFromDb.Sizes.Count == 5)
+                {
+                    // Updating sizes.
+                    foreach (var productFromDbSize in productFromDb.Sizes)
+                    {
+                        foreach (var productSize in product.Sizes)
+                        {
+                            productSize.ProductId = productFromDb.Id;
+                            if (productFromDbSize.Id == productSize.Id)
+                            {
+                                productFromDbSize.Name = productSize.Name;
+                                productFromDbSize.Description = productSize.Description;
+                                productFromDbSize.Price = productSize.Price;
+                                _unitOfWork.SizeRepository.Update(productFromDbSize);
+                            }
+                        }
+                    }
+                }
+                else if (productFromDb.Sizes.Count < 5)
+                {
+                    // Updating sizes.
+                    foreach (var productFromDbSize in productFromDb.Sizes)
+                    {
+                        foreach (var productSize in product.Sizes)
+                        {
+                            productSize.ProductId = productFromDb.Id;
+                            if (productFromDbSize.Id == productSize.Id)
+                                _unitOfWork.SizeRepository.Update(productSize);
+                        }
+                    }
+                    // Creating sizes.
+                    foreach (var productSize in product.Sizes)
+                    {
+                        if (productSize.Id != 0 && productFromDb.Sizes.Count < 5)
+                        {
+                            productSize.ProductId = productFromDb.Id;
+                            _unitOfWork.SizeRepository.Update(productSize);
+                            productFromDb.Sizes.Add(productSize);
+                        }
+                    }
+                }
+
+                //foreach (var productSize in product.Sizes)
+                //{
+
+
+                //    foreach (var productFromDbSize in productFromDb.Sizes)
+                //    {
+                //        if (productFromDbSize.Id == productSize.Id)
+                //        {
+                //            _unitOfWork.SizeRepository.Update(productSize);
+                //        }
+                //    }
+                //    if (productSize.Id == 0)
+                //        _unitOfWork.SizeRepository.Create(productSize);
+                //    else
+                //        _unitOfWork.SizeRepository.Update(productSize);
+                //}
+            }
             _unitOfWork.ProductRepository.Update(productFromDb);
             if (await _unitOfWork.SaveAsync())
                 return new ServiceResponse(true, "Successfully update", 200);
