@@ -86,8 +86,8 @@ namespace CoffeeShopAPI.Controllers
         }
         #region Product actions.
         [HttpGet("GetProduct")]
-        public IActionResult GetProduct(int id, string type) =>
-            GetResult(_productService.Get(id, type));
+        public IActionResult GetProduct(int id) =>
+            GetResult(_productService.Get(id));
         [HttpDelete("DeleteProduct")]
         public async Task<IActionResult> DeleteProduct(int Id) =>
             GetResult(await _productService.Delete(Id));

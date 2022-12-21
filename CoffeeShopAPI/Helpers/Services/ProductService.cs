@@ -36,7 +36,7 @@ namespace CoffeeShopAPI.Helpers.Services
             System.IO.File.Delete(path);
         }
 
-        public ServiceResponse Get(int id, string type)
+        public ServiceResponse Get(int id)
         {
             Product product;
             product = _unitOfWork.ProductRepository.GetById(id);
