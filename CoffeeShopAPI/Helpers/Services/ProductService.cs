@@ -2,7 +2,9 @@
 using CoffeeShopAPI.Interfaces.Services;
 using CoffeeShopAPI.Models;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Helpers.Services
@@ -16,9 +18,16 @@ namespace CoffeeShopAPI.Helpers.Services
             _unitOfWork = unitOfWork;
         }
 
-        private static async void SavePhoto(string path, IFormFile photo)
+        public static string GetRandomString()
         {
-            string filePath = Path.Combine(path, photo.FileName);
+            var random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, 12)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+        private static async void SavePhoto(string path, IFormFile photo, string fileName)
+        {
+            string filePath = Path.Combine(path, fileName);
             using Stream fileStream = new FileStream(filePath, FileMode.Create);
             await photo.CopyToAsync(fileStream);
         }
@@ -42,14 +51,23 @@ namespace CoffeeShopAPI.Helpers.Services
             if (photo != null && photo.Length > 0)
             {
                 string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                SavePhoto(path + $"\\Images\\{product.ProductType}", photo);
-                product.ImagePath = $"/Images/{product.ProductType}/" + photo.FileName;
+                var fileName = GetRandomString() + Path.GetExtension(photo.FileName);
+                SavePhoto(path + $"\\Images\\{product.ProductType}", photo, fileName);
+                product.ImagePath = $"/Images/{product.ProductType}/" + fileName;
             }
             else
                 product.ImagePath = $"/Images/{product.ProductType}/Default{product.ProductType}Image.png";
 
-            // Creating or Updating object.
+            // Checking Id for each size
+            foreach (var productSize in product.Sizes)
+            {
+                if (productSize.Id != 0)
+                    return new ServiceResponse(false, $"Cannot add size with id = {productSize.Id}", 400);
+            }
+
+            // Creating object.
             _unitOfWork.ProductRepository.Create(product);
+
             if (await _unitOfWork.SaveAsync())
                 return new ServiceResponse(true, "Successfully saved", 200);
             else
@@ -70,13 +88,14 @@ namespace CoffeeShopAPI.Helpers.Services
             if (productFromDb.ImagePath != null && photo != null && photo.Length > 0)
             {
                 string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                SavePhoto(path + $"\\Images\\{product.ProductType}", photo);
+                var fileName = GetRandomString() + Path.GetExtension(photo.FileName);
+                SavePhoto(path + $"\\Images\\{product.ProductType}", photo, fileName);
                 if (productFromDb.ImagePath != $"/{product.ProductType}/Default{product.ProductType}Image.png")
                     DeletePhoto(path + "\\Images" + productFromDb.ImagePath);
-                productFromDb.ImagePath = $"/Images/{product.ProductType}/" + photo.FileName;
+                productFromDb.ImagePath = $"/Images/{product.ProductType}/" + fileName;
             }
             else
-                productFromDb.ImagePath = $"/{product.ProductType}/Default{product.ProductType}Image.png";
+                productFromDb.ImagePath = $"/Images/{product.ProductType}/Default{product.ProductType}Image.png";
 
             // Disactivating existing sizes.
             foreach (var productFromDbSize in productFromDb.Sizes)

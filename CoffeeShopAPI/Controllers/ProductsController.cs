@@ -103,7 +103,7 @@ namespace CoffeeShopAPI.Controllers
             return Ok(objectsFromDb);
         }
         [HttpPost("CreateCoffee")]
-        public async Task<IActionResult> CreateCoffee(ProductDTO objectFromPage, IFormFile photo)
+        public async Task<IActionResult> CreateCoffee([FromForm] ProductDTO objectFromPage, IFormFile photo)
         {
             if (ModelState.IsValid)
             {
