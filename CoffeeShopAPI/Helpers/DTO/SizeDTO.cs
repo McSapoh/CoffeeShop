@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CoffeeShopAPI.Helpers.DTO
 {
-    public class ProductDTO
+    public class SizeDTO
     {
         [Key]
         public int Id { get; set; }
@@ -12,9 +12,8 @@ namespace CoffeeShopAPI.Helpers.DTO
         public string Name { get; set; }
         [Required(ErrorMessage = "Field Description cannot be empty")]
         public string Description { get; set; }
-        public string ImagePath { get; set; }
+        [Required(ErrorMessage = "Field Price cannot be empty")]
+        public double Price { get; set; }
         public bool IsActive { get; set; } = true;
-        [MinLength(1), MaxLength(5)]
-        public virtual ICollection<SizeDTO> Sizes { get; set; }
     }
 }

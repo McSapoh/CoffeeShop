@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoffeeShopAPI.Migrations
 {
     [DbContext(typeof(CoffeeShopContext))]
-    [Migration("20221219211250_IntializeDB")]
-    partial class IntializeDB
+    [Migration("20221221095807_InitializeDB")]
+    partial class InitializeDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -146,6 +146,9 @@ namespace CoffeeShopAPI.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
