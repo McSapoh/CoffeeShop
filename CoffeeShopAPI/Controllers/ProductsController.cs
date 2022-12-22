@@ -105,6 +105,8 @@ namespace CoffeeShopAPI.Controllers
         [HttpPost("CreateCoffee")]
         public async Task<IActionResult> CreateCoffee([FromForm] ProductDTO objectFromPage, IFormFile photo)
         {
+            if (photo != null && !photo.ContentType.Contains("image"))
+                return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
             if (ModelState.IsValid)
             {
                 if (objectFromPage.Id != 0)
@@ -119,6 +121,8 @@ namespace CoffeeShopAPI.Controllers
         [HttpPut("UpdateCoffee")]
         public async Task<IActionResult> UpdateCoffee([FromForm] ProductDTO objectFromPage, IFormFile photo)
         {
+            if (photo != null && !photo.ContentType.Contains("image"))
+                return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
             if (ModelState.IsValid)
             {
                 if (objectFromPage.Id == 0)
