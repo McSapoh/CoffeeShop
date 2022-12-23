@@ -86,6 +86,9 @@ namespace CoffeeShopAPI.Controllers
         }
         #region Product actions.
         [HttpGet("GetProduct")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetProduct(int id) => GetResult(_productService.Get(id));
 
         [HttpPut("UpdateProduct")]
@@ -109,6 +112,9 @@ namespace CoffeeShopAPI.Controllers
         }
 
         [HttpDelete("DeleteProduct")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteProduct(int Id) =>
             GetResult(await _productService.Delete(Id));
         #endregion
