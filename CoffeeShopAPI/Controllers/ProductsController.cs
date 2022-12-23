@@ -94,6 +94,7 @@ namespace CoffeeShopAPI.Controllers
         #endregion
         #region Coffee actions
         [HttpGet("Coffees")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetCoffees([FromQuery] PagingParameters pagingParameters)
         {
             var objectsFromDb = _unitOfWork.ProductRepository
@@ -103,6 +104,8 @@ namespace CoffeeShopAPI.Controllers
             return Ok(objectsFromDb);
         }
         [HttpPost("CreateCoffee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateCoffee([FromForm] ProductDTO objectFromPage, IFormFile photo)
         {
             if (photo != null && !photo.ContentType.Contains("image"))
@@ -119,6 +122,9 @@ namespace CoffeeShopAPI.Controllers
                 return BadRequest(ModelState);
         }
         [HttpPut("UpdateCoffee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateCoffee([FromForm] ProductDTO objectFromPage, IFormFile photo)
         {
             if (photo != null && !photo.ContentType.Contains("image"))
