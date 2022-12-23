@@ -86,8 +86,28 @@ namespace CoffeeShopAPI.Controllers
         }
         #region Product actions.
         [HttpGet("GetProduct")]
-        public IActionResult GetProduct(int id) =>
-            GetResult(_productService.Get(id));
+        public IActionResult GetProduct(int id) => GetResult(_productService.Get(id));
+
+        [HttpPut("UpdateProduct")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateProduct([FromForm] ProductDTO objectFromPage, IFormFile photo)
+        {
+            if (photo != null && !photo.ContentType.Contains("image"))
+                return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
+            if (ModelState.IsValid)
+            {
+                if (objectFromPage.Id == 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
+
+                var product = Product.GetByDTO(objectFromPage, ProductType.Coffee);
+                return GetResult(await _productService.Update(product, photo));
+            }
+            else
+                return BadRequest(ModelState);
+        }
+
         [HttpDelete("DeleteProduct")]
         public async Task<IActionResult> DeleteProduct(int Id) =>
             GetResult(await _productService.Delete(Id));
@@ -117,25 +137,6 @@ namespace CoffeeShopAPI.Controllers
                 
                 var product = Product.GetByDTO(objectFromPage, ProductType.Coffee);
                 return GetResult(await _productService.Create(product, photo));
-            }
-            else
-                return BadRequest(ModelState);
-        }
-        [HttpPut("UpdateCoffee")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateCoffee([FromForm] ProductDTO objectFromPage, IFormFile photo)
-        {
-            if (photo != null && !photo.ContentType.Contains("image"))
-                return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
-            if (ModelState.IsValid)
-            {
-                if (objectFromPage.Id == 0)
-                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                
-                var product = Product.GetByDTO(objectFromPage, ProductType.Coffee);
-                return GetResult(await _productService.Update(product, photo));
             }
             else
                 return BadRequest(ModelState);
