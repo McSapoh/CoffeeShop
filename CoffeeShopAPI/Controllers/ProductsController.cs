@@ -24,16 +24,6 @@ namespace CoffeeShopAPI.Controllers
             _unitOfWork = unitOfWork;
             _productService = productService;
         }
-        private static async void SavePhoto(string path, IFormFile photo)
-        {
-            string filePath = Path.Combine(path, photo.FileName);
-            using Stream fileStream = new FileStream(filePath, FileMode.Create);
-            await photo.CopyToAsync(fileStream);
-        }
-        private static void DeletePhoto(string path)
-        {
-            System.IO.File.Delete(path);
-        }
         private IActionResult GetResult (ServiceResponse serviceResponse)
         {
             switch (serviceResponse.Status)
