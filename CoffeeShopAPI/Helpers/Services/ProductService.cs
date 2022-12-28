@@ -78,7 +78,7 @@ namespace CoffeeShopAPI.Helpers.Services
         }
         public async Task<ServiceResponse> Update(Product product, IFormFile photo)
         {
-            var productFromDb = _unitOfWork.ProductRepository.GetById(product.Id);
+            var productFromDb = await _unitOfWork.ProductRepository.GetByIdAsync(product.Id);
 
             if (productFromDb == null)
                 return new ServiceResponse(false, $"Cannot find object with id = {product.Id}", 404);
@@ -145,7 +145,7 @@ namespace CoffeeShopAPI.Helpers.Services
             if (id <= 0)
                 return new ServiceResponse(false, "Invalid id", 400);
 
-            var product = _unitOfWork.ProductRepository.GetById(id);
+            var product = await _unitOfWork.ProductRepository.GetByIdAsync(id);
 
             if (product != null)
             {
