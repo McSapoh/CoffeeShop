@@ -36,12 +36,12 @@ namespace CoffeeShopAPI.Helpers.Services
             System.IO.File.Delete(path);
         }
 
-        public ServiceResponse Get(int id)
+        public async Task<ServiceResponse> Get(int id)
         {
             if (id <= 0)
                 return new ServiceResponse(false, "Invalid id", 400);
 
-            var product = _unitOfWork.ProductRepository.GetById(id);
+            var product = await _unitOfWork.ProductRepository.GetByIdAsync(id);
             
             if (product == null)
                 return new ServiceResponse(false, $"Cannot find object with id = {id}", 404);

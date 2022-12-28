@@ -79,7 +79,7 @@ namespace CoffeeShopAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetProduct(int id) => GetResult(_productService.Get(id));
+        public async Task<IActionResult> GetProduct(int id) => GetResult(await _productService.Get(id));
 
         [HttpPut("UpdateProduct")]
         [ProducesResponseType(StatusCodes.Status200OK)]

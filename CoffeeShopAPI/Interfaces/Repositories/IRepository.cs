@@ -7,6 +7,7 @@ namespace CoffeeShopAPI.Interfaces.Repositories
     public interface IRepository<T> where T : class
     {
         public T GetById(int Id);
+        public Task<T> GetByIdAsync(int Id);
         public Task<IEnumerable<T>> GetAll();
         public PagedList<T> GetPagedList(PagingParameters pagingParameters);
         public void Create(T Item);

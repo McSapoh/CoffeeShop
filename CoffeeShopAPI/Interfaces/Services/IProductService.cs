@@ -7,7 +7,7 @@ namespace CoffeeShopAPI.Interfaces.Services
 {
     public interface IProductService
     {
-        public ServiceResponse Get(int id);
+        public Task<ServiceResponse> Get(int id);
         public Task<ServiceResponse> Create(Product product, IFormFile photo);
         public Task<ServiceResponse> Update(Product product, IFormFile photo);
         public Task<ServiceResponse> Delete(int id);
