@@ -2,6 +2,6 @@
 {
     public enum IngredientType
     {
-        Alcohol, Milk, Sauce, Supplements, Syrup
+        alcohol, milk, sauce, supplements, syrup
     }
 }

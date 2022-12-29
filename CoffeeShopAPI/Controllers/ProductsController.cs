@@ -94,7 +94,7 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
 
-                var product = Product.GetByDTO(objectFromPage, ProductType.Coffee);
+                var product = Product.GetByDTO(objectFromPage, ProductType.coffee);
                 return GetResult(await _productService.Update(product, photo));
             }
             else
@@ -114,7 +114,7 @@ namespace CoffeeShopAPI.Controllers
         public IActionResult GetCoffees([FromQuery] PagingParameters pagingParameters)
         {
             var objectsFromDb = _unitOfWork.ProductRepository
-                .GetPagedList(pagingParameters, ProductType.Coffee.ToString());
+                .GetPagedList(pagingParameters, ProductType.coffee.ToString());
             var metadata = GetMetadata<Product>(objectsFromDb);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(objectsFromDb);
@@ -131,7 +131,7 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
                 
-                var product = Product.GetByDTO(objectFromPage, ProductType.Coffee);
+                var product = Product.GetByDTO(objectFromPage, ProductType.coffee);
                 return GetResult(await _productService.Create(product, photo));
             }
             else
