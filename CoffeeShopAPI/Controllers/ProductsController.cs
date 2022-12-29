@@ -138,5 +138,35 @@ namespace CoffeeShopAPI.Controllers
                 return BadRequest(ModelState);
         }
         #endregion
+        #region Desserts actions
+        [HttpGet("Desserts")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetDesserts([FromQuery] PagingParameters pagingParameters)
+        {
+            var objectsFromDb = _unitOfWork.ProductRepository
+                .GetPagedList(pagingParameters, ProductType.dessert.ToString());
+            var metadata = GetMetadata<Product>(objectsFromDb);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(objectsFromDb);
+        }
+        [HttpPost("CreateDessert")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateDessert([FromForm] ProductDTO objectFromPage, IFormFile photo)
+        {
+            if (photo != null && !photo.ContentType.Contains("image"))
+                return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
+            if (ModelState.IsValid)
+            {
+                if (objectFromPage.Id != 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
+
+                var product = Product.GetByDTO(objectFromPage, ProductType.dessert);
+                return GetResult(await _productService.Create(product, photo));
+            }
+            else
+                return BadRequest(ModelState);
+        }
+        #endregion
     }
 }
