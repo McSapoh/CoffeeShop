@@ -168,5 +168,95 @@ namespace CoffeeShopAPI.Controllers
                 return BadRequest(ModelState);
         }
         #endregion
+        #region Sandwich actions
+        [HttpGet("Sandwiches")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetSandwiches([FromQuery] PagingParameters pagingParameters)
+        {
+            var objectsFromDb = _unitOfWork.ProductRepository
+                .GetPagedList(pagingParameters, ProductType.sandwich.ToString());
+            var metadata = GetMetadata<Product>(objectsFromDb);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(objectsFromDb);
+        }
+        [HttpPost("CreateSandwich")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateSandwich([FromForm] ProductDTO objectFromPage, IFormFile photo)
+        {
+            if (photo != null && !photo.ContentType.Contains("image"))
+                return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
+            if (ModelState.IsValid)
+            {
+                if (objectFromPage.Id != 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
+
+                var product = Product.GetByDTO(objectFromPage, ProductType.sandwich);
+                return GetResult(await _productService.Create(product, photo));
+            }
+            else
+                return BadRequest(ModelState);
+        }
+        #endregion
+        #region Snack actions
+        [HttpGet("Snacks")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetSnacks([FromQuery] PagingParameters pagingParameters)
+        {
+            var objectsFromDb = _unitOfWork.ProductRepository
+                .GetPagedList(pagingParameters, ProductType.snack.ToString());
+            var metadata = GetMetadata<Product>(objectsFromDb);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(objectsFromDb);
+        }
+        [HttpPost("CreateSnack")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateSnack([FromForm] ProductDTO objectFromPage, IFormFile photo)
+        {
+            if (photo != null && !photo.ContentType.Contains("image"))
+                return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
+            if (ModelState.IsValid)
+            {
+                if (objectFromPage.Id != 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
+
+                var product = Product.GetByDTO(objectFromPage, ProductType.snack);
+                return GetResult(await _productService.Create(product, photo));
+            }
+            else
+                return BadRequest(ModelState);
+        }
+        #endregion
+        #region Tea actions
+        [HttpGet("Teas")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetTeas([FromQuery] PagingParameters pagingParameters)
+        {
+            var objectsFromDb = _unitOfWork.ProductRepository
+                .GetPagedList(pagingParameters, ProductType.tea.ToString());
+            var metadata = GetMetadata<Product>(objectsFromDb);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(objectsFromDb);
+        }
+        [HttpPost("CreateCoffee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateTea([FromForm] ProductDTO objectFromPage, IFormFile photo)
+        {
+            if (photo != null && !photo.ContentType.Contains("image"))
+                return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
+            if (ModelState.IsValid)
+            {
+                if (objectFromPage.Id != 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
+
+                var product = Product.GetByDTO(objectFromPage, ProductType.tea);
+                return GetResult(await _productService.Create(product, photo));
+            }
+            else
+                return BadRequest(ModelState);
+        }
+        #endregion
     }
 }
