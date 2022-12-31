@@ -239,7 +239,7 @@ namespace CoffeeShopAPI.Controllers
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(objectsFromDb);
         }
-        [HttpPost("CreateCoffee")]
+        [HttpPost("CreateTea")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateTea([FromForm] ProductDTO objectFromPage, IFormFile photo)
