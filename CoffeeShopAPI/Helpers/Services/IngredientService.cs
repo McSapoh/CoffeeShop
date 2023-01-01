@@ -15,7 +15,11 @@ namespace CoffeeShopAPI.Helpers.Services
         }
         public ServiceResponse Get(int id)
         {
+            if (id <= 0)
+                return new ServiceResponse(false, "Invalid id", 400);
+
             var ingredient = _unitOfWork.IngredientRepository.GetById(id);
+
             if (ingredient == null)
                 return new ServiceResponse(false, $"Cannot find object with id = {id}", 404);
             else
