@@ -72,7 +72,7 @@ namespace CoffeeShopAPI.Controllers
         #region Ingredient actions.
         [HttpGet("GetIngredient")]
         public IActionResult GetIngredient(int Id) =>
-            GetResult(_ingredientService.Get(Id, "Alcohol"));
+            GetResult(_ingredientService.Get(Id));
         [HttpGet("GetIngredients")]
         public async Task<IActionResult> GetIngredients()
         {
@@ -86,7 +86,7 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.Create(objectFromPage, "Alcohol"));
+                return GetResult(await _ingredientService.Create(objectFromPage));
             }
             else
                 return BadRequest(ModelState);
@@ -98,14 +98,14 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.Update(objectFromPage, "Alcohol"));
+                return GetResult(await _ingredientService.Update(objectFromPage));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteIngredient")]
         public async Task<IActionResult> DeleteIngredient(int Id) =>
-            GetResult(await _ingredientService.Delete(Id, "Alcohol"));
+            GetResult(await _ingredientService.Delete(Id));
         #endregion
     }
 }

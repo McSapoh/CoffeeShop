@@ -13,7 +13,7 @@ namespace CoffeeShopAPI.Helpers.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public ServiceResponse Get(int id, string Type)
+        public ServiceResponse Get(int id)
         {
             var ingredient = _unitOfWork.IngredientRepository.GetById(id);
             if (ingredient == null)
@@ -21,7 +21,7 @@ namespace CoffeeShopAPI.Helpers.Services
             else
                 return new ServiceResponse(true, "", 200) { Data = ingredient };
         }
-        public async Task<ServiceResponse> Create(Ingredient ingredient, string Type)
+        public async Task<ServiceResponse> Create(Ingredient ingredient)
         {
             // Creating or Updating object.
             _unitOfWork.IngredientRepository.Create(ingredient);
@@ -31,7 +31,7 @@ namespace CoffeeShopAPI.Helpers.Services
             else
                 return new ServiceResponse(false,"Error while saving", 400);
         }
-        public async Task<ServiceResponse> Update(Ingredient ingredient, string Type)
+        public async Task<ServiceResponse> Update(Ingredient ingredient)
         {
             Ingredient ingredientFromDb;
             // Getting object from database object.
@@ -52,7 +52,7 @@ namespace CoffeeShopAPI.Helpers.Services
             else
                 return new ServiceResponse(false, "Error while updating", 400);
         }
-        public async Task<ServiceResponse> Delete(int id, string Type)
+        public async Task<ServiceResponse> Delete(int id)
         {
             Ingredient ingredient = _unitOfWork.IngredientRepository.GetById(id);
                     
