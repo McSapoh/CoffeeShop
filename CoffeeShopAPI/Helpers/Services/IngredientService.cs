@@ -27,7 +27,7 @@ namespace CoffeeShopAPI.Helpers.Services
         }
         public async Task<ServiceResponse> Create(Ingredient ingredient)
         {
-            // Creating or Updating object.
+            // Creating object.
             _unitOfWork.IngredientRepository.Create(ingredient);
 
             if (await _unitOfWork.SaveAsync())
@@ -37,9 +37,7 @@ namespace CoffeeShopAPI.Helpers.Services
         }
         public async Task<ServiceResponse> Update(Ingredient ingredient)
         {
-            Ingredient ingredientFromDb;
-            // Getting object from database object.
-            ingredientFromDb = _unitOfWork.IngredientRepository.GetById(ingredient.Id);
+            var ingredientFromDb  = await _unitOfWork.IngredientRepository.GetByIdAsync(ingredient.Id);
                    
             if (ingredientFromDb == null)
                 return new ServiceResponse(false, $"Cannot find object with id = {ingredient.Id}", 404);
@@ -50,7 +48,6 @@ namespace CoffeeShopAPI.Helpers.Services
             // Updating product.
             _unitOfWork.IngredientRepository.Update(ingredientFromDb);
                     
-
             if (await _unitOfWork.SaveAsync())
                 return new ServiceResponse(true, "Successfully update", 200);
             else
@@ -58,7 +55,10 @@ namespace CoffeeShopAPI.Helpers.Services
         }
         public async Task<ServiceResponse> Delete(int id)
         {
-            Ingredient ingredient = _unitOfWork.IngredientRepository.GetById(id);
+            if (id <= 0)
+                return new ServiceResponse(false, "Invalid id", 400);
+
+            var ingredient = _unitOfWork.IngredientRepository.GetById(id);
                     
             if (ingredient != null)
             {
