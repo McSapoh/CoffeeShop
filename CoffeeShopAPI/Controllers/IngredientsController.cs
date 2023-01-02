@@ -71,8 +71,8 @@ namespace CoffeeShopAPI.Controllers
 
         #region Ingredient actions.
         [HttpGet("GetIngredient")]
-        public IActionResult GetIngredient(int Id) =>
-            GetResult(_ingredientService.Get(Id));
+        public async Task<IActionResult> GetIngredient(int Id) =>
+            GetResult(await _ingredientService.Get(Id));
         [HttpGet("GetIngredients")]
         public async Task<IActionResult> GetIngredients()
         {

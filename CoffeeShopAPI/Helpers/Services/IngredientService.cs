@@ -13,12 +13,12 @@ namespace CoffeeShopAPI.Helpers.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public ServiceResponse Get(int id)
+        public async Task<ServiceResponse> Get(int id)
         {
             if (id <= 0)
                 return new ServiceResponse(false, "Invalid id", 400);
 
-            var ingredient = _unitOfWork.IngredientRepository.GetById(id);
+            var ingredient = await _unitOfWork.IngredientRepository.GetByIdAsync(id);
 
             if (ingredient == null)
                 return new ServiceResponse(false, $"Cannot find object with id = {id}", 404);
