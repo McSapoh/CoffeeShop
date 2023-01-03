@@ -1,8 +1,10 @@
 ﻿using CoffeeShopAPI.Helpers;
+using CoffeeShopAPI.Helpers.DTO;
 using CoffeeShopAPI.Helpers.Paging;
 using CoffeeShopAPI.Interfaces.Repositories;
 using CoffeeShopAPI.Interfaces.Services;
 using CoffeeShopAPI.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -71,39 +73,31 @@ namespace CoffeeShopAPI.Controllers
 
         #region Ingredient actions.
         [HttpGet("GetIngredient")]
-        public async Task<IActionResult> GetIngredient(int Id) =>
-            GetResult(await _ingredientService.Get(Id));
-        [HttpGet("GetIngredients")]
-        public async Task<IActionResult> GetIngredients()
-        {
-            var objectsFromDb = await _unitOfWork.IngredientRepository.GetAll();
-            return Ok(objectsFromDb);
-        }
-        [HttpPost("CreateIngredient")]
-        public async Task<IActionResult> CreateIngredient(Ingredient objectFromPage)
-        {
-            if (ModelState.IsValid)
-            {
-                if (objectFromPage.Id != 0)
-                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.Create(objectFromPage));
-            }
-            else
-                return BadRequest(ModelState);
-        }
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetIngredient(int Id) => GetResult(await _ingredientService.Get(Id));
         [HttpPut("UpdateIngredient")]
-        public async Task<IActionResult> UpdateIngredient(Ingredient objectFromPage)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateIngredient(IngredientDTO objectFromPage)
         {
             if (ModelState.IsValid)
             {
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
-                return GetResult(await _ingredientService.Update(objectFromPage));
+
+                var ingredient = Ingredient.GetByDTO(objectFromPage, IngredientType.alcohol);
+                return GetResult(await _ingredientService.Update(ingredient));
             }
             else
                 return BadRequest(ModelState);
         }
         [HttpDelete("DeleteIngredient")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteIngredient(int Id) =>
             GetResult(await _ingredientService.Delete(Id));
         #endregion
