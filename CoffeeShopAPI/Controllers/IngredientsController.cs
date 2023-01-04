@@ -6,6 +6,7 @@ using CoffeeShopAPI.Interfaces.Services;
 using CoffeeShopAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Controllers
@@ -100,6 +101,34 @@ namespace CoffeeShopAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteIngredient(int Id) =>
             GetResult(await _ingredientService.Delete(Id));
+        #endregion
+        #region Alcohol actions
+        [HttpGet("Alcohols")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetAlcohols([FromQuery] PagingParameters pagingParameters)
+        {
+            var objectsFromDb = _unitOfWork.IngredientRepository
+                .GetPagedList(pagingParameters, IngredientType.alcohol.ToString());
+            var metadata = GetMetadata<Ingredient>(objectsFromDb);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(objectsFromDb);
+        }
+        [HttpPost("CreateAlcohol")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateAlcohol([FromForm] IngredientDTO objectFromPage)
+        {
+            if (ModelState.IsValid)
+            {
+                if (objectFromPage.Id != 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
+
+                var product = Ingredient.GetByDTO(objectFromPage, IngredientType.alcohol);
+                return GetResult(await _ingredientService.Create(product));
+            }
+            else
+                return BadRequest(ModelState);
+        }
         #endregion
     }
 }
