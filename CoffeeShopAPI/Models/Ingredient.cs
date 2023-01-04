@@ -1,4 +1,5 @@
 ﻿using CoffeeShopAPI.Helpers.DTO;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -26,7 +27,7 @@ namespace CoffeeShopAPI.Models
             {
                 Id = dto.Id,
                 Name = dto.Name,
-                Price = dto.Price,
+                Price = Math.Abs((int)dto.Price),
                 IngredientType = ingredientType.ToString(),
                 IsActive = dto.IsActive,
             };
