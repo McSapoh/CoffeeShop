@@ -214,5 +214,33 @@ namespace CoffeeShopAPI.Controllers
                 return BadRequest(ModelState);
         }
         #endregion
+        #region Syrup actions
+        [HttpGet("Syrups")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetSyrups([FromQuery] PagingParameters pagingParameters)
+        {
+            var objectsFromDb = _unitOfWork.IngredientRepository
+                .GetPagedList(pagingParameters, IngredientType.syrup.ToString());
+            var metadata = GetMetadata<Ingredient>(objectsFromDb);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(objectsFromDb);
+        }
+        [HttpPost("CreateSyrups")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateSyrups([FromForm] IngredientDTO objectFromPage)
+        {
+            if (ModelState.IsValid)
+            {
+                if (objectFromPage.Id != 0)
+                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
+
+                var product = Ingredient.GetByDTO(objectFromPage, IngredientType.syrup);
+                return GetResult(await _ingredientService.Create(product));
+            }
+            else
+                return BadRequest(ModelState);
+        }
+        #endregion
     }
 }
