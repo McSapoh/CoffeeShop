@@ -10,8 +10,8 @@ namespace CoffeeShopAPI.Models
         public int Id { get; set; }
         [Required(ErrorMessage = "Please enter Your Name")]
         public string Name { get; set; }
-        [Phone, Required(ErrorMessage = "Please enter Your phone number")]
-        public string Phone { get; set; }
+        [EmailAddress, Required(ErrorMessage = "Please enter Your phone number")]
+        public string Email { get; set; }
         [Required(ErrorMessage = "Please enter Your adress")]
         public string Adress { get; set; }
         public string ImagePath { get; set; } = "/User/DefaultUserImage";
