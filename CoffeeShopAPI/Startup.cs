@@ -34,6 +34,7 @@ namespace CoffeeShopAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoffeeShopAPI", Version = "v1" });
             });
 
+            services.AddAutoMapper(typeof(Program).Assembly);
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IIngredientService, IngredientService>();
