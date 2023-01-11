@@ -1,4 +1,5 @@
-﻿using CoffeeShopAPI.Helpers;
+﻿using AutoMapper;
+using CoffeeShopAPI.Helpers;
 using CoffeeShopAPI.Helpers.DTO;
 using CoffeeShopAPI.Helpers.Paging;
 using CoffeeShopAPI.Interfaces.Repositories;
@@ -19,10 +20,13 @@ namespace CoffeeShopAPI.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IProductService _productService;
-        public ProductsController(IUnitOfWork unitOfWork, IProductService productService)
+        private readonly IMapper _mapper;
+
+        public ProductsController(IUnitOfWork unitOfWork, IProductService productService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _productService = productService;
+            _mapper = mapper;
         }
         private IActionResult GetResult (ServiceResponse serviceResponse)
         {
