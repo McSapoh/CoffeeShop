@@ -134,8 +134,9 @@ namespace CoffeeShopAPI.Controllers
             {
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
-                
-                var product = Product.GetByDTO(objectFromPage, ProductType.coffee);
+
+                var product = _mapper.Map<Product>(objectFromPage);
+                product.ProductType = ProductType.coffee.ToString();
                 return GetResult(await _productService.Create(product, photo));
             }
             else
@@ -165,7 +166,8 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
 
-                var product = Product.GetByDTO(objectFromPage, ProductType.dessert);
+                var product = _mapper.Map<Product>(objectFromPage);
+                product.ProductType = ProductType.dessert.ToString();
                 return GetResult(await _productService.Create(product, photo));
             }
             else
@@ -195,7 +197,8 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
 
-                var product = Product.GetByDTO(objectFromPage, ProductType.sandwich);
+                var product = _mapper.Map<Product>(objectFromPage);
+                product.ProductType = ProductType.sandwich.ToString();
                 return GetResult(await _productService.Create(product, photo));
             }
             else
@@ -225,7 +228,8 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
 
-                var product = Product.GetByDTO(objectFromPage, ProductType.snack);
+                var product = _mapper.Map<Product>(objectFromPage);
+                product.ProductType = ProductType.snack.ToString();
                 return GetResult(await _productService.Create(product, photo));
             }
             else
@@ -255,7 +259,8 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
 
-                var product = Product.GetByDTO(objectFromPage, ProductType.tea);
+                var product = _mapper.Map<Product>(objectFromPage);
+                product.ProductType = ProductType.tea.ToString();
                 return GetResult(await _productService.Create(product, photo));
             }
             else
