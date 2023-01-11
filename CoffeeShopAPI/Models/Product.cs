@@ -20,26 +20,5 @@ namespace CoffeeShopAPI.Models
         #region Objects for relationships
         public virtual ICollection<Size> Sizes { get; set; }
         #endregion
-        #region Methods
-        public static Product GetByDTO(ProductDTO dto, ProductType productType)
-        {          
-            Product product = new()
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                Description = dto.Description,
-                ProductType = productType.ToString(),
-                ImagePath = dto.ImagePath,
-                IsActive = dto.IsActive,
-            };
-            var sizes = new List<Size>();
-            foreach (var dtoSize in dto.Sizes)
-            {
-                sizes.Add(Size.GetByDTO(dtoSize));
-            }
-            product.Sizes = sizes;
-            return product;
-        }
-        #endregion
     }
 }
