@@ -1,4 +1,5 @@
-﻿using CoffeeShopAPI.Helpers;
+﻿using AutoMapper;
+using CoffeeShopAPI.Helpers;
 using CoffeeShopAPI.Helpers.DTO;
 using CoffeeShopAPI.Helpers.Paging;
 using CoffeeShopAPI.Interfaces.Repositories;
@@ -16,10 +17,13 @@ namespace CoffeeShopAPI.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IIngredientService _ingredientService;
-        public IngredientsController(IUnitOfWork unitOfWork, IIngredientService ingredientService)
+        private readonly IMapper _mapper;
+
+        public IngredientsController(IUnitOfWork unitOfWork, IIngredientService ingredientService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _ingredientService = ingredientService;
+            _mapper = mapper;
         }
         private IActionResult GetResult(ServiceResponse serviceResponse)
         {
@@ -89,7 +93,7 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
 
-                var ingredient = Ingredient.GetByDTO(objectFromPage, IngredientType.alcohol);
+                var ingredient = _mapper.Map<Ingredient>(objectFromPage);
                 return GetResult(await _ingredientService.Update(ingredient));
             }
             else
@@ -123,8 +127,9 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
 
-                var product = Ingredient.GetByDTO(objectFromPage, IngredientType.alcohol);
-                return GetResult(await _ingredientService.Create(product));
+                var ingredient = _mapper.Map<Ingredient>(objectFromPage);
+                ingredient.IngredientType = IngredientType.alcohol.ToString();
+                return GetResult(await _ingredientService.Create(ingredient));
             }
             else
                 return BadRequest(ModelState);
@@ -151,8 +156,9 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
 
-                var product = Ingredient.GetByDTO(objectFromPage, IngredientType.milk);
-                return GetResult(await _ingredientService.Create(product));
+                var ingredient = _mapper.Map<Ingredient>(objectFromPage);
+                ingredient.IngredientType = IngredientType.milk.ToString();
+                return GetResult(await _ingredientService.Create(ingredient));
             }
             else
                 return BadRequest(ModelState);
@@ -179,8 +185,9 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
 
-                var product = Ingredient.GetByDTO(objectFromPage, IngredientType.sauce);
-                return GetResult(await _ingredientService.Create(product));
+                var ingredient = _mapper.Map<Ingredient>(objectFromPage);
+                ingredient.IngredientType = IngredientType.sauce.ToString();
+                return GetResult(await _ingredientService.Create(ingredient));
             }
             else
                 return BadRequest(ModelState);
@@ -207,8 +214,9 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
 
-                var product = Ingredient.GetByDTO(objectFromPage, IngredientType.supplements);
-                return GetResult(await _ingredientService.Create(product));
+                var ingredient = _mapper.Map<Ingredient>(objectFromPage);
+                ingredient.IngredientType = IngredientType.supplements.ToString();
+                return GetResult(await _ingredientService.Create(ingredient));
             }
             else
                 return BadRequest(ModelState);
@@ -235,8 +243,9 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id != 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot create object with id = {objectFromPage.Id}" }));
 
-                var product = Ingredient.GetByDTO(objectFromPage, IngredientType.syrup);
-                return GetResult(await _ingredientService.Create(product));
+                var ingredient = _mapper.Map<Ingredient>(objectFromPage);
+                ingredient.IngredientType = IngredientType.syrup.ToString();
+                return GetResult(await _ingredientService.Create(ingredient));
             }
             else
                 return BadRequest(ModelState);
