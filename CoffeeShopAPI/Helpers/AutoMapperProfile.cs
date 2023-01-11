@@ -13,6 +13,10 @@ namespace CoffeeShopAPI.Helpers
             CreateMap<Product, ProductDTO>();
             CreateMap<ProductDTO, Product>();
             #endregion
+            #region Sizes
+            CreateMap<Size, SizeDTO>();
+            CreateMap<SizeDTO, Size>();
+            #endregion
             #region Ingredients
             CreateMap<Ingredient, IngredientDTO>();
             CreateMap<IngredientDTO, Ingredient>();
