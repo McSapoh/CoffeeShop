@@ -98,7 +98,7 @@ namespace CoffeeShopAPI.Controllers
                 if (objectFromPage.Id == 0)
                     return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {objectFromPage.Id}" }));
 
-                var product = Product.GetByDTO(objectFromPage, ProductType.coffee);
+                var product = _mapper.Map<Product>(objectFromPage);
                 return GetResult(await _productService.Update(product, photo));
             }
             else
