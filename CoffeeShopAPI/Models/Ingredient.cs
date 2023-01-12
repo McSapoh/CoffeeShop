@@ -20,19 +20,5 @@ namespace CoffeeShopAPI.Models
         #region Objects for relationships
         public virtual ICollection<ProductOrder> ProductOrders { get; set; }
         #endregion
-        #region Methods
-        public static Ingredient GetByDTO(IngredientDTO dto, IngredientType ingredientType)
-        {
-            Ingredient product = new()
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                Price = Math.Abs((int)dto.Price),
-                IngredientType = ingredientType.ToString(),
-                IsActive = dto.IsActive,
-            };
-            return product;
-        }
-        #endregion
     }
 }
