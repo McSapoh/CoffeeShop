@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CoffeeShopAPI.Helpers.DTO.User;
 using CoffeeShopAPI.Interfaces.Repositories;
+using CoffeeShopAPI.Interfaces.Services;
 using CoffeeShopAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,13 @@ namespace CoffeeShopAPI.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IImagesService _imagesService;
 
-        public UsersController(IUnitOfWork unitOfWork, IMapper mapper)
+        public UsersController(IUnitOfWork unitOfWork, IMapper mapper, IImagesService imagesService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _imagesService = imagesService;
         }
         [HttpPost("CreateUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
