@@ -36,9 +36,11 @@ namespace CoffeeShopAPI
 
             services.AddAutoMapper(typeof(Program).Assembly);
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            #region Adding services
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IIngredientService, IngredientService>();
-
+            services.AddScoped<IImagesService, ImagesService>();
+            #endregion
             #region Adding repositories
             services.AddScoped<IIngredientRepository, IngredientRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
