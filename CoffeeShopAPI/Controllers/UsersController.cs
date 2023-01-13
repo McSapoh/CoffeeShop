@@ -31,10 +31,14 @@ namespace CoffeeShopAPI.Controllers
         public async Task<IActionResult> CreateUser([FromForm] CreateUserDTO objectFromPage, IFormFile photo)
         {
             if (photo != null && !photo.ContentType.Contains("image"))
-                return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
+                return BadRequest(new JsonResult(new { success = false, message = "File is not a photo" }));
             if (ModelState.IsValid)
             {
                 var user = _mapper.Map<User>(objectFromPage);
+                var imagePath = await _imagesService.SavePhoto("User", photo);
+                if(imagePath != null)
+                    user.ImagePath = imagePath;
+                user.RegistrationDate = DateTime.Now;
                 _unitOfWork.UserRepository.Create(user);
                 if (await _unitOfWork.SaveAsync())
                     return Ok(new JsonResult(new

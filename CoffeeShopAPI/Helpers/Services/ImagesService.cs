@@ -9,7 +9,7 @@ namespace CoffeeShopAPI.Helpers.Services
 {
     public class ImagesService : IImagesService
     {
-        public async Task<bool> SavePhoto(string path, IFormFile photo)
+        public async Task<string> SavePhoto(string type, IFormFile photo)
         {
             try
             {
@@ -20,14 +20,15 @@ namespace CoffeeShopAPI.Helpers.Services
                     .Select(s => s[random.Next(s.Length)]).ToArray());
                 #endregion
                 var fileName = randomSting + Path.GetExtension(photo.FileName);
-                string filePath = Path.Combine(path, fileName);
+                var path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+                string filePath = Path.Combine(path + "\\Images\\" + type, fileName);
                 using Stream fileStream = new FileStream(filePath, FileMode.Create);
                 await photo.CopyToAsync(fileStream);
-                return true;
+                return $"/{type}/" + fileName;
             }
             catch (Exception)
             {
-                return false;
+                return null;
             }
         }
         public bool DeletePhoto(string path)
