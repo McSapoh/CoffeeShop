@@ -34,6 +34,12 @@ namespace CoffeeShopAPI.Controllers
                 return BadRequest(new JsonResult(new { success = false, message = "File is not a photo" }));
             if (ModelState.IsValid)
             {
+                if (_unitOfWork.UserRepository.GetByEmail(objectFromPage.Email) != null)
+                    return BadRequest(new JsonResult(new
+                    {
+                        success = false,
+                        message = "User with this email is already exists"
+                    }));
                 var user = _mapper.Map<User>(objectFromPage);
                 var imagePath = await _imagesService.SavePhoto("User", photo);
                 if(imagePath != null)
