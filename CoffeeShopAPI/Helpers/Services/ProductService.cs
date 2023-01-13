@@ -15,7 +15,7 @@ namespace CoffeeShopAPI.Helpers.Services
         private readonly IImagesService _imageService;
 
 
-        public ProductService(IUnitOfWork unitOfWork, ImagesService imagesService)
+        public ProductService(IUnitOfWork unitOfWork, IImagesService imagesService)
         {
             _unitOfWork = unitOfWork;
             _imageService = imagesService;
