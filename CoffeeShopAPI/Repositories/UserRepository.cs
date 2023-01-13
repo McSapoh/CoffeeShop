@@ -1,5 +1,8 @@
 ﻿using CoffeeShopAPI.Interfaces.Repositories;
 using CoffeeShopAPI.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Repositories
 {
@@ -9,5 +12,8 @@ namespace CoffeeShopAPI.Repositories
         {
             _dbSet = db.Set<User>();
         }
+        public override User GetById(int Id) => _dbSet.Include(p => p.Orders).First(p => p.Id == Id);
+        public async override Task<User> GetByIdAsync(int Id) => await _dbSet.Include(p => p.Orders).FirstAsync(p => p.Id == Id);
+
     }
 }
