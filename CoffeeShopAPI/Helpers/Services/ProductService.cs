@@ -12,10 +12,13 @@ namespace CoffeeShopAPI.Helpers.Services
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IImagesService _imageService;
 
-        public ProductService(IUnitOfWork unitOfWork)
+
+        public ProductService(IUnitOfWork unitOfWork, ImagesService imagesService)
         {
             _unitOfWork = unitOfWork;
+            _imageService = imagesService;
         }
 
         public static string GetRandomString()
