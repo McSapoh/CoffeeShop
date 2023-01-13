@@ -5,7 +5,7 @@ namespace CoffeeShopAPI.Interfaces.Services
 {
     public interface IImagesService
     {
-        public Task<string> SavePhoto(string path, IFormFile photo);
+        public Task<string> SavePhoto(string type, IFormFile photo);
         public bool DeletePhoto(string path);
     }
 }
