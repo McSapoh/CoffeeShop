@@ -54,13 +54,10 @@ namespace CoffeeShopAPI.Helpers.Services
         public async Task<ServiceResponse> Create(Product product, IFormFile photo)
         {
             // Saving photos.
-            if (photo != null && photo.Length > 0)
-            {
-                string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                var fileName = GetRandomString() + Path.GetExtension(photo.FileName);
-                SavePhoto(path + $"\\Images\\{product.ProductType}", photo, fileName);
-                product.ImagePath = $"/Images/{product.ProductType}/" + fileName;
-            }
+            var type = char.ToUpper(product.ProductType.ToString()[0]) + product.ProductType.ToString().Substring(1);
+            var imagePath = await _imageService.SavePhoto(type, photo);
+            if (imagePath != null)
+                product.ImagePath = imagePath;
             else
                 product.ImagePath = $"/Images/{product.ProductType}/Default{product.ProductType}Image.png";
 
