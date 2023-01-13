@@ -11,25 +11,29 @@ namespace CoffeeShopAPI.Helpers.Services
     {
         public async Task<string> SavePhoto(string type, IFormFile photo)
         {
-            try
+            if (photo != null && photo.Length > 0)
             {
-                #region Getting random string
-                var random = new Random();
-                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-                var randomSting =  new string(Enumerable.Repeat(chars, 12)
-                    .Select(s => s[random.Next(s.Length)]).ToArray());
-                #endregion
-                var fileName = randomSting + Path.GetExtension(photo.FileName);
-                var path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                string filePath = Path.Combine(path + "\\Images\\" + type, fileName);
-                using Stream fileStream = new FileStream(filePath, FileMode.Create);
-                await photo.CopyToAsync(fileStream);
-                return $"/{type}/" + fileName;
+                try
+                {
+                    #region Getting random string
+                    var random = new Random();
+                    const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                    var randomSting = new string(Enumerable.Repeat(chars, 12)
+                        .Select(s => s[random.Next(s.Length)]).ToArray());
+                    #endregion
+                    var fileName = randomSting + Path.GetExtension(photo.FileName);
+                    var path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+                    string filePath = Path.Combine(path + "\\Images\\" + type, fileName);
+                    using Stream fileStream = new FileStream(filePath, FileMode.Create);
+                    await photo.CopyToAsync(fileStream);
+                    return $"/{type}/" + fileName;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
             }
-            catch (Exception)
-            {
-                return null;
-            }
+            return null;
         }
         public bool DeletePhoto(string path)
         {
