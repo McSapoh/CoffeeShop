@@ -35,19 +35,16 @@ namespace CoffeeShopAPI.Helpers.Services
             }
             return null;
         }
-        public bool DeletePhoto(string path)
+        public void DeletePhoto(string path)
         {
             try
             {
                 var directoryPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
                 var fullPath = Path.Combine(directoryPath + "\\Images\\" + path);
                 File.Delete(fullPath);
-                return true;
             }
             catch (Exception)
-            {
-                return false;
-            }
+            { }
         }
     }
 }
