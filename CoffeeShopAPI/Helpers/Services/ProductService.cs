@@ -85,20 +85,16 @@ namespace CoffeeShopAPI.Helpers.Services
             productFromDb.Name = product.Name;
             productFromDb.Description = product.Description;
             productFromDb.IsActive = product.IsActive;
-                        
+
 
             // Saving photos.
-            if (productFromDb.ImagePath != null && photo != null && photo.Length > 0)
+            var type = char.ToUpper(productFromDb.ProductType.ToString()[0]) + productFromDb.ProductType.ToString().Substring(1);
+            var imagePath = await _imageService.SavePhoto(type, photo);
+            if (imagePath != null)
             {
-                string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                var fileName = GetRandomString() + Path.GetExtension(photo.FileName);
-                SavePhoto(path + $"\\Images\\{product.ProductType}", photo, fileName);
-                if (productFromDb.ImagePath != $"/{product.ProductType}/Default{product.ProductType}Image.png")
-                    DeletePhoto(path + "\\Images" + productFromDb.ImagePath);
-                productFromDb.ImagePath = $"/Images/{product.ProductType}/" + fileName;
+                _imageService.DeletePhoto(productFromDb.ImagePath);
+                productFromDb.ImagePath = imagePath;
             }
-            else
-                productFromDb.ImagePath = $"/Images/{product.ProductType}/Default{product.ProductType}Image.png";
 
             // Disactivating existing sizes.
             foreach (var productFromDbSize in productFromDb.Sizes)
