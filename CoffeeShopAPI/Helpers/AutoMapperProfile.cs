@@ -24,6 +24,8 @@ namespace CoffeeShopAPI.Helpers
             #region Users
             CreateMap<User, CreateUserDTO>();
             CreateMap<CreateUserDTO, User>();
+            CreateMap<User, UpdateUserDTO>();
+            CreateMap<UpdateUserDTO, User>();
             #endregion
         }
     }
