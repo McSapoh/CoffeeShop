@@ -39,7 +39,9 @@ namespace CoffeeShopAPI.Helpers.Services
         {
             try
             {
-                File.Delete(path);
+                var directoryPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+                var fullPath = Path.Combine(directoryPath + "\\Images\\" + path);
+                File.Delete(fullPath);
                 return true;
             }
             catch (Exception)
