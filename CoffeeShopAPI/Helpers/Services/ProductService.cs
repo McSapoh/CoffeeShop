@@ -21,24 +21,6 @@ namespace CoffeeShopAPI.Helpers.Services
             _imageService = imagesService;
         }
 
-        public static string GetRandomString()
-        {
-            var random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, 12)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-        private static async void SavePhoto(string path, IFormFile photo, string fileName)
-        {
-            string filePath = Path.Combine(path, fileName);
-            using Stream fileStream = new FileStream(filePath, FileMode.Create);
-            await photo.CopyToAsync(fileStream);
-        }
-        private static void DeletePhoto(string path)
-        {
-            System.IO.File.Delete(path);
-        }
-
         public async Task<ServiceResponse> Get(int id)
         {
             if (id <= 0)
