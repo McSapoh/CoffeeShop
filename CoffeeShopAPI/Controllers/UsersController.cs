@@ -62,5 +62,61 @@ namespace CoffeeShopAPI.Controllers
             else
                 return BadRequest(ModelState);
         }
+
+        [HttpPut("UpdateUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserDTO objectFromPage)
+        {
+            if (objectFromPage.Photo != null && !objectFromPage.Photo.ContentType.Contains("image"))
+                return BadRequest(new JsonResult(new { success = false, message = "File is not a photo" }));
+            if (ModelState.IsValid)
+            {
+                var objectFromDb = _unitOfWork.UserRepository.GetById(objectFromPage.Id);
+                if (objectFromDb == null)
+                    return NotFound(new JsonResult(new
+                    {
+                        success = false,
+                        message = $"Cannot find user with id {objectFromPage.Id}"
+                    }));
+                if (objectFromPage.Email != objectFromDb.Email)
+                {
+                    var checkEmailUser = _unitOfWork.UserRepository.GetByEmail(objectFromPage.Email);
+                    if (checkEmailUser != null && checkEmailUser.Email == objectFromPage.Email)
+                        return BadRequest(new JsonResult(new
+                        {
+                            success = false,
+                            message = "User with this email is already exists"
+                        }));
+                }
+
+                var user = _mapper.Map<User>(objectFromPage);
+                var imagePath = await _imagesService.SavePhoto("User", objectFromPage.Photo);
+                if (imagePath != null)
+                    user.ImagePath = imagePath;
+                objectFromDb.Adress = user.Adress;
+                objectFromDb.Email = user.Email;
+                objectFromDb.ImagePath = user.ImagePath;
+                objectFromDb.Name = user.Name;
+                objectFromDb.Password = user.Password;
+
+                _unitOfWork.UserRepository.Update(objectFromDb);
+                if (await _unitOfWork.SaveAsync())
+                    return Ok(new JsonResult(new
+                    {
+                        success = true,
+                        message = "Successfully updated"
+                    }));
+                else
+                    return BadRequest(new JsonResult(new
+                    {
+                        success = false,
+                        message = "Error while updating"
+                    }));
+            }
+            else
+                return BadRequest(ModelState);
+        }
     }
 }
