@@ -12,7 +12,7 @@ namespace CoffeeShopAPI.Repositories
         {
             _dbSet = db.Set<User>();
         }
-        public override User GetById(int Id) => _dbSet.Include(p => p.Orders).First(p => p.Id == Id);
+        public override User GetById(int Id) => _dbSet.Include(p => p.Orders).FirstOrDefault(p => p.Id == Id);
         public async override Task<User> GetByIdAsync(int Id) => await _dbSet.Include(p => p.Orders).FirstAsync(p => p.Id == Id);
         public User GetByEmail(string email) => 
             _dbSet.Include(p => p.Orders).FirstOrDefault(p => p.Email == email);
