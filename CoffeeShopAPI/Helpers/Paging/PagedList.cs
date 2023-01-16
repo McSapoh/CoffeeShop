@@ -19,5 +19,18 @@ namespace CoffeeShopAPI.Helpers.Paging
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             AddRange(items);
         }
+        public static dynamic GetMetadata(PagedList<T> objects)
+        {
+            var metadata = new
+            {
+                objects.TotalCount,
+                objects.PageSize,
+                objects.CurrentPage,
+                objects.TotalPages,
+                objects.HasNext,
+                objects.HasPrevious
+            };
+            return metadata;
+        }
     }
 }
