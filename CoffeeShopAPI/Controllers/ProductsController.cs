@@ -119,7 +119,7 @@ namespace CoffeeShopAPI.Controllers
         {
             var objectsFromDb = _unitOfWork.ProductRepository
                 .GetPagedList(pagingParameters, ProductType.coffee.ToString());
-            var metadata = GetMetadata<Product>(objectsFromDb);
+            var metadata = PagedList<Product>.GetMetadata(objectsFromDb);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(objectsFromDb);
         }
@@ -150,7 +150,7 @@ namespace CoffeeShopAPI.Controllers
         {
             var objectsFromDb = _unitOfWork.ProductRepository
                 .GetPagedList(pagingParameters, ProductType.dessert.ToString());
-            var metadata = GetMetadata<Product>(objectsFromDb);
+            var metadata = PagedList<Product>.GetMetadata(objectsFromDb);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(objectsFromDb);
         }
@@ -181,7 +181,7 @@ namespace CoffeeShopAPI.Controllers
         {
             var objectsFromDb = _unitOfWork.ProductRepository
                 .GetPagedList(pagingParameters, ProductType.sandwich.ToString());
-            var metadata = GetMetadata<Product>(objectsFromDb);
+            var metadata = PagedList<Product>.GetMetadata(objectsFromDb);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(objectsFromDb);
         }
@@ -212,7 +212,7 @@ namespace CoffeeShopAPI.Controllers
         {
             var objectsFromDb = _unitOfWork.ProductRepository
                 .GetPagedList(pagingParameters, ProductType.snack.ToString());
-            var metadata = GetMetadata<Product>(objectsFromDb);
+            var metadata = PagedList<Product>.GetMetadata(objectsFromDb);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(objectsFromDb);
         }
@@ -243,7 +243,7 @@ namespace CoffeeShopAPI.Controllers
         {
             var objectsFromDb = _unitOfWork.ProductRepository
                 .GetPagedList(pagingParameters, ProductType.tea.ToString());
-            var metadata = GetMetadata<Product>(objectsFromDb);
+            var metadata = PagedList<Product>.GetMetadata(objectsFromDb);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(objectsFromDb);
         }
