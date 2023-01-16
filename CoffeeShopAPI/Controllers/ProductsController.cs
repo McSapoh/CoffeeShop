@@ -65,19 +65,7 @@ namespace CoffeeShopAPI.Controllers
                     return BadRequest(new JsonResult(new { success = false, message = "Unknown result" }));
             }
         }
-        public dynamic GetMetadata<T>(PagedList<T> objects)
-        {
-            var metadata = new
-            {
-                objects.TotalCount,
-                objects.PageSize,
-                objects.CurrentPage,
-                objects.TotalPages,
-                objects.HasNext,
-                objects.HasPrevious
-            };
-            return metadata;
-        }
+
         #region Product actions.
         [HttpGet("GetProduct")]
         [ProducesResponseType(StatusCodes.Status200OK)]
