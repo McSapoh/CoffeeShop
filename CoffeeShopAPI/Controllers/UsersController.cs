@@ -30,9 +30,9 @@ namespace CoffeeShopAPI.Controllers
         [HttpPost("CreateUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateUser([FromForm] CreateUserDTO objectFromPage, IFormFile photo)
+        public async Task<IActionResult> CreateUser([FromForm] CreateUserDTO objectFromPage)
         {
-            if (photo != null && !photo.ContentType.Contains("image"))
+            if (objectFromPage.Photo != null && !objectFromPage.Photo.ContentType.Contains("image"))
                 return BadRequest(new JsonResult(new { success = false, message = "File is not a photo" }));
             if (ModelState.IsValid)
             {
@@ -43,7 +43,7 @@ namespace CoffeeShopAPI.Controllers
                         message = "User with this email is already exists"
                     }));
                 var user = _mapper.Map<User>(objectFromPage);
-                var imagePath = await _imagesService.SavePhoto("User", photo);
+                var imagePath = await _imagesService.SavePhoto("User", objectFromPage.Photo);
                 if(imagePath != null)
                     user.ImagePath = imagePath;
                 user.RegistrationDate = DateTime.Now;
