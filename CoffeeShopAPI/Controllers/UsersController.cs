@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using CoffeeShopAPI.Helpers.DTO.User;
+using CoffeeShopAPI.Helpers.Paging;
 using CoffeeShopAPI.Interfaces.Repositories;
 using CoffeeShopAPI.Interfaces.Services;
 using CoffeeShopAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,6 +119,20 @@ namespace CoffeeShopAPI.Controllers
             }
             else
                 return BadRequest(ModelState);
+        }
+
+        [HttpGet("Users")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetUsers([FromQuery] PagingParameters pagingParameters)
+        {
+            var objectsFromDb = _unitOfWork.UserRepository
+                .GetPagedList(pagingParameters);
+            var listObjectsFromDb = _mapper.Map<List<DisplayUserDTO>>(objectsFromDb);
+            var convertedObjects = new PagedList<DisplayUserDTO>(listObjectsFromDb, objectsFromDb.Count,
+                objectsFromDb.CurrentPage, objectsFromDb.PageSize);
+            var metadata = PagedList<DisplayUserDTO>.GetMetadata(convertedObjects);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(convertedObjects);
         }
     }
 }
