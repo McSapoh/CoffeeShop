@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Helpers.DTO.User
 {
@@ -16,5 +13,6 @@ namespace CoffeeShopAPI.Helpers.DTO.User
         public string Adress { get; set; }
         [MinLength(4), Required(ErrorMessage = "Please enter Your password")]
         public string Password { get; set; }
+        public IFormFile Photo { get; set; }
     }
 }
