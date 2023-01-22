@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CoffeeShopAPI.Helpers.DTO;
+using CoffeeShopAPI.Helpers.DTO.Products;
 using CoffeeShopAPI.Helpers.DTO.User;
 using CoffeeShopAPI.Models;
 
@@ -12,6 +13,8 @@ namespace CoffeeShopAPI.Helpers
             #region Products
             CreateMap<Product, ProductDTO>();
             CreateMap<ProductDTO, Product>();
+            CreateMap<Product, EditProductDTO>();
+            CreateMap<EditProductDTO, Product>();
             #endregion
             #region Sizes
             CreateMap<Size, SizeDTO>();
