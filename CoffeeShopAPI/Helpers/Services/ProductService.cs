@@ -2,9 +2,11 @@
 using CoffeeShopAPI.Interfaces.Services;
 using CoffeeShopAPI.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Helpers.Services
@@ -24,14 +26,22 @@ namespace CoffeeShopAPI.Helpers.Services
         public async Task<ServiceResponse> Get(int id)
         {
             if (id <= 0)
-                return new ServiceResponse(false, "Invalid id", 400);
+                return new ServiceResponse((int)HttpStatusCode.BadRequest, new JsonResult(new
+                {
+                    success = false,
+                    message = "Invalid id"
+                }));
 
             var product = await _unitOfWork.ProductRepository.GetByIdAsync(id);
             
             if (product == null)
-                return new ServiceResponse(false, $"Cannot find object with id = {id}", 404);
+                return new ServiceResponse((int)HttpStatusCode.NotFound, new JsonResult(new
+                {
+                    success = false,
+                    message = $"Cannot find object with id = {id}"
+                }));
             else
-                return new ServiceResponse(true, "", 200) { Data = product };
+                return new ServiceResponse((int)HttpStatusCode.NotFound, product);
         }
         public async Task<ServiceResponse> Create(Product product, IFormFile photo)
         {
@@ -47,23 +57,39 @@ namespace CoffeeShopAPI.Helpers.Services
             foreach (var productSize in product.Sizes)
             {
                 if (productSize.Id != 0)
-                    return new ServiceResponse(false, $"Cannot add size with id = {productSize.Id}", 400);
+                    return new ServiceResponse((int)HttpStatusCode.InternalServerError, new JsonResult(new
+                    {
+                        success = false,
+                        message = $"Cannot add size with id = {productSize.Id}"
+                    }));
             }
 
             // Creating object.
             _unitOfWork.ProductRepository.Create(product);
 
             if (await _unitOfWork.SaveAsync())
-                return new ServiceResponse(true, "Successfully saved", 200);
+                return new ServiceResponse((int)HttpStatusCode.Created, new JsonResult(new
+                {
+                    success = true,
+                    message = "Successfully saved"
+                }));
             else
-                return new ServiceResponse(false,"Error while saving", 400);
+                return new ServiceResponse((int)HttpStatusCode.InternalServerError, new JsonResult(new
+                {
+                    success = false,
+                    message = "Error while saving"
+                }));
         }
         public async Task<ServiceResponse> Update(Product product, IFormFile photo)
         {
             var productFromDb = await _unitOfWork.ProductRepository.GetByIdAsync(product.Id);
 
             if (productFromDb == null)
-                return new ServiceResponse(false, $"Cannot find object with id = {product.Id}", 404);
+                return new ServiceResponse((int)HttpStatusCode.NotFound, new JsonResult(new
+                {
+                    success = false,
+                    message = $"Cannot find object with id = {product.Id}"
+                }));
             productFromDb.Name = product.Name;
             productFromDb.Description = product.Description;
             productFromDb.IsActive = product.IsActive;
@@ -114,9 +140,17 @@ namespace CoffeeShopAPI.Helpers.Services
             // Updating product.
             _unitOfWork.ProductRepository.Update(productFromDb);
             if (await _unitOfWork.SaveAsync())
-                return new ServiceResponse(true, "Successfully update", 200);
+                return new ServiceResponse((int)HttpStatusCode.Created, new JsonResult(new
+                {
+                    success = true,
+                    message = "Successfully saved"
+                }));
             else
-                return new ServiceResponse(false, "Error while updating", 400);
+                return new ServiceResponse((int)HttpStatusCode.InternalServerError, new JsonResult(new
+                {
+                    success = false,
+                    message = "Error while saving"
+                }));
         }
         public async Task<ServiceResponse> Delete(int id)
         {
@@ -128,14 +162,30 @@ namespace CoffeeShopAPI.Helpers.Services
             if (product != null)
             {
                 if (!product.IsActive)
-                    return new ServiceResponse(false, "Cannot delete already deleted object", 400);
+                    return new ServiceResponse((int)HttpStatusCode.InternalServerError, new JsonResult(new
+                    {
+                        success = false,
+                        message = "Cannot delete already deleted object"
+                    }));
                 product.IsActive = false;
                 if (await _unitOfWork.SaveAsync())
-                    return new ServiceResponse(true, "Successfully deleted", 200);
+                    return new ServiceResponse((int)HttpStatusCode.OK, new JsonResult(new
+                    {
+                        success = true,
+                        message = "Successfully deleted"
+                    }));
                 else
-                    return new ServiceResponse(false, "Error while deleting", 400);
+                    return new ServiceResponse((int)HttpStatusCode.InternalServerError, new JsonResult(new
+                    {
+                        success = false,
+                        message = "Error while deleting"
+                    }));
             }
-            return new ServiceResponse(false, $"Cannot find object with id = {id}", 404);
+            return new ServiceResponse((int)HttpStatusCode.NotFound, new JsonResult(new
+            {
+                success = false,
+                message = $"Cannot find object with id = {id}"
+            }));
         }
     }
 }
