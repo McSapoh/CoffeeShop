@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Controllers.Products
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class ProductsController : Controller
     {
         protected readonly IUnitOfWork _unitOfWork;
