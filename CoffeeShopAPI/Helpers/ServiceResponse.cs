@@ -13,5 +13,10 @@
             Message = message;
             Status = status;
         }
+        public ServiceResponse(int status, object data)
+        {
+            Status = status;
+            Data = data;
+        }
     }
 }
