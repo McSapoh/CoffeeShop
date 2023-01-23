@@ -41,7 +41,7 @@ namespace CoffeeShopAPI.Helpers.Services
                     message = $"Cannot find object with id = {id}"
                 }));
             else
-                return new ServiceResponse((int)HttpStatusCode.NotFound, product);
+                return new ServiceResponse((int)HttpStatusCode.OK, product);
         }
         public async Task<ServiceResponse> Create(Product product, IFormFile photo)
         {
