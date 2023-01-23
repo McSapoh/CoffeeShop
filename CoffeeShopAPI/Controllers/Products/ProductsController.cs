@@ -39,6 +39,12 @@ namespace CoffeeShopAPI.Controllers.Products
             return Ok(objectsFromDb);
         }
 
+        /// <summary>
+        /// Gets product.
+        /// </summary>
+        /// <response code="200">Returns item from db</response>
+        /// <response code="400">If the id parameter is not int</response>
+        /// <response code="404">If the item from db is null</response>
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
