@@ -57,7 +57,7 @@ namespace CoffeeShopAPI.Helpers.Services
             foreach (var productSize in product.Sizes)
             {
                 if (productSize.Id != 0)
-                    return new ServiceResponse((int)HttpStatusCode.InternalServerError, new JsonResult(new
+                    return new ServiceResponse((int)HttpStatusCode.BadRequest, new JsonResult(new
                     {
                         success = false,
                         message = $"Cannot add size with id = {productSize.Id}"
