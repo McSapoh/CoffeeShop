@@ -166,7 +166,7 @@ namespace CoffeeShopAPI.Helpers.Services
             if (product != null)
             {
                 if (!product.IsActive)
-                    return new ServiceResponse((int)HttpStatusCode.InternalServerError, new JsonResult(new
+                    return new ServiceResponse((int)HttpStatusCode.Conflict, new JsonResult(new
                     {
                         success = false,
                         message = "Cannot delete already deleted object"
