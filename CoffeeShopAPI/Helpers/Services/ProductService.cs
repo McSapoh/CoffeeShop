@@ -155,7 +155,11 @@ namespace CoffeeShopAPI.Helpers.Services
         public async Task<ServiceResponse> Delete(int id)
         {
             if (id <= 0)
-                return new ServiceResponse(false, "Invalid id", 400);
+                return new ServiceResponse((int)HttpStatusCode.BadRequest, new JsonResult(new
+                {
+                    success = false,
+                    message = "Invalid id"
+                }));
 
             var product = await _unitOfWork.ProductRepository.GetByIdAsync(id);
 
