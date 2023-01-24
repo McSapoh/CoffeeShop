@@ -39,10 +39,12 @@ namespace CoffeeShopAPI.Controllers.Products
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult Get([FromQuery] PagingParameters pagingParameters)
         {
+            _logger.LogInformation($"GET {this}.Get called.");
             var objectsFromDb = _unitOfWork.ProductRepository
                 .GetPagedList(pagingParameters, _productType.ToString());
             var metadata = PagedList<Product>.GetMetadata(objectsFromDb);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            _logger.LogInformation($"GET {this}.Get finished.");
             return Ok(objectsFromDb);
         }
 
@@ -58,7 +60,9 @@ namespace CoffeeShopAPI.Controllers.Products
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(int id)
         {
-            var result = await _productService.Get(id);
+            _logger.LogInformation($"GET({id}) {this}.Get called.");
+            var result = await _productService.Get(id); 
+            _logger.LogInformation($"GET({id}) {this}.Get finished.");
             return StatusCode(result.Status, result.Data);
         }
 
@@ -74,17 +78,25 @@ namespace CoffeeShopAPI.Controllers.Products
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromForm] EditProductDTO objectFromPage, IFormFile photo)
         {
+            _logger.LogInformation($"POST {this}.Create called.");
             if (photo != null && !photo.ContentType.Contains("image"))
+            {
+                _logger.LogWarning("Parameter photo is not an image");
                 return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
+            }
             if (ModelState.IsValid)
             {
                 var product = _mapper.Map<Product>(objectFromPage);
                 product.ProductType = _productType.ToString();
                 var result = await _productService.Create(product, photo);
+                _logger.LogInformation($"POST {this}.Create finished.");
                 return StatusCode(result.Status, result.Data);
             }
             else
+            {
+                _logger.LogWarning("ModelState is not valid");
                 return BadRequest(ModelState);
+            }
         }
 
         /// <summary>
@@ -101,20 +113,25 @@ namespace CoffeeShopAPI.Controllers.Products
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(int id, [FromForm] EditProductDTO objectFromPage, IFormFile photo)
         {
+            _logger.LogInformation($"PUT {this}.Update called.");
             if (photo != null && !photo.ContentType.Contains("image"))
+            {
+                _logger.LogWarning("Parameter photo is not an image");
                 return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
+            }
             if (ModelState.IsValid)
             {
-                if (id == 0)
-                    return BadRequest(new JsonResult(new { success = false, message = $"Cannot find object with id = {id}" }));
-
                 var product = _mapper.Map<Product>(objectFromPage);
                 product.Id = id;
                 var result = await _productService.Update(product, photo);
+                _logger.LogInformation($"PUT {this}.Update finished.");
                 return StatusCode(result.Status, result.Data);
             }
             else
+            {
+                _logger.LogWarning("ModelState is not valid");
                 return BadRequest(ModelState);
+            }
         }
 
         /// <summary>
@@ -133,7 +150,9 @@ namespace CoffeeShopAPI.Controllers.Products
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
+            _logger.LogInformation($"DELETE {this}.DELETE called.");
             var result = await _productService.Delete(id);
+            _logger.LogInformation($"DELETE {this}.DELETE finished.");
             return StatusCode(result.Status, result.Data);
         }
     }
