@@ -6,6 +6,7 @@ using CoffeeShopAPI.Interfaces.Services;
 using CoffeeShopAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
@@ -18,14 +19,16 @@ namespace CoffeeShopAPI.Controllers.Products
         protected readonly IProductService _productService;
         protected readonly IMapper _mapper;
         protected readonly ProductType _productType;
+        protected readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(IUnitOfWork unitOfWork,
+        public ProductsController(IUnitOfWork unitOfWork, ILogger<ProductsController> logger,
             IProductService productService, IMapper mapper, ProductType productType)
         {
             _unitOfWork = unitOfWork;
             _productService = productService;
             _mapper = mapper;
             _productType = productType;
+            _logger = logger;
         }
 
         /// <summary>
