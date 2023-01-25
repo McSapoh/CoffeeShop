@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using CoffeeShopAPI.Interfaces.Repositories;
-using CoffeeShopAPI.Interfaces.Services;
 using CoffeeShopAPI.Models;
+using CoffeeShopAPI.Services;
+using CoffeeShopAPI.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 

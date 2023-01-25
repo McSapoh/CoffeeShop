@@ -1,6 +1,6 @@
 ﻿using CoffeeShopAPI.Models;
 
-namespace CoffeeShopAPI.Interfaces.Repositories
+namespace CoffeeShopAPI.UnitOfWork.Repositories
 {
     public interface IOrderRepository : IRepository<Order>
     {

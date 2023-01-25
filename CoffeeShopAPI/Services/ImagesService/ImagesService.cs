@@ -1,11 +1,10 @@
-﻿using CoffeeShopAPI.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CoffeeShopAPI.Helpers.Services
+namespace CoffeeShopAPI.Services
 {
     public class ImagesService : IImagesService
     {

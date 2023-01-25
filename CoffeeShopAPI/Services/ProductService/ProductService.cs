@@ -1,15 +1,12 @@
-﻿using CoffeeShopAPI.Interfaces.Repositories;
-using CoffeeShopAPI.Interfaces.Services;
+﻿using CoffeeShopAPI.Helpers;
 using CoffeeShopAPI.Models;
+using CoffeeShopAPI.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace CoffeeShopAPI.Helpers.Services
+namespace CoffeeShopAPI.Services
 {
     public class ProductService : IProductService
     {

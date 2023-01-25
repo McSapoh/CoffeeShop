@@ -2,9 +2,9 @@
 using CoffeeShopAPI.Helpers;
 using CoffeeShopAPI.Helpers.DTO;
 using CoffeeShopAPI.Helpers.Paging;
-using CoffeeShopAPI.Interfaces.Repositories;
-using CoffeeShopAPI.Interfaces.Services;
 using CoffeeShopAPI.Models;
+using CoffeeShopAPI.Services;
+using CoffeeShopAPI.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;

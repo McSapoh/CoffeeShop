@@ -1,5 +1,3 @@
-using CoffeeShopAPI.Repositories;
-using CoffeeShopAPI.Interfaces.Repositories;
 using CoffeeShopAPI.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,11 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using CoffeeShopAPI.Interfaces.Services;
-using CoffeeShopAPI.Helpers.Services;
 using System.Reflection;
 using System.IO;
 using System;
+using CoffeeShopAPI.UnitOfWork;
+using CoffeeShopAPI.UnitOfWork.Repositories;
+using CoffeeShopAPI.Services;
 
 namespace CoffeeShopAPI
 {
@@ -43,7 +42,7 @@ namespace CoffeeShopAPI
             });
 
             services.AddAutoMapper(typeof(Program).Assembly);
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             #region Adding services
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IIngredientService, IngredientService>();

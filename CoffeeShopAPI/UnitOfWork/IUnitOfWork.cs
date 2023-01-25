@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using CoffeeShopAPI.UnitOfWork.Repositories;
+using System.Threading.Tasks;
 
-namespace CoffeeShopAPI.Interfaces.Repositories
+namespace CoffeeShopAPI.UnitOfWork
 {
     public interface IUnitOfWork
     {

@@ -1,11 +1,10 @@
 ﻿using CoffeeShopAPI.Helpers.Paging;
-using CoffeeShopAPI.Interfaces.Repositories;
 using CoffeeShopAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CoffeeShopAPI.Repositories
+namespace CoffeeShopAPI.UnitOfWork.Repositories
 {
     public class ProductRepository : Repository<Product>, IProductRepository
     {

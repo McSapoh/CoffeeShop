@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CoffeeShopAPI.Interfaces.Repositories
+namespace CoffeeShopAPI.UnitOfWork.Repositories
 {
     public interface IRepository<T> where T : class
     {

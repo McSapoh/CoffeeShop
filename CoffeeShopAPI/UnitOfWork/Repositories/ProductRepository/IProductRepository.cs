@@ -1,7 +1,7 @@
 ﻿using CoffeeShopAPI.Helpers.Paging;
 using CoffeeShopAPI.Models;
 
-namespace CoffeeShopAPI.Interfaces.Repositories
+namespace CoffeeShopAPI.UnitOfWork.Repositories
 {
     public interface IProductRepository : IRepository<Product>
     {

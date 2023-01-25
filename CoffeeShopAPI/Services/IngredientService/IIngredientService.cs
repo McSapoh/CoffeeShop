@@ -2,7 +2,7 @@
 using CoffeeShopAPI.Models;
 using System.Threading.Tasks;
 
-namespace CoffeeShopAPI.Interfaces.Services
+namespace CoffeeShopAPI.Services
 {
     public interface IIngredientService
     {

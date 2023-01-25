@@ -1,11 +1,10 @@
 ﻿using CoffeeShopAPI.Helpers.Paging;
-using CoffeeShopAPI.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CoffeeShopAPI.Repositories
+namespace CoffeeShopAPI.UnitOfWork.Repositories
 {
     public class Repository<T> : IRepository<T> where T: class
     {

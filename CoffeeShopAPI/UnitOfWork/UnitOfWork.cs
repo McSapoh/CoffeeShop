@@ -1,8 +1,8 @@
-﻿using CoffeeShopAPI.Interfaces.Repositories;
-using CoffeeShopAPI.Models;
+﻿using CoffeeShopAPI.Models;
+using CoffeeShopAPI.UnitOfWork.Repositories;
 using System.Threading.Tasks;
 
-namespace CoffeeShopAPI.Repositories
+namespace CoffeeShopAPI.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {

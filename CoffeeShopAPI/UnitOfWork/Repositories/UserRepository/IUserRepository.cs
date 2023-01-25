@@ -1,7 +1,6 @@
-﻿using CoffeeShopAPI.Helpers.Paging;
-using CoffeeShopAPI.Models;
+﻿using CoffeeShopAPI.Models;
 
-namespace CoffeeShopAPI.Interfaces.Repositories
+namespace CoffeeShopAPI.UnitOfWork.Repositories
 {
     public interface IUserRepository : IRepository<User>
     {

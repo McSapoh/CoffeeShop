@@ -1,9 +1,9 @@
-﻿using CoffeeShopAPI.Interfaces.Repositories;
-using CoffeeShopAPI.Interfaces.Services;
+﻿using CoffeeShopAPI.Helpers;
 using CoffeeShopAPI.Models;
+using CoffeeShopAPI.UnitOfWork;
 using System.Threading.Tasks;
 
-namespace CoffeeShopAPI.Helpers.Services
+namespace CoffeeShopAPI.Services
 {
     public class IngredientService : IIngredientService
     {

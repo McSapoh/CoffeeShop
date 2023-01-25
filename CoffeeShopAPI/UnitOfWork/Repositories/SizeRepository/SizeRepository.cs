@@ -1,7 +1,6 @@
-﻿using CoffeeShopAPI.Interfaces.Repositories;
-using CoffeeShopAPI.Models;
+﻿using CoffeeShopAPI.Models;
 
-namespace CoffeeShopAPI.Repositories
+namespace CoffeeShopAPI.UnitOfWork.Repositories
 {
     public class SizeRepository : Repository<Size>, ISizeRepository
     {

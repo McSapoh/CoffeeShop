@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace CoffeeShopAPI.Interfaces.Services
+namespace CoffeeShopAPI.Services
 {
     public interface IImagesService
     {
