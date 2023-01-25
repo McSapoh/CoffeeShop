@@ -3,6 +3,7 @@ using CoffeeShopAPI.Models;
 using CoffeeShopAPI.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -12,11 +13,12 @@ namespace CoffeeShopAPI.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IImagesService _imageService;
+        private readonly ILogger<ProductService> _logger;
 
-
-        public ProductService(IUnitOfWork unitOfWork, IImagesService imagesService)
+        public ProductService(IUnitOfWork unitOfWork, ILogger<ProductService> logger, IImagesService imagesService)
         {
             _unitOfWork = unitOfWork;
+            _logger = logger;
             _imageService = imagesService;
         }
 
