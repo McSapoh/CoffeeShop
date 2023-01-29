@@ -12,6 +12,7 @@ using System;
 using CoffeeShopAPI.UnitOfWork;
 using CoffeeShopAPI.UnitOfWork.Repositories;
 using CoffeeShopAPI.Services;
+using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace CoffeeShopAPI
 {
@@ -34,7 +35,24 @@ namespace CoffeeShopAPI
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoffeeShopAPI", Version = "v1" });
-                
+
+                c.TagActionsBy(api =>
+                {
+                    if (api.GroupName != null)
+                    {
+                        return new[] { api.GroupName };
+                    }
+
+                    var controllerActionDescriptor = api.ActionDescriptor as ControllerActionDescriptor;
+                    if (controllerActionDescriptor != null)
+                    {
+                        return new[] { controllerActionDescriptor.ControllerName };
+                    }
+
+                    throw new InvalidOperationException("Unable to determine tag for endpoint.");
+                });
+                c.DocInclusionPredicate((name, api) => true);
+
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
