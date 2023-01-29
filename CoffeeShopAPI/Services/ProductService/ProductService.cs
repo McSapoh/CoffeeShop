@@ -37,14 +37,6 @@ namespace CoffeeShopAPI.Services
         }
         public async Task<ServiceResponse> Create(Product product, IFormFile photo)
         {
-            // Saving photos.
-            var type = char.ToUpper(product.ProductType.ToString()[0]) + product.ProductType.ToString().Substring(1);
-            var imagePath = await _imageService.SavePhoto(type, photo);
-            if (imagePath != null)
-                product.ImagePath = imagePath;
-            else
-                product.ImagePath = $"/Images/{product.ProductType}/Default{product.ProductType}Image.png";
-
             // Checking Id for each size
             foreach (var productSize in product.Sizes)
             {
@@ -60,11 +52,22 @@ namespace CoffeeShopAPI.Services
             _unitOfWork.ProductRepository.Create(product);
 
             if (await _unitOfWork.SaveAsync())
+            {
+                // Saving photos.
+                var type = char.ToUpper(product.ProductType.ToString()[0]) + product.ProductType.ToString().Substring(1);
+                var imagePath = await _imageService.SavePhoto(type, photo);
+                if (imagePath != null)
+                    product.ImagePath = imagePath;
+                else
+                    product.ImagePath = $"/Images/{product.ProductType}/Default{product.ProductType}Image.png";
+
+
                 return new ServiceResponse((int)HttpStatusCode.Created, new JsonResult(new
                 {
                     success = true,
                     message = "Successfully saved"
                 }));
+            }
             else
                 return new ServiceResponse((int)HttpStatusCode.InternalServerError, new JsonResult(new
                 {
@@ -86,15 +89,6 @@ namespace CoffeeShopAPI.Services
             productFromDb.Description = product.Description;
             productFromDb.IsActive = product.IsActive;
 
-
-            // Saving photos.
-            var type = char.ToUpper(productFromDb.ProductType.ToString()[0]) + productFromDb.ProductType.ToString().Substring(1);
-            var imagePath = await _imageService.SavePhoto(type, photo);
-            if (imagePath != null)
-            {
-                _imageService.DeletePhoto(productFromDb.ImagePath);
-                productFromDb.ImagePath = imagePath;
-            }
 
             // Disactivating existing sizes.
             foreach (var productFromDbSize in productFromDb.Sizes)
@@ -132,11 +126,23 @@ namespace CoffeeShopAPI.Services
             // Updating product.
             _unitOfWork.ProductRepository.Update(productFromDb);
             if (await _unitOfWork.SaveAsync())
+            {
+                // Saving photos.
+                var type = char.ToUpper(productFromDb.ProductType.ToString()[0]) + productFromDb.ProductType.ToString().Substring(1);
+                var imagePath = await _imageService.SavePhoto(type, photo);
+                if (imagePath != null)
+                {
+                    _imageService.DeletePhoto(productFromDb.ImagePath);
+                    productFromDb.ImagePath = imagePath;
+                }
+
+
                 return new ServiceResponse((int)HttpStatusCode.Created, new JsonResult(new
                 {
                     success = true,
                     message = "Successfully saved"
                 }));
+            }
             else
                 return new ServiceResponse((int)HttpStatusCode.InternalServerError, new JsonResult(new
                 {
