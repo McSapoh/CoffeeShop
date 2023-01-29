@@ -32,7 +32,7 @@ namespace CoffeeShopAPI.Controllers.Products
         }
 
         /// <summary>
-        /// Gets paged list of porudcts.
+        /// Gets paged list of products.
         /// </summary>
         /// <response code="200">Returns paged list of porudcts</response>
         [HttpGet("")]
@@ -51,9 +51,9 @@ namespace CoffeeShopAPI.Controllers.Products
         /// <summary>
         /// Gets product.
         /// </summary>
-        /// <response code="200">Returns item from db</response>
+        /// <response code="200">Returns product from db</response>
         /// <response code="400">If the id parameter is not int</response>
-        /// <response code="404">If the item from db is null</response>
+        /// <response code="404">If the product from db is null</response>
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -104,7 +104,7 @@ namespace CoffeeShopAPI.Controllers.Products
         /// </summary>
         /// <response code="201">If the product successfully updated</response>        
         /// <response code="400">If the photo is not an image or model is not valid</response>
-        /// <response code="404">If the item from db is null</response>
+        /// <response code="404">If the product from db is null</response>
         /// <response code="500">If unknown error occurred while updating</response>
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -139,8 +139,8 @@ namespace CoffeeShopAPI.Controllers.Products
         /// </summary>
         /// <response code="200">If the product successfully deleted</response>
         /// <response code="400">If the id parameter is not int</response>
-        /// <response code="404">If the item from db is null</response>
-        /// <response code="409">If the item is already deleted</response>
+        /// <response code="404">If the product from db is null</response>
+        /// <response code="409">If the product is already deleted</response>
         /// <response code="500">If unknown error occurred while deleting</response>
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
