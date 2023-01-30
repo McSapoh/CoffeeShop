@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CoffeeShopAPI.Helpers.DTO;
+using CoffeeShopAPI.Helpers.DTO.Ingredients;
 using CoffeeShopAPI.Helpers.DTO.Products;
 using CoffeeShopAPI.Helpers.DTO.User;
 using CoffeeShopAPI.Models;
@@ -23,6 +24,8 @@ namespace CoffeeShopAPI.Helpers
             #region Ingredients
             CreateMap<Ingredient, IngredientDTO>();
             CreateMap<IngredientDTO, Ingredient>();
+            CreateMap<Ingredient, EditIngredientDTO>();
+            CreateMap<EditIngredientDTO, Ingredient>();
             #endregion
             #region Users
             CreateMap<User, CreateUserDTO>();
