@@ -32,11 +32,11 @@ namespace CoffeeShopAPI.Controllers.Ingredients
         }
 
         /// <summary>
-        /// Gets product.
+        /// Gets ingredient.
         /// </summary>
-        /// <response code="200">Returns product from db</response>
+        /// <response code="200">Returns ingredient from db</response>
         /// <response code="400">If the id parameter is not int</response>
-        /// <response code="404">If the product from db is null</response>
+        /// <response code="404">If the ingredient from db is null</response>
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,9 +50,9 @@ namespace CoffeeShopAPI.Controllers.Ingredients
         }
 
         /// <summary>
-        /// Gets paged list of products.
+        /// Gets paged list of ingredients.
         /// </summary>
-        /// <response code="200">Returns paged list of porudcts</response>
+        /// <response code="200">Returns paged list of ingredients</response>
         [HttpGet("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult Get([FromQuery] PagingParameters pagingParameters)
@@ -127,12 +127,12 @@ namespace CoffeeShopAPI.Controllers.Ingredients
         }
 
         /// <summary>
-        /// Deletes product.
+        /// Deletes ingredient.
         /// </summary>
-        /// <response code="200">If the product successfully deleted</response>
+        /// <response code="200">If the ingredient successfully deleted</response>
         /// <response code="400">If the id parameter is not int</response>
-        /// <response code="404">If the product from db is null</response>
-        /// <response code="409">If the product is already deleted</response>
+        /// <response code="404">If the ingredient from db is null</response>
+        /// <response code="409">If the ingredient is already deleted</response>
         /// <response code="500">If unknown error occurred while deleting</response>
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
