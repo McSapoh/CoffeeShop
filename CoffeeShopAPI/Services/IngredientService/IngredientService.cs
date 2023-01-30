@@ -1,6 +1,8 @@
 ﻿using CoffeeShopAPI.Helpers;
 using CoffeeShopAPI.Models;
 using CoffeeShopAPI.UnitOfWork;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Services
@@ -15,15 +17,18 @@ namespace CoffeeShopAPI.Services
         }
         public async Task<ServiceResponse> Get(int id)
         {
-            if (id <= 0)
-                return new ServiceResponse(false, "Invalid id", 400);
-
+            // Getting item.
             var ingredient = await _unitOfWork.IngredientRepository.GetByIdAsync(id);
 
+            // Validation.
             if (ingredient == null)
-                return new ServiceResponse(false, $"Cannot find object with id = {id}", 404);
+                return new ServiceResponse((int)HttpStatusCode.NotFound, new JsonResult(new
+                {
+                    success = false,
+                    message = $"Cannot find object with id = {id}"
+                }));
             else
-                return new ServiceResponse(true, "", 200) { Data = ingredient };
+                return new ServiceResponse((int)HttpStatusCode.OK, ingredient);
         }
         public async Task<ServiceResponse> Create(Ingredient ingredient)
         {
@@ -31,46 +36,87 @@ namespace CoffeeShopAPI.Services
             _unitOfWork.IngredientRepository.Create(ingredient);
 
             if (await _unitOfWork.SaveAsync())
-                return new ServiceResponse(true, "Successfully saved", 200);
+                return new ServiceResponse((int)HttpStatusCode.Created, new JsonResult(new
+                {
+                    success = true,
+                    message = "Successfully saved"
+                }));
             else
-                return new ServiceResponse(false,"Error while saving", 400);
+                return new ServiceResponse((int)HttpStatusCode.InternalServerError, new JsonResult(new
+                {
+                    success = false,
+                    message = "Error while saving"
+                }));
         }
         public async Task<ServiceResponse> Update(Ingredient ingredient)
         {
+            // Getting item.
             var ingredientFromDb  = await _unitOfWork.IngredientRepository.GetByIdAsync(ingredient.Id);
-                   
+
+            // Validation.
             if (ingredientFromDb == null)
-                return new ServiceResponse(false, $"Cannot find object with id = {ingredient.Id}", 404);
+                return new ServiceResponse((int)HttpStatusCode.NotFound, new JsonResult(new
+                {
+                    success = false,
+                    message = $"Cannot find object with id = {ingredient.Id}"
+                }));
+
+            // Changing.
             ingredientFromDb.Name = ingredient.Name;
             ingredientFromDb.Price = ingredient.Price;
             ingredientFromDb.IsActive = ingredient.IsActive;
 
-            // Updating product.
+            // Updating item.
             _unitOfWork.IngredientRepository.Update(ingredientFromDb);
                     
             if (await _unitOfWork.SaveAsync())
-                return new ServiceResponse(true, "Successfully update", 200);
+                return new ServiceResponse((int)HttpStatusCode.Created, new JsonResult(new
+                {
+                    success = true,
+                    message = "Successfully saved"
+                }));
             else
-                return new ServiceResponse(false, "Error while updating", 400);
+                return new ServiceResponse((int)HttpStatusCode.InternalServerError, new JsonResult(new
+                {
+                    success = false,
+                    message = "Error while saving"
+                }));
         }
         public async Task<ServiceResponse> Delete(int id)
         {
-            if (id <= 0)
-                return new ServiceResponse(false, "Invalid id", 400);
-
+            // Getting item.
             var ingredient = _unitOfWork.IngredientRepository.GetById(id);
-                    
+
+            // Validation.
             if (ingredient != null)
-            {
-                if (!ingredient.IsActive)
-                    return new ServiceResponse(false, "Cannot delete already deleted object", 400);
-                ingredient.IsActive = false;
-                if (await _unitOfWork.SaveAsync())
-                    return new ServiceResponse(true, "Successfully deleted", 200);
-                else
-                    return new ServiceResponse(false, "Error while deleting", 400);
-            }
-            return new ServiceResponse(false, $"Cannot find object with id = {id}", 404);
+                return new ServiceResponse((int)HttpStatusCode.NotFound, new JsonResult(new
+                {
+                    success = false,
+                    message = $"Cannot find object with id = {id}"
+                }));
+            
+            if (!ingredient.IsActive)
+                return new ServiceResponse((int)HttpStatusCode.Conflict, new JsonResult(new
+                {
+                    success = false,
+                    message = "Cannot delete already deleted object"
+                }));
+
+
+            // Action.
+            ingredient.IsActive = false;
+            if (await _unitOfWork.SaveAsync())
+                return new ServiceResponse((int)HttpStatusCode.OK, new JsonResult(new
+                {
+                    success = true,
+                    message = "Successfully deleted"
+                }));
+            else
+                return new ServiceResponse((int)HttpStatusCode.InternalServerError, new JsonResult(new
+                {
+                    success = false,
+                    message = "Error while deleting"
+                }));
         }
     }
 }
