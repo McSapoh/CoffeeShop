@@ -61,6 +61,13 @@ namespace CoffeeShopAPI.Services
                     message = $"Cannot find object with id = {ingredient.Id}"
                 }));
 
+            if (ingredientFromDb.IngredientType != ingredient.IngredientType)
+                return new ServiceResponse((int)HttpStatusCode.Conflict, new JsonResult(new
+                {
+                    success = false,
+                    message = $"Cannot change object IngredientType"
+                }));
+
             // Changing.
             ingredientFromDb.Name = ingredient.Name;
             ingredientFromDb.Price = ingredient.Price;
