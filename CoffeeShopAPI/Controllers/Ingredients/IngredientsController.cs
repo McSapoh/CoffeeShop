@@ -81,7 +81,7 @@ namespace CoffeeShopAPI.Controllers.Ingredients
             _logger.LogInformation($"POST {this}.Create called.");
 
             // Validation.
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _logger.LogWarning("ModelState is not valid");
                 return BadRequest(ModelState);
