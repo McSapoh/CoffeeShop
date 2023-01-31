@@ -101,11 +101,13 @@ namespace CoffeeShopAPI.Controllers.Ingredients
         /// <response code="201">If the ingredient successfully updated</response>        
         /// <response code="400">If model is not valid</response>
         /// <response code="404">If the ingredient from db is null</response>
+        /// <response code="409">If the ingredient from db has different IngredientType from ingredient mapped in controller</response>
         /// <response code="500">If unknown error occurred while updating</response>
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(int id, [FromForm] EditIngredientDTO objectFromPage)
         {
