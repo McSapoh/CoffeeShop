@@ -121,6 +121,7 @@ namespace CoffeeShopAPI.Controllers.Ingredients
             // Action.
             var ingredient = _mapper.Map<Ingredient>(objectFromPage);
             ingredient.Id = id;
+            ingredient.IngredientType = _ingredientType.ToString();
             var result = await _ingredientService.Update(ingredient);
             _logger.LogInformation($"PUT {this}.Update finished.");
             return StatusCode(result.Status, result.Data);
