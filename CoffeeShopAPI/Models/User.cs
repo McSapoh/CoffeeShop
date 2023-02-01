@@ -6,6 +6,7 @@ namespace CoffeeShopAPI.Models
 {
     public partial class User
     {
+        #region Database columns
         [Key]
         public int Id { get; set; }
         [Required(ErrorMessage = "Please enter Your Name")]
@@ -18,7 +19,10 @@ namespace CoffeeShopAPI.Models
         public DateTime RegistrationDate { get; set; }
         [MinLength(4), Required(ErrorMessage = "Please enter Your password")]
         public string Password { get; set; }
-
+        #endregion
+        #region Objects for relationships
         public virtual ICollection<Order> Orders { get; set; }
+        public virtual RefreshToken RefreshToken { get; set; }
+        #endregion
     }
 }
