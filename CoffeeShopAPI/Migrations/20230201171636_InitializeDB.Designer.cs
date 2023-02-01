@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoffeeShopAPI.Migrations
 {
     [DbContext(typeof(CoffeeShopContext))]
-    [Migration("20230109145537_InitializeDB")]
+    [Migration("20230201171636_InitializeDB")]
     partial class InitializeDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -136,6 +136,33 @@ namespace CoffeeShopAPI.Migrations
                     b.ToTable("ProductOrders");
                 });
 
+            modelBuilder.Entity("CoffeeShopAPI.Models.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("RefreshToken");
+                });
+
             modelBuilder.Entity("CoffeeShopAPI.Models.Size", b =>
                 {
                     b.Property<int>("Id")
@@ -247,6 +274,17 @@ namespace CoffeeShopAPI.Migrations
                     b.Navigation("Size");
                 });
 
+            modelBuilder.Entity("CoffeeShopAPI.Models.RefreshToken", b =>
+                {
+                    b.HasOne("CoffeeShopAPI.Models.User", "User")
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("CoffeeShopAPI.Models.RefreshToken", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("CoffeeShopAPI.Models.Size", b =>
                 {
                     b.HasOne("CoffeeShopAPI.Models.Product", "Product")
@@ -276,6 +314,8 @@ namespace CoffeeShopAPI.Migrations
             modelBuilder.Entity("CoffeeShopAPI.Models.User", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("RefreshToken");
                 });
 #pragma warning restore 612, 618
         }
