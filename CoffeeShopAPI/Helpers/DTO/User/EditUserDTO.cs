@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CoffeeShopAPI.Helpers.DTO.User
 {
-    public class UpdateUserDTO
+    public class EditUserDTO
     {
-        [Key]
-        public int Id { get; set; }
         [Required(ErrorMessage = "Please enter Your Name")]
         public string Name { get; set; }
         [EmailAddress, Required(ErrorMessage = "Please enter Your email")]
