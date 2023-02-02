@@ -37,7 +37,14 @@ namespace CoffeeShopAPI
             );
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoffeeShopAPI", Version = "v1" });
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoffeeShopAPI", Version = "v1" });
+
+            c.AddSecurityDefinition("oauth", new OpenApiSecurityScheme{
+                Description = "Standart Authorization header using Bearer scheme (\"bearer {token}\")",
+                In = ParameterLocation.Header,
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey
+            });
 
                 c.TagActionsBy(api =>
                 {
