@@ -13,6 +13,9 @@ using CoffeeShopAPI.UnitOfWork;
 using CoffeeShopAPI.UnitOfWork.Repositories;
 using CoffeeShopAPI.Services;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CoffeeShopAPI
 {
@@ -59,6 +62,24 @@ namespace CoffeeShopAPI
                 c.IncludeXmlComments(xmlPath);
             });
 
+            // Adding authentication.
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Auth:Issuer"],
+                        ValidAudience = Configuration["Auth:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(Configuration["Auth:Key"])
+                        )
+                    };
+                });
+
             services.AddAutoMapper(typeof(Program).Assembly);
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             #region Adding services
@@ -95,6 +116,7 @@ namespace CoffeeShopAPI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
