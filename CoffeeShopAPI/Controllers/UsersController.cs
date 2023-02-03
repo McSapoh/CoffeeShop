@@ -55,7 +55,7 @@ namespace CoffeeShopAPI.Controllers
             }
 
             // Checking existing user with same email.
-            if (_unitOfWork.UserRepository.GetByEmail(objectFromPage.Email) != null)
+            if (await _unitOfWork.UserRepository.GetByEmail(objectFromPage.Email) != null)
             {
                 _logger.LogError("User with this email is already exists");
                 return BadRequest(new JsonResult(new
