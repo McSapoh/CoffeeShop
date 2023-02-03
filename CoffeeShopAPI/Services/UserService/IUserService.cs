@@ -1,7 +1,7 @@
 ﻿using CoffeeShopAPI.Models;
 using System.Threading.Tasks;
 
-namespace CoffeeShopAPI.Services.UserService
+namespace CoffeeShopAPI.Services
 {
     public interface IUserService
     {

@@ -13,7 +13,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoffeeShopAPI.Services.UserService
+namespace CoffeeShopAPI.Services
 {
     public class UserService : ControllerBase, IUserService
     {
