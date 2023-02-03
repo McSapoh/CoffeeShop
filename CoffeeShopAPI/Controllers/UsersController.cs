@@ -22,14 +22,16 @@ namespace CoffeeShopAPI.Controllers
         private readonly IMapper _mapper;
         private readonly IImagesService _imagesService;
         protected readonly ILogger<UsersController> _logger;
+        protected readonly IUserService _userService;
 
         public UsersController(IUnitOfWork unitOfWork, IMapper mapper, IImagesService imagesService,
-            ILogger<UsersController> logger)
+            ILogger<UsersController> logger, IUserService userService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _imagesService = imagesService;
             _logger = logger;
+            _userService = userService;
         }
 
 
