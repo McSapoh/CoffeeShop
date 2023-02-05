@@ -20,12 +20,15 @@ namespace CoffeeShopAPI.Services
         private readonly IConfiguration _config;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UserService> _logger;
+        private readonly IImagesService _imagesService;
 
-        public UserService(IConfiguration config, IUnitOfWork unitOfWork, ILogger<UserService> logger)
+        public UserService(IConfiguration config, IUnitOfWork unitOfWork, 
+            ILogger<UserService> logger, IImagesService imagesService)
         {
             _config = config;
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _imagesService = imagesService;
         }
 
         public async Task<User> GetUserByIdentity()
