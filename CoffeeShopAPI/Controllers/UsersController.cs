@@ -111,83 +111,12 @@ namespace CoffeeShopAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Checking existing object.
-            var objectFromDb = _unitOfWork.UserRepository.GetById(id);
-            if (objectFromDb == null)
-            {
-                _logger.LogError($"Cannot find object with id = {id}");
-                return NotFound(new JsonResult(new
-                {
-                    success = false,
-                    message = $"Cannot find user with id {id}"
-                }));
-            }
-
-            // Checking existing user with same email.
-            if (objectFromPage.Email != objectFromDb.Email)
-            {
-                var checkEmailUser = await _unitOfWork.UserRepository.GetByEmail(objectFromPage.Email);
-                if (checkEmailUser != null && checkEmailUser.Email == objectFromPage.Email)
-                {
-                    _logger.LogError("User with this email is already exists");
-                    return BadRequest(new JsonResult(new
-                    {
-                        success = false,
-                        message = "User with this email is already exists"
-                    }));
-                }
-            }
-
-            // Updating user.
             var user = _mapper.Map<User>(objectFromPage);
-            objectFromDb.Adress = user.Adress;
-            objectFromDb.Email = user.Email;
-            objectFromDb.Name = user.Name;
-            objectFromDb.Password = user.Password;
+            var result = await _userService.Update(user, photo);
 
-            _unitOfWork.UserRepository.Update(objectFromDb);
-            if (await _unitOfWork.SaveAsync())
-            {
-                // Saving photo.
-                var imagePath = await _imagesService.SavePhoto("User", objectFromPage.Photo);
+            _logger.LogInformation($"PUT {this}.Update finished.");
 
-                // Chaecking is photo were saved.
-                if (imagePath != null)
-                {
-                    objectFromDb.ImagePath = imagePath;
-                    // Saving user with new ImagePath.
-                    _unitOfWork.UserRepository.Update(objectFromDb);
-                    var savingresult = await _unitOfWork.SaveAsync();
-                    _logger.LogInformation($"PUT {this}.Update finished with result {savingresult}.");
-                    if (savingresult)
-                        return Ok(new JsonResult(new
-                        {
-                            success = true,
-                            message = "Successfully updated"
-                        }));
-                    else
-                        return BadRequest(new JsonResult(new
-                        {
-                            success = false,
-                            message = "Error while updating"
-                        }));
-                }
-                _logger.LogInformation($"PUT {this}.Update finished.");
-                return Ok(new JsonResult(new
-                {
-                    success = true,
-                    message = "Successfully updated"
-                }));
-            }
-            else
-            {
-                _logger.LogInformation($"PUT {this}.Update finished.");
-                return BadRequest(new JsonResult(new
-                {
-                    success = false,
-                    message = "Error while updating"
-                }));
-            }
+            return result;
         }
 
         [HttpGet("")]
