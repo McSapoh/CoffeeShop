@@ -31,6 +31,85 @@ namespace CoffeeShopAPI.Services
             _imagesService = imagesService;
         }
 
+        public async Task<IActionResult> Update(User user, IFormFile photo)
+        {
+            // Checking existing object.
+            var objectFromDb = _unitOfWork.UserRepository.GetById(user.Id);
+            if (objectFromDb == null)
+            {
+                _logger.LogError($"Cannot find object with id = {user.Id}");
+                return NotFound(new JsonResult(new
+                {
+                    success = false,
+                    message = $"Cannot find user with id {user.Id}"
+                }));
+            }
+
+            // Checking existing user with same email.
+            if (user.Email != objectFromDb.Email)
+            {
+                var checkEmailUser = await _unitOfWork.UserRepository.GetByEmail(user.Email);
+                if (checkEmailUser != null && checkEmailUser.Email == user.Email)
+                {
+                    _logger.LogError("User with this email is already exists");
+                    return Conflict(new JsonResult(new
+                    {
+                        success = false,
+                        message = "User with this email is already exists"
+                    }));
+                }
+            }
+
+            // Updating user.
+            objectFromDb.Adress = user.Adress;
+            objectFromDb.Email = user.Email;
+            objectFromDb.Name = user.Name;
+            objectFromDb.Password = user.Password;
+
+            // Updating user.
+            _unitOfWork.UserRepository.Update(objectFromDb);
+            if (!await _unitOfWork.SaveAsync())
+                return BadRequest(new JsonResult(new
+                {
+                    success = false,
+                    message = "Error while updating, photo has not been saved"
+                }));
+
+
+            // Saving photo and and updating user.ImagePath.
+            // Saving photo.
+            var imagePath = await _imagesService.SavePhoto("User", photo);
+
+            // Chaecking is photo were saved.
+            if (imagePath != null)
+            {
+                _logger.LogInformation("Photo has been saved");
+                objectFromDb.ImagePath = imagePath;
+                // Saving user with new ImagePath.
+                _unitOfWork.UserRepository.Update(objectFromDb);
+                var savingresult = await _unitOfWork.SaveAsync();
+
+                if (savingresult)
+                    return Ok(new JsonResult(new
+                    {
+                        success = true,
+                        message = "Successfully updated"
+                    }));
+                else
+                    return BadRequest(new JsonResult(new
+                    {
+                        success = false,
+                        message = "Error while updating, Photo has been saved"
+                    }));
+            }
+
+            return Ok(new JsonResult(new
+            {
+                success = true,
+                message = "Successfully updated"
+            }));
+        }
+
         public async Task<User> GetUserByIdentity()
         {
             _logger.LogInformation($"{this}.GetUser called.");
