@@ -34,6 +34,80 @@ namespace CoffeeShopAPI.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// Logs in and returns JWT as response and refresh token in cookies.
+        /// </summary>
+        /// <response code="200">Returns JWT and refresh token</response>
+        /// <response code="400">If the model is not valid</response>
+        /// <response code="404">If cannot find user with current email</response>
+        /// <response code="409">If password is incorrect</response>
+        /// <response code="500">If unknown error occurred while editing refresh token</response>
+        [HttpPost("Login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<string>> Login([FromBody] LoginUserDTO userFromPage)
+        {
+            _logger.LogInformation($"POST {this}.Login called.");
+
+            // Validation.
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("ModelState is not valid");
+                return BadRequest(ModelState);
+            }
+
+            // Getting user from db.
+            var userFromDb = await _unitOfWork.UserRepository.GetByEmail(userFromPage.Email);
+
+            // Validation user from db.
+            if (userFromDb == null)
+            {
+                _logger.LogError($"POST {this}.Login cannot find user with current email");
+                return NotFound();
+            }
+            if (userFromDb.Password != userFromPage.Password)
+            {
+                _logger.LogError($"POST {this}.Login password doesnt match");
+                return Conflict();
+            }
+
+            // Getting tokens.
+            var JWTToken = _userService.GenerateJWT(userFromDb);
+            var RefreshToken = _userService.GenerateRefreshToken();
+
+            // Appending RefreshToken to response.
+            // Setting cookies.
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = RefreshToken.Expires
+            };
+
+            // Appending data to response.
+            Response.Cookies.Append("refreshToken", RefreshToken.Token, cookieOptions);
+
+
+            // Appending RefreshToken to userFromDB.
+            userFromDb.RefreshToken.Created = RefreshToken.Created;
+            userFromDb.RefreshToken.Expires = RefreshToken.Expires;
+            userFromDb.RefreshToken.Token = RefreshToken.Token;
+
+            // Updating userFromDb and saving changes into db.
+            _unitOfWork.UserRepository.Update(userFromDb);
+            var savingresult = await _unitOfWork.SaveAsync();
+
+            if (savingresult)
+                return Ok(JWTToken);
+            else
+                return StatusCode(500, new JsonResult(new
+                {
+                    success = false,
+                    message = "Error while updating, Photo has been saved"
+                }));
+        }
 
         [HttpPost("Register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
