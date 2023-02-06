@@ -145,7 +145,7 @@ namespace CoffeeShopAPI.Services
                 _config["Auth:Issuer"],
                 _config["Auth:Audience"],
                 claims,
-                expires: DateTime.Now.AddSeconds(double.Parse(_config["Auth:JWTExpires"])),
+                expires: DateTime.Now.AddHours(Convert.ToDouble(_config["Auth:JWTExpires"])),
                 signingCredentials: credentias
             );
 
