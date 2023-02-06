@@ -112,6 +112,7 @@ namespace CoffeeShopAPI.Controllers
             }
 
             var user = _mapper.Map<User>(objectFromPage);
+            user.Id = id;
             var result = await _userService.Update(user, photo);
 
             _logger.LogInformation($"PUT {this}.Update finished.");
