@@ -110,12 +110,12 @@ namespace CoffeeShopAPI.Services
             }));
         }
 
-        public async Task<User> GetUserByIdentity()
+        public async Task<User> GetUserByIdentity(HttpContext context)
         {
             _logger.LogInformation($"{this}.GetUser called.");
 
             // Getting identity from HttpContext.
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var identity = context.User.Identity as ClaimsIdentity;
 
             // Getting user by claims
             var user = await _unitOfWork.UserRepository.GetByEmail(

@@ -8,7 +8,7 @@ namespace CoffeeShopAPI.Services
     public interface IUserService
     {
         public Task<IActionResult> Update(User user, IFormFile photo);
-        public Task<User> GetUserByIdentity();
+        public Task<User> GetUserByIdentity(HttpContext context);
         public string GenerateJWT(User user);
         public RefreshToken GenerateRefreshToken();
         public void AppendRefreshTokenToResponse(RefreshToken newRefreshToken);
