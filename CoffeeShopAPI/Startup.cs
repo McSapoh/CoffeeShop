@@ -100,7 +100,8 @@ namespace CoffeeShopAPI
                         ValidAudience = Configuration["Auth:Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(Configuration["Auth:Key"])
-                        )
+                        ),
+                        ClockSkew = TimeSpan.Zero
                     };
                 });
 
