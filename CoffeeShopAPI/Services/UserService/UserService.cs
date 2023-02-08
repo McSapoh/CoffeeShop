@@ -31,6 +31,58 @@ namespace CoffeeShopAPI.Services
             _imagesService = imagesService;
         }
 
+        public async Task<IActionResult> Create(User user, IFormFile photo)
+        {
+            // Creating neccessary variables.
+            var type = "User";
+
+            // Building user.
+            user.RegistrationDate = DateTime.Now;
+            user.ImagePath = $"/Images/{type}/Default{type}Image.png";
+
+            // Creating object.
+            _unitOfWork.UserRepository.Create(user);
+
+            // Saving photo.
+            if (await _unitOfWork.SaveAsync())
+            {
+                // Saving photos.
+                var imagePath = await _imagesService.SavePhoto(type, photo);
+
+                // Checking result of saving photo.
+                if (imagePath == null)
+                {
+                    _logger.LogInformation("Photo is null");
+                    return StatusCode(201, new JsonResult(new
+                    {
+                        success = true,
+                        message = "Successfully saved"
+                    }));
+                }
+
+                // Setting ImagePath value from amgePath variable. 
+                _logger.LogInformation("Photo has been saved");
+                user.ImagePath = imagePath;
+
+                // Updating user and saving changes.
+                _unitOfWork.UserRepository.Update(user);
+                if(await _unitOfWork.SaveAsync())
+                    return StatusCode(201, new JsonResult(new
+                    {
+                        success = true,
+                        message = "Successfully saved"
+                    }));
+            }
+
+            // Returning error while saving result.
+            _logger.LogError($"Cannot find object with id = {user.Id}");
+            return StatusCode(500, new JsonResult(new
+            {
+                success = false,
+                message = "Error while saving"
+            }));
+        }
+
         public async Task<IActionResult> Update(User user, IFormFile photo)
         {
             // Checking existing object.
