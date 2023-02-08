@@ -1,6 +1,6 @@
 ﻿namespace CoffeeShopAPI.Services
 {
-    public class AuthService : IAuthservice
+    public class AuthService : IAuthService
     {
     }
 }

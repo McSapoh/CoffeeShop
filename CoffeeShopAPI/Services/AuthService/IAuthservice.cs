@@ -1,6 +1,6 @@
 ﻿namespace CoffeeShopAPI.Services
 {
-    public interface IAuthservice
+    public interface IAuthService
     {
     }
 }
