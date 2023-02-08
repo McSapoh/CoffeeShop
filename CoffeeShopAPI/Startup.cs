@@ -112,6 +112,7 @@ namespace CoffeeShopAPI
             services.AddScoped<IIngredientService, IngredientService>();
             services.AddScoped<IImagesService, ImagesService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
             #endregion
             #region Adding repositories
             services.AddScoped<IIngredientRepository, IngredientRepository>();
