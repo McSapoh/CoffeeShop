@@ -141,27 +141,13 @@ namespace CoffeeShopAPI.Controllers
 
             // Building user.
             var user = _mapper.Map<User>(objectFromPage);
-            var imagePath = await _imagesService.SavePhoto("User", objectFromPage.Photo);
-            if (imagePath != null)
-                user.ImagePath = imagePath;
-            user.RegistrationDate = DateTime.Now;
 
-            // Creating user.
-            _unitOfWork.UserRepository.Create(user);
-            var savingresult = await _unitOfWork.SaveAsync();
-            _logger.LogInformation($"PUT {this}.Update finished with result {savingresult}.");
-            if (savingresult)
-                return Ok(new JsonResult(new
-                {
-                    success = true,
-                    message = "Successfully updated"
-                }));
-            else
-                return BadRequest(new JsonResult(new
-                {
-                    success = false,
-                    message = "Error while updating"
-                }));
+            // Updating user.
+            var result = await _userService.Update(user, photo);
+
+            _logger.LogInformation($"PUT {this}.Update finished.");
+
+            return result;
         }
 
 
