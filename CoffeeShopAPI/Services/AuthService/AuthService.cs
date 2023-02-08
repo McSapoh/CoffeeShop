@@ -97,7 +97,7 @@ namespace CoffeeShopAPI.Services
             return refreshToken;
         }
 
-        public void AppendRefreshTokenToResponse(RefreshToken newRefreshToken)
+        public void AppendRefreshTokenToResponse(RefreshToken newRefreshToken, HttpResponse response)
         {
             _logger.LogInformation($"{this}.AppendRefreshTokenToResponse called.");
 
@@ -109,7 +109,7 @@ namespace CoffeeShopAPI.Services
             };
 
             // Appending data to response.
-            Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+            response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
             _logger.LogInformation($"{this}.AppendRefreshTokenToResponse finished.");
         }
     }

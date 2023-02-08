@@ -9,6 +9,6 @@ namespace CoffeeShopAPI.Services
         public Task<User> GetUserByIdentity(HttpContext context);
         public string GenerateJWT(User user);
         public RefreshToken GenerateRefreshToken();
-        public void AppendRefreshTokenToResponse(RefreshToken newRefreshToken);
+        public void AppendRefreshTokenToResponse(RefreshToken newRefreshToken, HttpResponse response);
     }
 }
