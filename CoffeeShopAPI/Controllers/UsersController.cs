@@ -77,19 +77,12 @@ namespace CoffeeShopAPI.Controllers
             }
 
             // Getting tokens.
-            var JWTToken = _userService.GenerateJWT(userFromDb);
-            var RefreshToken = _userService.GenerateRefreshToken();
+            var JWTToken = _authService.GenerateJWT(userFromDb);
+            var RefreshToken = _authService.GenerateRefreshToken();
 
             // Appending RefreshToken to response.
             // Setting cookies.
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = RefreshToken.Expires
-            };
-
-            // Appending data to response.
-            Response.Cookies.Append("refreshToken", RefreshToken.Token, cookieOptions);
+            _authService.AppendRefreshTokenToResponse(RefreshToken, Response);
 
 
             // Appending RefreshToken to userFromDB.
