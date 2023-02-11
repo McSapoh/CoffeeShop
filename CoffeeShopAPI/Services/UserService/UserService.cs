@@ -112,7 +112,7 @@ namespace CoffeeShopAPI.Services
             // Updating user.
             _unitOfWork.UserRepository.Update(objectFromDb);
             if (!await _unitOfWork.SaveAsync())
-                return BadRequest(new JsonResult(new
+                return StatusCode(500, new JsonResult(new
                 {
                     success = false,
                     message = "Error while updating, photo has not been saved"
@@ -133,20 +133,20 @@ namespace CoffeeShopAPI.Services
                 var savingresult = await _unitOfWork.SaveAsync();
 
                 if (savingresult)
-                    return Ok(new JsonResult(new
+                    return StatusCode(201, new JsonResult(new
                     {
                         success = true,
                         message = "Successfully updated"
                     }));
                 else
-                    return BadRequest(new JsonResult(new
+                    return StatusCode(500, new JsonResult(new
                     {
                         success = false,
                         message = "Error while updating, Photo has been saved"
                     }));
             }
 
-            return Ok(new JsonResult(new
+            return StatusCode(201, new JsonResult(new
             {
                 success = true,
                 message = "Successfully updated"
