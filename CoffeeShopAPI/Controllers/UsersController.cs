@@ -104,12 +104,19 @@ namespace CoffeeShopAPI.Controllers
                 }));
         }
 
+        /// <summary>
+        /// Creates new user.
+        /// </summary>
+        /// <response code="201">If the user successfully created</response>        /// <response code="400">If the photo is not an image or model is not valid</response>
+        /// <response code="400">If the photo is not an image or model is not valid</response>
+        /// <response code="500">If unknown error occurred while creating</response>
         [HttpPost("Register")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromForm] EditUserDTO objectFromPage, IFormFile photo)
         {
-            _logger.LogInformation($"PUT {this}.Update called.");
+            _logger.LogInformation($"POST {this}.Update called.");
 
             // Validation.
             if (photo != null && !photo.ContentType.Contains("image"))
@@ -123,33 +130,30 @@ namespace CoffeeShopAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Checking existing user with same email.
-            if (await _unitOfWork.UserRepository.GetByEmail(objectFromPage.Email) != null)
-            {
-                _logger.LogError("User with this email is already exists");
-                return BadRequest(new JsonResult(new
-                {
-                    success = false,
-                    message = "User with this email is already exists"
-                }));
-            }
-
             // Building user.
             var user = _mapper.Map<User>(objectFromPage);
 
             // Updating user.
             var result = await _userService.Update(user, photo);
 
-            _logger.LogInformation($"PUT {this}.Update finished.");
+            _logger.LogInformation($"POST {this}.Update finished.");
 
             return result;
         }
 
-
+        /// <summary>
+        /// Updates user.
+        /// </summary>
+        /// <response code="201">If the user successfully updated</response>        
+        /// <response code="400">If the photo is not an image or model is not valid</response>
+        /// <response code="404">If the user from db is null</response>
+        /// <response code="409">If user with the same email is already exists</response>
+        /// <response code="500">If unknown error occurred while updating</response>
         [HttpPut("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> UpdateUser(int id, [FromForm] EditUserDTO objectFromPage, IFormFile photo)
         {
             _logger.LogInformation($"PUT {this}.Update called.");
@@ -175,6 +179,10 @@ namespace CoffeeShopAPI.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Gets paged list of products.
+        /// </summary>
+        /// <response code="200">Returns paged list of porudcts</response>
         [HttpGet("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetUsers([FromQuery] PagingParameters pagingParameters)
