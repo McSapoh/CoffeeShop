@@ -36,10 +36,12 @@ namespace CoffeeShopAPI.Controllers.Ingredients
         /// </summary>
         /// <response code="200">Returns ingredient from db</response>
         /// <response code="400">If the id parameter is not int</response>
+        /// <response code="401">Unathorized</response>
         /// <response code="404">If the ingredient from db is null</response>
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(int id)
         {
@@ -53,8 +55,10 @@ namespace CoffeeShopAPI.Controllers.Ingredients
         /// Gets paged list of ingredients.
         /// </summary>
         /// <response code="200">Returns paged list of ingredients</response>
+        /// <response code="401">Unathorized</response>
         [HttpGet("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult Get([FromQuery] PagingParameters pagingParameters)
         {
             _logger.LogInformation($"GET {this}.Get called.");
@@ -71,10 +75,12 @@ namespace CoffeeShopAPI.Controllers.Ingredients
         /// </summary>
         /// <response code="201">If the ingredient successfully created</response>
         /// <response code="400">If model is not valid</response>
+        /// <response code="401">Unathorized</response>
         /// <response code="500">If unknown error occurred while creating</response>
         [HttpPost("")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromForm] EditIngredientDTO objectFromPage)
         {
@@ -100,12 +106,14 @@ namespace CoffeeShopAPI.Controllers.Ingredients
         /// </summary>
         /// <response code="201">If the ingredient successfully updated</response>        
         /// <response code="400">If model is not valid</response>
+        /// <response code="401">Unathorized</response>
         /// <response code="404">If the ingredient from db is null</response>
         /// <response code="409">If the ingredient from db has different IngredientType from ingredient mapped in controller</response>
         /// <response code="500">If unknown error occurred while updating</response>
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -134,12 +142,14 @@ namespace CoffeeShopAPI.Controllers.Ingredients
         /// </summary>
         /// <response code="200">If the ingredient successfully deleted</response>
         /// <response code="400">If the id parameter is not int</response>
+        /// <response code="401">Unathorized</response>
         /// <response code="404">If the ingredient from db is null</response>
         /// <response code="409">If the ingredient is already deleted</response>
         /// <response code="500">If unknown error occurred while deleting</response>
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
