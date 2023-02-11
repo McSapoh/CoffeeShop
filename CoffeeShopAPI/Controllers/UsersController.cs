@@ -4,18 +4,17 @@ using CoffeeShopAPI.Helpers.Paging;
 using CoffeeShopAPI.Models;
 using CoffeeShopAPI.Services;
 using CoffeeShopAPI.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]"), Authorize]
     public class UsersController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -41,12 +40,14 @@ namespace CoffeeShopAPI.Controllers
         /// </summary>
         /// <response code="200">Returns JWT and refresh token</response>
         /// <response code="400">If the model is not valid</response>
+        /// <response code="401">Unathorized</response>
         /// <response code="404">If cannot find user with current email</response>
         /// <response code="409">If password is incorrect</response>
         /// <response code="500">If unknown error occurred while editing refresh token</response>
-        [HttpPost("Login")]
+        [HttpPost("Login"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -107,12 +108,14 @@ namespace CoffeeShopAPI.Controllers
         /// <summary>
         /// Creates new user.
         /// </summary>
-        /// <response code="201">If the user successfully created</response>        /// <response code="400">If the photo is not an image or model is not valid</response>
+        /// <response code="201">If the user successfully created</response>        
         /// <response code="400">If the photo is not an image or model is not valid</response>
+        /// <response code="401">Unathorized</response>
         /// <response code="500">If unknown error occurred while creating</response>
-        [HttpPost("Register")]
+        [HttpPost("Register"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromForm] EditUserDTO objectFromPage, IFormFile photo)
         {
@@ -146,12 +149,14 @@ namespace CoffeeShopAPI.Controllers
         /// </summary>
         /// <response code="201">If the user successfully updated</response>        
         /// <response code="400">If the photo is not an image or model is not valid</response>
+        /// <response code="401">Unathorized</response>
         /// <response code="404">If the user from db is null</response>
         /// <response code="409">If user with the same email is already exists</response>
         /// <response code="500">If unknown error occurred while updating</response>
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> UpdateUser(int id, [FromForm] EditUserDTO objectFromPage, IFormFile photo)
@@ -182,9 +187,11 @@ namespace CoffeeShopAPI.Controllers
         /// <summary>
         /// Gets paged list of products.
         /// </summary>
+        /// <response code="401">Unathorized</response>
         /// <response code="200">Returns paged list of porudcts</response>
         [HttpGet("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult GetUsers([FromQuery] PagingParameters pagingParameters)
         {
             var objectsFromDb = _unitOfWork.UserRepository
