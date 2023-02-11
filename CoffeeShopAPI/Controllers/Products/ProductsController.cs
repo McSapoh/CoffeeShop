@@ -4,6 +4,7 @@ using CoffeeShopAPI.Helpers.Paging;
 using CoffeeShopAPI.Models;
 using CoffeeShopAPI.Services;
 using CoffeeShopAPI.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Controllers.Products
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerSettings(IgnoreApi = true), Authorize]
     public class ProductsController : Controller
     {
         protected readonly IUnitOfWork _unitOfWork;
@@ -36,6 +37,7 @@ namespace CoffeeShopAPI.Controllers.Products
         /// </summary>
         /// <response code="200">Returns paged list of porudcts</response>
         [HttpGet("")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult Get([FromQuery] PagingParameters pagingParameters)
         {
@@ -53,10 +55,12 @@ namespace CoffeeShopAPI.Controllers.Products
         /// </summary>
         /// <response code="200">Returns product from db</response>
         /// <response code="400">If the id parameter is not int</response>
+        /// <response code="401">Unathorized</response>
         /// <response code="404">If the product from db is null</response>
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(int id)
         {
@@ -71,10 +75,12 @@ namespace CoffeeShopAPI.Controllers.Products
         /// </summary>
         /// <response code="201">If the product successfully created</response>
         /// <response code="400">If the photo is not an image or model is not valid</response>
+        /// <response code="401">Unathorized</response>
         /// <response code="500">If unknown error occurred while creating</response>
         [HttpPost("")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromForm] EditProductDTO objectFromPage, IFormFile photo)
         {
@@ -104,11 +110,13 @@ namespace CoffeeShopAPI.Controllers.Products
         /// </summary>
         /// <response code="201">If the product successfully updated</response>        
         /// <response code="400">If the photo is not an image or model is not valid</response>
+        /// <response code="401">Unathorized</response>
         /// <response code="404">If the product from db is null</response>
         /// <response code="500">If unknown error occurred while updating</response>
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(int id, [FromForm] EditProductDTO objectFromPage, IFormFile photo)
@@ -139,12 +147,14 @@ namespace CoffeeShopAPI.Controllers.Products
         /// </summary>
         /// <response code="200">If the product successfully deleted</response>
         /// <response code="400">If the id parameter is not int</response>
+        /// <response code="401">Unathorized</response>
         /// <response code="404">If the product from db is null</response>
         /// <response code="409">If the product is already deleted</response>
         /// <response code="500">If unknown error occurred while deleting</response>
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
