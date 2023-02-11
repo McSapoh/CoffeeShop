@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -102,6 +103,66 @@ namespace CoffeeShopAPI.Controllers
                 {
                     success = false,
                     message = "Error while updating, Photo has been saved"
+                }));
+        }
+
+        /// <summary>
+        /// Logs in and returns JWT as response and refresh token in cookies.
+        /// </summary>
+        /// <response code="200">Returns JWT and refresh token</response>
+        /// <response code="401">Unathorized</response>
+        /// <response code="500">If unknown error occurred while editing refresh token</response>
+        [HttpPost("refresh-token")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<string>> RefreshToken()
+        {
+            _logger.LogInformation($"POST {this}.RefreshToken called.");
+
+            // Getting user from context
+            var user = await _authService.GetUserByIdentity(HttpContext);
+
+            // Getting refreshToken from cookies.
+            var OldRefreshToken = Request.Cookies["refreshToken"];
+
+            // Validation.
+            if (!user.RefreshToken.Token.Equals(OldRefreshToken))
+            {
+                _logger.LogError("Invalid Refresh Token");
+                return Unauthorized("Invalid Refresh Token");
+            }
+            else if (user.RefreshToken.Expires < DateTime.Now)
+            {
+                _logger.LogError("Token expired");
+                return Unauthorized("Token expired");
+            }
+            // Getting tokens.
+            var JWTToken = _authService.GenerateJWT(user);
+            var NewRefreshToken = _authService.GenerateRefreshToken();
+
+            // Appending RefreshToken to response.
+            _authService.AppendRefreshTokenToResponse(NewRefreshToken, Response);
+
+
+            // Appending RefreshToken to userFromDB.
+            user.RefreshToken.Created = NewRefreshToken.Created;
+            user.RefreshToken.Expires = NewRefreshToken.Expires;
+            user.RefreshToken.Token = NewRefreshToken.Token;
+
+            // Updating userFromDb and saving changes into db.
+            _unitOfWork.UserRepository.Update(user);
+            var savingresult = await _unitOfWork.SaveAsync();
+
+            _logger.LogInformation($"POST {this}.RefreshToken finished with result {savingresult}.");
+
+            if (savingresult)
+                return Ok(JWTToken);
+            else
+                return StatusCode(500, new JsonResult(new
+                {
+                    success = false,
+                    message = "Error while updating token in db"
                 }));
         }
 
