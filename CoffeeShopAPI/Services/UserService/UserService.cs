@@ -2,30 +2,21 @@
 using CoffeeShopAPI.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Services
 {
     public class UserService : ControllerBase, IUserService
     {
-        private readonly IConfiguration _config;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UserService> _logger;
         private readonly IImagesService _imagesService;
 
-        public UserService(IConfiguration config, IUnitOfWork unitOfWork, 
-            ILogger<UserService> logger, IImagesService imagesService)
+        public UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger, 
+            IImagesService imagesService)
         {
-            _config = config;
             _unitOfWork = unitOfWork;
             _logger = logger;
             _imagesService = imagesService;
