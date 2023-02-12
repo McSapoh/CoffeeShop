@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CoffeeShopAPI.Helpers.DTO.User;
 using CoffeeShopAPI.Models;
 using CoffeeShopAPI.UnitOfWork;
 using Microsoft.AspNetCore.Http;
@@ -23,6 +24,26 @@ namespace CoffeeShopAPI.Services
             _logger = logger;
             _imagesService = imagesService;
             _mapper = mapper;
+        }
+
+        public async Task<IActionResult> Get(int id)
+        {
+            // Getting userFromDb.
+            var userFromDb = await _unitOfWork.UserRepository.GetByIdAsync(id);
+
+            // Checking userFromDb.
+            if (userFromDb == null)
+            {
+                _logger.LogError($"Cannot find object with id = {id}");
+                return NotFound(new JsonResult(new
+                {
+                    success = false,
+                    message = $"Cannot find object with id = {id}"
+                }));
+            }
+
+            var UserDTO = _mapper.Map<DisplayUserDTO>(userFromDb);
+            return Ok(UserDTO);
         }
 
         public async Task<IActionResult> Create(User user, IFormFile photo)

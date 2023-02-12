@@ -7,6 +7,7 @@ namespace CoffeeShopAPI.Services
 {
     public interface IUserService
     {
+        public Task<IActionResult> Get(int id);
         public Task<IActionResult> Create(User user, IFormFile photo);
         public Task<IActionResult> Update(User user, IFormFile photo);
     }
