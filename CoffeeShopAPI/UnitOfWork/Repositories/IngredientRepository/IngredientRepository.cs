@@ -12,8 +12,8 @@ namespace CoffeeShopAPI.UnitOfWork.Repositories
         {
             _dbSet = db.Set<Ingredient>();
         }
-        public override Ingredient GetById(int Id) => _dbSet.First(p => p.Id == Id);
-        public async override Task<Ingredient> GetByIdAsync(int Id) => await _dbSet.FirstAsync(p => p.Id == Id);
+        public override Ingredient GetById(int Id) => _dbSet.FirstOrDefault(p => p.Id == Id);
+        public async override Task<Ingredient> GetByIdAsync(int Id) => await _dbSet.FirstOrDefaultAsync(p => p.Id == Id);
         public PagedList<Ingredient> GetPagedList(PagingParameters pagingParameters, string type)
         {
             var items = _dbSet.Where(o => o.IngredientType == type).Skip(
