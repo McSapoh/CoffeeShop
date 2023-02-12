@@ -1,4 +1,5 @@
-﻿using CoffeeShopAPI.Models;
+﻿using AutoMapper;
+using CoffeeShopAPI.Models;
 using CoffeeShopAPI.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,13 +14,15 @@ namespace CoffeeShopAPI.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UserService> _logger;
         private readonly IImagesService _imagesService;
+        private readonly IMapper _mapper;
 
         public UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger, 
-            IImagesService imagesService)
+            IImagesService imagesService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _imagesService = imagesService;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Create(User user, IFormFile photo)
