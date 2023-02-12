@@ -246,6 +246,26 @@ namespace CoffeeShopAPI.Controllers
         }
 
         /// <summary>
+        /// Gets user.
+        /// </summary>
+        /// <response code="200">Returns user from db</response>
+        /// <response code="400">If the id parameter is not int</response>
+        /// <response code="401">Unathorized</response>
+        /// <response code="404">If the user from db is null</response>
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Get(int id)
+        {
+            _logger.LogInformation($"GET({id}) {this}.Get called.");
+            var result = await _userService.Get(id);
+            _logger.LogInformation($"GET({id}) {this}.Get finished.");
+            return result;
+        }
+
+        /// <summary>
         /// Gets paged list of products.
         /// </summary>
         /// <response code="401">Unathorized</response>
