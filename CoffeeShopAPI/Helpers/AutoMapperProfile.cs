@@ -14,6 +14,8 @@ namespace CoffeeShopAPI.Helpers
             #region Products
             CreateMap<Product, ProductDTO>();
             CreateMap<ProductDTO, Product>();
+            CreateMap<Product, DisplayProductDTO>();
+            CreateMap<DisplayProductDTO, Product>();
             CreateMap<Product, EditProductDTO>();
             CreateMap<EditProductDTO, Product>();
             #endregion
