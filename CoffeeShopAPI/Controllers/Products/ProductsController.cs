@@ -85,24 +85,27 @@ namespace CoffeeShopAPI.Controllers.Products
         public async Task<IActionResult> Create([FromForm] EditProductDTO objectFromPage, IFormFile photo)
         {
             _logger.LogInformation($"POST {this}.Create called.");
+
+            // Validation.
             if (photo != null && !photo.ContentType.Contains("image"))
             {
                 _logger.LogWarning("Parameter photo is not an image");
                 return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
             }
-            if (ModelState.IsValid)
-            {
-                var product = _mapper.Map<Product>(objectFromPage);
-                product.ProductType = _productType.ToString();
-                var result = await _productService.Create(product, photo);
-                _logger.LogInformation($"POST {this}.Create finished.");
-                return result;
-            }
-            else
+            if (!ModelState.IsValid)
             {
                 _logger.LogWarning("ModelState is not valid");
                 return BadRequest(ModelState);
             }
+
+            // Building product.
+            var product = _mapper.Map<Product>(objectFromPage);
+            product.ProductType = _productType.ToString();
+
+            // Creating product.
+            var result = await _productService.Create(product, photo);
+            _logger.LogInformation($"POST {this}.Create finished.");
+            return result;
         }
 
         /// <summary>
@@ -122,24 +125,27 @@ namespace CoffeeShopAPI.Controllers.Products
         public async Task<IActionResult> Update(int id, [FromForm] EditProductDTO objectFromPage, IFormFile photo)
         {
             _logger.LogInformation($"PUT {this}.Update called.");
+
+            // Validation.
             if (photo != null && !photo.ContentType.Contains("image"))
             {
                 _logger.LogWarning("Parameter photo is not an image");
                 return BadRequest(new JsonResult(new { success = false, message = $"File is not a photo" }));
             }
-            if (ModelState.IsValid)
-            {
-                var product = _mapper.Map<Product>(objectFromPage);
-                product.Id = id;
-                var result = await _productService.Update(product, photo);
-                _logger.LogInformation($"PUT {this}.Update finished.");
-                return result;
-            }
-            else
+            if (!ModelState.IsValid)
             {
                 _logger.LogWarning("ModelState is not valid");
                 return BadRequest(ModelState);
             }
+
+            // Building product.
+            var product = _mapper.Map<Product>(objectFromPage);
+            product.Id = id;
+
+            // Updating product.
+            var result = await _productService.Update(product, photo);
+            _logger.LogInformation($"PUT {this}.Update finished.");
+            return result;
         }
 
         /// <summary>
