@@ -67,7 +67,7 @@ namespace CoffeeShopAPI.Controllers.Products
             _logger.LogInformation($"GET({id}) {this}.Get called.");
             var result = await _productService.Get(id); 
             _logger.LogInformation($"GET({id}) {this}.Get finished.");
-            return StatusCode(result.Status, result.Data);
+            return result;
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace CoffeeShopAPI.Controllers.Products
                 product.ProductType = _productType.ToString();
                 var result = await _productService.Create(product, photo);
                 _logger.LogInformation($"POST {this}.Create finished.");
-                return StatusCode(result.Status, result.Data);
+                return result;
             }
             else
             {
@@ -133,7 +133,7 @@ namespace CoffeeShopAPI.Controllers.Products
                 product.Id = id;
                 var result = await _productService.Update(product, photo);
                 _logger.LogInformation($"PUT {this}.Update finished.");
-                return StatusCode(result.Status, result.Data);
+                return result;
             }
             else
             {
@@ -163,7 +163,7 @@ namespace CoffeeShopAPI.Controllers.Products
             _logger.LogInformation($"DELETE {this}.DELETE called.");
             var result = await _productService.Delete(id);
             _logger.LogInformation($"DELETE {this}.DELETE finished.");
-            return StatusCode(result.Status, result.Data);
+            return result;
         }
     }
 }
