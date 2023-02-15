@@ -2,6 +2,7 @@
 using CoffeeShopAPI.Models;
 using CoffeeShopAPI.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -10,10 +11,12 @@ namespace CoffeeShopAPI.Services
     public class IngredientService : IIngredientService
     {
         private readonly IUnitOfWork _unitOfWork;
+        protected readonly ILogger<IngredientService> _logger;
 
-        public IngredientService(IUnitOfWork unitOfWork)
+        public IngredientService(IUnitOfWork unitOfWork, ILogger<IngredientService> logger)
         {
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
         public async Task<ServiceResponse> Get(int id)
         {
