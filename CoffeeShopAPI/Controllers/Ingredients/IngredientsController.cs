@@ -48,7 +48,7 @@ namespace CoffeeShopAPI.Controllers.Ingredients
             _logger.LogInformation($"GET({id}) {this}.Get called.");
             var result = await _ingredientService.Get(id);
             _logger.LogInformation($"GET({id}) {this}.Get finished.");
-            return StatusCode(result.Status, result.Data);
+            return result;
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace CoffeeShopAPI.Controllers.Ingredients
             ingredient.IngredientType = _ingredientType.ToString();
             var result = await _ingredientService.Create(ingredient);
             _logger.LogInformation($"POST {this}.Create finished.");
-            return StatusCode(result.Status, result.Data);
+            return result;
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace CoffeeShopAPI.Controllers.Ingredients
             ingredient.IngredientType = _ingredientType.ToString();
             var result = await _ingredientService.Update(ingredient);
             _logger.LogInformation($"PUT {this}.Update finished.");
-            return StatusCode(result.Status, result.Data);
+            return result;
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace CoffeeShopAPI.Controllers.Ingredients
             _logger.LogInformation($"DELETE {this}.DELETE called.");
             var result = await _ingredientService.Delete(id);
             _logger.LogInformation($"DELETE {this}.DELETE finished.");
-            return StatusCode(result.Status, result.Data);
+            return result;
         }
     }
 }
