@@ -4,6 +4,7 @@ using CoffeeShopAPI.Helpers.Paging;
 using CoffeeShopAPI.Models;
 using CoffeeShopAPI.Services;
 using CoffeeShopAPI.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Controllers.Ingredients
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerSettings(IgnoreApi = true), Authorize]
     public class IngredientsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
