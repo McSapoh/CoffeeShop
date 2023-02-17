@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoffeeShopAPI.Migrations
 {
     [DbContext(typeof(CoffeeShopContext))]
-    [Migration("20230201171636_InitializeDB")]
+    [Migration("20230217204659_InitializeDB")]
     partial class InitializeDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,30 @@ namespace CoffeeShopAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("CoffeeShopAPI.Models.ConfirmEmailToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("ConfirmEmailTokens");
+                });
 
             modelBuilder.Entity("CoffeeShopAPI.Models.Ingredient", b =>
                 {
@@ -160,7 +184,7 @@ namespace CoffeeShopAPI.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("RefreshToken");
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("CoffeeShopAPI.Models.Size", b =>
@@ -202,7 +226,6 @@ namespace CoffeeShopAPI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Adress")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -211,6 +234,9 @@ namespace CoffeeShopAPI.Migrations
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -226,6 +252,17 @@ namespace CoffeeShopAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("CoffeeShopAPI.Models.ConfirmEmailToken", b =>
+                {
+                    b.HasOne("CoffeeShopAPI.Models.User", "User")
+                        .WithOne("ConfirmEmailToken")
+                        .HasForeignKey("CoffeeShopAPI.Models.ConfirmEmailToken", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CoffeeShopAPI.Models.Order", b =>
@@ -313,6 +350,8 @@ namespace CoffeeShopAPI.Migrations
 
             modelBuilder.Entity("CoffeeShopAPI.Models.User", b =>
                 {
+                    b.Navigation("ConfirmEmailToken");
+
                     b.Navigation("Orders");
 
                     b.Navigation("RefreshToken");

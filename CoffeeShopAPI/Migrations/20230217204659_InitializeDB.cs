@@ -48,8 +48,9 @@ namespace CoffeeShopAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Adress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Adress = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -82,6 +83,27 @@ namespace CoffeeShopAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ConfirmEmailTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConfirmEmailTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ConfirmEmailTokens_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
@@ -103,7 +125,7 @@ namespace CoffeeShopAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RefreshToken",
+                name: "RefreshTokens",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -115,9 +137,9 @@ namespace CoffeeShopAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RefreshToken", x => x.Id);
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RefreshToken_Users_UserId",
+                        name: "FK_RefreshTokens_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -167,6 +189,12 @@ namespace CoffeeShopAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ConfirmEmailTokens_UserId",
+                table: "ConfirmEmailTokens",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
                 table: "Orders",
                 column: "UserId");
@@ -192,8 +220,8 @@ namespace CoffeeShopAPI.Migrations
                 column: "SizeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RefreshToken_UserId",
-                table: "RefreshToken",
+                name: "IX_RefreshTokens_UserId",
+                table: "RefreshTokens",
                 column: "UserId",
                 unique: true);
 
@@ -206,10 +234,13 @@ namespace CoffeeShopAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ConfirmEmailTokens");
+
+            migrationBuilder.DropTable(
                 name: "ProductOrders");
 
             migrationBuilder.DropTable(
-                name: "RefreshToken");
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "Ingredients");
