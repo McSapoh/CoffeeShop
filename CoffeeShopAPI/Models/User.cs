@@ -15,6 +15,7 @@ namespace CoffeeShopAPI.Models
         public string Email { get; set; }
         public string Adress { get; set; }
         public string ImagePath { get; set; } = "/User/DefaultUserImage";
+        public bool IsConfirmed { get; set; } = false;
         public DateTime RegistrationDate { get; set; }
         [MinLength(4), Required(ErrorMessage = "Please enter Your password")]
         public string Password { get; set; }
@@ -22,6 +23,7 @@ namespace CoffeeShopAPI.Models
         #region Objects for relationships
         public virtual ICollection<Order> Orders { get; set; }
         public virtual RefreshToken RefreshToken { get; set; }
+        public virtual ConfirmEmailToken ConfirmEmailToken { get; set; }
         #endregion
     }
 }

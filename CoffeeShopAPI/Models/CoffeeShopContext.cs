@@ -12,7 +12,7 @@ namespace CoffeeShopAPI.Models
         public DbSet<Size> Sizes { get; set; }
         public DbSet<ProductOrder> ProductOrders { get; set; }
         public DbSet<Order> Orders { get; set; }
-
-        
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<ConfirmEmailToken> ConfirmEmailTokens { get; set; }
     }
 }
