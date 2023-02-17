@@ -35,11 +35,7 @@ namespace CoffeeShopAPI.Services
             if (userFromDb == null)
             {
                 _logger.LogError($"Cannot find object with id = {id}");
-                return NotFound(new JsonResult(new
-                {
-                    success = false,
-                    message = $"Cannot find object with id = {id}"
-                }));
+                return NotFound();
             }
 
             var UserDTO = _mapper.Map<DisplayUserDTO>(userFromDb);
@@ -68,11 +64,7 @@ namespace CoffeeShopAPI.Services
                 if (imagePath == null)
                 {
                     _logger.LogInformation("Photo is null");
-                    return StatusCode(201, new JsonResult(new
-                    {
-                        success = true,
-                        message = "Successfully saved"
-                    }));
+                    return StatusCode(201);
                 }
 
                 // Setting ImagePath value from amgePath variable. 
@@ -82,20 +74,12 @@ namespace CoffeeShopAPI.Services
                 // Updating user and saving changes.
                 _unitOfWork.UserRepository.Update(user);
                 if(await _unitOfWork.SaveAsync())
-                    return StatusCode(201, new JsonResult(new
-                    {
-                        success = true,
-                        message = "Successfully saved"
-                    }));
+                    return StatusCode(201);
             }
 
             // Returning error while saving result.
             _logger.LogError($"Cannot find object with id = {user.Id}");
-            return StatusCode(500, new JsonResult(new
-            {
-                success = false,
-                message = "Error while saving"
-            }));
+            return StatusCode(500);
         }
 
         public async Task<IActionResult> Update(User user, IFormFile photo)
@@ -105,11 +89,7 @@ namespace CoffeeShopAPI.Services
             if (objectFromDb == null)
             {
                 _logger.LogError($"Cannot find object with id = {user.Id}");
-                return NotFound(new JsonResult(new
-                {
-                    success = false,
-                    message = $"Cannot find user with id {user.Id}"
-                }));
+                return NotFound();
             }
 
             // Checking existing user with same email.
@@ -119,11 +99,7 @@ namespace CoffeeShopAPI.Services
                 if (checkEmailUser != null && checkEmailUser.Email == user.Email)
                 {
                     _logger.LogError("User with this email is already exists");
-                    return Conflict(new JsonResult(new
-                    {
-                        success = false,
-                        message = "User with this email is already exists"
-                    }));
+                    return Conflict();
                 }
             }
 
@@ -136,11 +112,7 @@ namespace CoffeeShopAPI.Services
             // Updating user.
             _unitOfWork.UserRepository.Update(objectFromDb);
             if (!await _unitOfWork.SaveAsync())
-                return StatusCode(500, new JsonResult(new
-                {
-                    success = false,
-                    message = "Error while updating, photo has not been saved"
-                }));
+                return StatusCode(500);
 
 
             // Saving photo and and updating user.ImagePath.
@@ -157,24 +129,12 @@ namespace CoffeeShopAPI.Services
                 var savingresult = await _unitOfWork.SaveAsync();
 
                 if (savingresult)
-                    return StatusCode(201, new JsonResult(new
-                    {
-                        success = true,
-                        message = "Successfully updated"
-                    }));
+                    return StatusCode(201);
                 else
-                    return StatusCode(500, new JsonResult(new
-                    {
-                        success = false,
-                        message = "Error while updating, Photo has been saved"
-                    }));
+                    return StatusCode(500);
             }
 
-            return StatusCode(201, new JsonResult(new
-            {
-                success = true,
-                message = "Successfully updated"
-            }));
+            return StatusCode(201);
         }
     }
 }
