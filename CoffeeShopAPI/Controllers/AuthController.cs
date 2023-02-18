@@ -20,12 +20,14 @@ namespace CoffeeShopAPI.Controllers
         protected readonly ILogger<AuthController> _logger;
         protected readonly IUserService _userService;
         private readonly IAuthService _authService;
+        private readonly IEmailService _emailService;
 
-        public AuthController(IUnitOfWork unitOfWork, IMapper mapper, 
+        public AuthController(IUnitOfWork unitOfWork, IMapper mapper, IEmailService emailService,
             ILogger<AuthController> logger, IUserService userService, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _emailService = emailService;
             _logger = logger;
             _userService = userService;
             _authService = authService;
