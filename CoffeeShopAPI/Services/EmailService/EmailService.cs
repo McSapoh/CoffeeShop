@@ -51,5 +51,15 @@ namespace CoffeeShopAPI.Services
                 return false;
             }
         }
+        public EmailDTO BuildConfirmationMail(string email, string username, string confirmationLink)
+        {
+            var EmailDTO = new EmailDTO
+            {
+                Subject = "Confirmation email",
+                Body = $"Dear {username}, \nThis is your confirmation link\n {confirmationLink} ",
+                ToEmail = email,
+            };
+            return EmailDTO;
+        }
     }
 }
