@@ -14,6 +14,6 @@ namespace CoffeeShopAPI.UnitOfWork.Repositories
         public override ConfirmEmailToken GetById(int Id) => _dbSet.FirstOrDefault(p => p.Id == Id);
         public async override Task<ConfirmEmailToken> GetByIdAsync(int Id) => await _dbSet.FirstOrDefaultAsync(p => p.Id == Id);
         public async Task<ConfirmEmailToken> GetByToken(string token) => 
-            await _dbSet.SingleOrDefaultAsync(t => t.Token == token);
+            await _dbSet.Include(t => t.User).SingleOrDefaultAsync(t => t.Token == token);
     }
 }
