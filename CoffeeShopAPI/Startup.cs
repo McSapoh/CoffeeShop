@@ -117,6 +117,7 @@ namespace CoffeeShopAPI
             #endregion
             #region Adding repositories
             services.AddScoped<IIngredientRepository, IngredientRepository>();
+            services.AddScoped<IConfirmEmailTokenRepository, ConfirmEmailTokenRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductOrderRepository, ProductOrderRepository>();
