@@ -9,6 +9,7 @@ namespace CoffeeShopAPI.UnitOfWork
         private readonly CoffeeShopContext _db;
         public IUserRepository UserRepository { get; set; }
         public IIngredientRepository IngredientRepository { get; set; }
+        public IConfirmEmailTokenRepository ConfirmEmailTokenRepository { get; set; }
         public IOrderRepository OrderRepository { get; set; }
         public IProductOrderRepository ProductOrderRepository { get; set; }
         public IProductRepository ProductRepository { get; set; }
@@ -26,6 +27,7 @@ namespace CoffeeShopAPI.UnitOfWork
             ProductRepository = new ProductRepository(context);
             SizeRepository = new SizeRepository(context);
             UserRepository = new UserRepository(context);
+            ConfirmEmailTokenRepository = new ConfirmEmailTokenRepository(context);
         }
     }
 }
