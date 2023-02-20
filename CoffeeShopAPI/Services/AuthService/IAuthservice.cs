@@ -1,5 +1,6 @@
 ﻿using CoffeeShopAPI.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Services
@@ -10,5 +11,6 @@ namespace CoffeeShopAPI.Services
         public string GenerateJWT(User user);
         public RefreshToken GenerateRefreshToken();
         public void AppendRefreshTokenToResponse(RefreshToken newRefreshToken, HttpResponse response);
+        public Task<IActionResult> ConfirmEmail(ConfirmEmailToken confirmEmailToken);
     }
 }

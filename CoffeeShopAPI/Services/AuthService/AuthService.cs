@@ -112,5 +112,18 @@ namespace CoffeeShopAPI.Services
             response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
             _logger.LogInformation($"{this}.AppendRefreshTokenToResponse finished.");
         }
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailToken confirmEmailToken)
+        {
+            // Confirmation email.
+            confirmEmailToken.User.IsConfirmed = true;
+
+            // Saving changes.
+            if (!await _unitOfWork.SaveAsync())
+            {
+                _logger.LogError("Unknown error occurred while creating");
+                return StatusCode(500);
+            }
+            return Ok();
+        }
     }
 }
