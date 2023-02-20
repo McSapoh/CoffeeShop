@@ -201,5 +201,45 @@ namespace CoffeeShopAPI.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Confirms email.
+        /// </summary>
+        /// <response code="200">If email successfuly confirmed</response>        
+        /// <response code="400">If token is expired</response>
+        /// <response code="401">Unathorized</response>
+        /// <response code="404">If cannot find user with current email</response>
+        /// <response code="500">If unknown error occurred while creating</response>
+        [HttpPost("Confirm"), AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string tokenValue, int userId)
+        {
+            _logger.LogInformation($"POST {this}.ConfirmEmail called.");
+
+            // Getting TokenFromDb.
+            var TokenFromDb = await _unitOfWork.ConfirmEmailTokenRepository.GetByToken(tokenValue);
+
+            // Validation.
+            if (TokenFromDb == null || TokenFromDb.UserId != userId)
+            {
+                _logger.LogError($"Token not found.");
+                return NotFound();
+            }
+            if (TokenFromDb.Expires < DateTime.Now)
+            {
+                _logger.LogError($"Token expired.");
+                return StatusCode(498);
+            }
+
+            // Action.
+            var result = await _authService.ConfirmEmail(TokenFromDb);
+
+            _logger.LogInformation($"POST {this}.ConfirmEmail finished.");
+
+            return result;
+        }
     }
 }
