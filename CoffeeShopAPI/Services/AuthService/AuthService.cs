@@ -20,13 +20,15 @@ namespace CoffeeShopAPI.Services
         private readonly IConfiguration _config;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AuthService> _logger;
+        private readonly IEmailService _emailService;
 
         public AuthService(IConfiguration config, IUnitOfWork unitOfWork, 
-            ILogger<AuthService> logger)
+            ILogger<AuthService> logger, IEmailService emailService)
         {
             _config = config;
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _emailService = emailService;
         }
         public async Task<User> GetUserByIdentity(HttpContext context)
         {
