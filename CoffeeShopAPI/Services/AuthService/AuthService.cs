@@ -74,16 +74,7 @@ namespace CoffeeShopAPI.Services
         public RefreshToken GenerateRefreshToken()
         {
             _logger.LogInformation($"{this}.GenerateRefreshToken called.");
-            string token;
-
-            // Creating base64 encoded random security token.
-            using (RandomNumberGenerator rng = new RNGCryptoServiceProvider())
-            {
-                byte[] tokenData = new byte[32];
-                rng.GetBytes(tokenData);
-
-                token = Convert.ToBase64String(tokenData);
-            }
+            string token = GenerateRandomToken();
 
             // Building RefreshToken.
             var refreshToken = new RefreshToken
@@ -97,6 +88,18 @@ namespace CoffeeShopAPI.Services
             return refreshToken;
         }
 
+        public string GenerateRandomToken()
+        {
+            // Creating base64 encoded random security token.
+            using (RandomNumberGenerator rng = new RNGCryptoServiceProvider())
+            {
+                byte[] tokenData = new byte[32];
+                rng.GetBytes(tokenData);
+
+                var token = Convert.ToBase64String(tokenData);
+                return token;
+            }
+        }
         public void AppendRefreshTokenToResponse(RefreshToken newRefreshToken, HttpResponse response)
         {
             _logger.LogInformation($"{this}.AppendRefreshTokenToResponse called.");
@@ -112,6 +115,7 @@ namespace CoffeeShopAPI.Services
             response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
             _logger.LogInformation($"{this}.AppendRefreshTokenToResponse finished.");
         }
+        
         public async Task<IActionResult> ConfirmEmail(ConfirmEmailToken confirmEmailToken)
         {
             // Confirmation email.

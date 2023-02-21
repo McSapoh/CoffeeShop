@@ -10,6 +10,7 @@ namespace CoffeeShopAPI.Services
         public Task<User> GetUserByIdentity(HttpContext context);
         public string GenerateJWT(User user);
         public RefreshToken GenerateRefreshToken();
+        public string GenerateRandomToken();
         public void AppendRefreshTokenToResponse(RefreshToken newRefreshToken, HttpResponse response);
         public Task<IActionResult> ConfirmEmail(ConfirmEmailToken confirmEmailToken);
     }
