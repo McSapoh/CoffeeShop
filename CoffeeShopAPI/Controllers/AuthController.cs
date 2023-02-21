@@ -231,7 +231,7 @@ namespace CoffeeShopAPI.Controllers
         /// <response code="401">Unathorized</response>
         /// <response code="404">If cannot find user with current email</response>
         /// <response code="500">If unknown error occurred while creating</response>
-        [HttpPost("Confirm"), AllowAnonymous]
+        [HttpGet("Confirm"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
