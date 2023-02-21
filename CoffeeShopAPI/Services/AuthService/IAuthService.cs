@@ -13,5 +13,6 @@ namespace CoffeeShopAPI.Services
         public string GenerateRandomToken();
         public void AppendRefreshTokenToResponse(RefreshToken newRefreshToken, HttpResponse response);
         public Task<IActionResult> ConfirmEmail(ConfirmEmailToken confirmEmailToken);
+        public Task<bool> SendConfirmationEmail(User userFromDb);
     }
 }

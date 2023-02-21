@@ -131,5 +131,19 @@ namespace CoffeeShopAPI.Services
             }
             return Ok();
         }
+
+        public async Task<bool> SendConfirmationEmail(User userFromDb)
+        {
+            // Building email.
+            var ConfirmationLink = Request.Scheme + "://" + Request.Host +
+                Url.Action("ConfirmEmail", "Auth") +
+                $"?tokenValue={userFromDb.ConfirmEmailToken.Token}&userId={userFromDb.Id}";
+            var Email = _emailService.BuildConfirmationMail(
+                userFromDb.Email, userFromDb.Name, ConfirmationLink
+            );
+
+            // Sending Email.
+            return await _emailService.SendEmail(Email);
+        }
     }
 }
