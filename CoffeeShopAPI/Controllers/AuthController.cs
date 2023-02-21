@@ -192,9 +192,31 @@ namespace CoffeeShopAPI.Controllers
 
             // Building user.
             var user = _mapper.Map<User>(objectFromPage);
+            user.ConfirmEmailToken = new ConfirmEmailToken
+            {
+                Token = _authService.GenerateRandomToken(),
+                Expires = DateTime.Now.AddMinutes(5)
+            };
 
             // Updating user.
-            var result = await _userService.Update(user, photo);
+            var result = await _userService.Create(user, photo);
+
+            // Getting StatusCode of result.
+            var StatusOfResult = (int)result
+                .GetType()
+                .GetProperty("StatusCode")
+                .GetValue(result, null);
+
+            // Checking StatusOfResult to send email.
+            if (StatusOfResult == 201)
+            {
+                var IsEmailSend = await _authService.SendConfirmationEmail(user);
+
+                if (IsEmailSend)
+                    result = StatusCode(201, "Email was sended");
+                else
+                    result = StatusCode(201, "Email was not sended");
+            }
 
             _logger.LogInformation($"POST {this}.Update finished.");
 
