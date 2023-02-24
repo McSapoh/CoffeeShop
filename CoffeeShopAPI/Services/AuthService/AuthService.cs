@@ -98,7 +98,10 @@ namespace CoffeeShopAPI.Services
                 byte[] tokenData = new byte[32];
                 rng.GetBytes(tokenData);
 
-                var token = Convert.ToBase64String(tokenData);
+                var token = Convert.ToBase64String(tokenData)
+                    .Replace("+", "-")
+                    .Replace("/", "_")
+                    .Replace("=", "");
                 return token;
             }
         }
@@ -120,13 +123,6 @@ namespace CoffeeShopAPI.Services
         
         public async Task<IActionResult> ConfirmEmail(ConfirmEmailToken confirmEmailToken)
         {
-            // Checking is account is already confirmed.
-            if(confirmEmailToken.User.IsConfirmed)
-            {
-                _logger.LogError("Account is alred confirmed");
-                return Conflict();
-            }
-
             // Confirmation email.
             confirmEmailToken.User.IsConfirmed = true;
 
