@@ -120,8 +120,18 @@ namespace CoffeeShopAPI.Services
         
         public async Task<IActionResult> ConfirmEmail(ConfirmEmailToken confirmEmailToken)
         {
+            // Checking is account is already confirmed.
+            if(confirmEmailToken.User.IsConfirmed)
+            {
+                _logger.LogError("Account is alred confirmed");
+                return Conflict();
+            }
+
             // Confirmation email.
             confirmEmailToken.User.IsConfirmed = true;
+
+            // Expiring token.
+            confirmEmailToken.Expires = DateTime.Now;
 
             // Saving changes.
             if (!await _unitOfWork.SaveAsync())
