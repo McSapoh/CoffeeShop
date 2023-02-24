@@ -210,7 +210,7 @@ namespace CoffeeShopAPI.Controllers
             // Checking StatusOfResult to send email.
             if (StatusOfResult == 201)
             {
-                var IsEmailSend = await _authService.SendConfirmationEmail(user);
+                var IsEmailSend = await _authService.SendConfirmationEmail(user, Request, Url);
 
                 if (IsEmailSend)
                     result = StatusCode(201, "Email was sended");
