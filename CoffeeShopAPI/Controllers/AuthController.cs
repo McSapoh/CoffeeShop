@@ -168,28 +168,39 @@ namespace CoffeeShopAPI.Controllers
         /// <response code="201">If the user successfully created</response>        
         /// <response code="400">If the photo is not an image or model is not valid</response>
         /// <response code="401">Unathorized</response>
+        /// <response code="409">If user with the same email is already exists</response>
         /// <response code="500">If unknown error occurred while creating</response>
         [HttpPost("Register"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromForm] EditUserDTO objectFromPage, IFormFile photo)
         {
             _logger.LogInformation($"POST {this}.Update called.");
 
-            // Validation.
+            #region Validation.
+            // Photo is an image type.
             if (photo != null && !photo.ContentType.Contains("image"))
             {
                 _logger.LogError("Parameter photo is not an image");
                 return BadRequest(new JsonResult(new { success = false, message = "File is not a photo" }));
             }
+            // Valid model state.
             if (!ModelState.IsValid)
             {
                 _logger.LogError("ModelState is not valid");
                 return BadRequest(ModelState);
             }
-
+            // Users with the same email.
+            var userFromDb = _unitOfWork.UserRepository.GetByEmail(objectFromPage.Email);
+            if (userFromDb != null)
+            {
+                _logger.LogError("User with the same email is already exists");
+                return Conflict();
+            }
+            #endregion
             // Building user.
             var user = _mapper.Map<User>(objectFromPage);
             user.ConfirmEmailToken = new ConfirmEmailToken
