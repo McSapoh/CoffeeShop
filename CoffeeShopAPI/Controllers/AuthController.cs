@@ -284,5 +284,68 @@ namespace CoffeeShopAPI.Controllers
 
             return result;
         }
+        
+        /// <summary>
+        /// Confirms email.
+        /// </summary>
+        /// <response code="200">If email successfuly sended</response>        
+        /// <response code="404">If cannot find user with current email</response>
+        /// <response code="409">If user is already confirmed</response>
+        /// <response code="500">If email was not send</response>
+        [HttpPost("SendConfirmationEmail"), AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SendConfirmationEmail([FromQuery] string email)
+        {
+            _logger.LogInformation($"POST {this}.SendConfirmationEmail called.");
+
+            // Getting userFromDb.
+            var userFromDb = await _unitOfWork.UserRepository.GetByEmail(email);
+
+            #region Validation.
+            // Existing user.
+            if (userFromDb == null)
+            {
+                _logger.LogError($"User not found.");
+                return NotFound();
+            }
+            // Is user is already confirmed
+            if (userFromDb.IsConfirmed)
+            {
+                _logger.LogError("Account is already confirmed");
+                return Conflict();
+            }
+            #endregion
+
+            userFromDb.ConfirmEmailToken.Token = _authService.GenerateRandomToken();
+            userFromDb.ConfirmEmailToken.Expires = DateTime.Now.AddMinutes(5);
+
+            // Updating user.
+            var result = await _userService.Update(userFromDb, null);
+
+            // Getting StatusCode of result.
+            var StatusOfResult = (int)result
+                .GetType()
+                .GetProperty("StatusCode")
+                .GetValue(result, null);
+
+            // Checking StatusOfResult to send email.
+            if (StatusOfResult == 201)
+            {
+                var IsEmailSend = await _authService.SendConfirmationEmail(userFromDb, Request, Url);
+
+                if (IsEmailSend)
+                    result = Ok();
+                else
+                    result = StatusCode(500);
+            }
+
+            _logger.LogInformation($"POST {this}.SendConfirmationEmail finished.");
+
+            return result;
+        }
+
     }
 }
