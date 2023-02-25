@@ -14,7 +14,9 @@ namespace CoffeeShopAPI.UnitOfWork.Repositories
         public override User GetById(int Id) => _dbSet.Include(p => p.Orders).FirstOrDefault(p => p.Id == Id);
         public async override Task<User> GetByIdAsync(int Id) => await _dbSet.Include(p => p.Orders).FirstOrDefaultAsync(p => p.Id == Id);
         public async Task<User> GetByEmail(string email) => 
-            await _dbSet.Include(p => p.Orders).Include(p => p.RefreshToken)
+            await _dbSet.Include(p => p.Orders)
+            .Include(p => p.RefreshToken)
+            .Include(p => p.ConfirmEmailToken)
             .FirstOrDefaultAsync(p => p.Email == email);
     }
 }
