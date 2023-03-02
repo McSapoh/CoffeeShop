@@ -1,5 +1,6 @@
 ﻿using CoffeeShopAPI.Models;
 using CoffeeShopAPI.UnitOfWork;
+using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -105,6 +106,18 @@ namespace CoffeeShopAPI.Services
                 return token;
             }
         }
+
+        public string GenerateRandomToken(string codeVerifier)
+        {
+            using var sha256 = SHA256.Create();
+            var tokenData = sha256.ComputeHash(Encoding.UTF8.GetBytes(codeVerifier));
+            var token = Convert.ToBase64String(tokenData)
+                    .Replace("+", "-")
+                    .Replace("/", "_")
+                    .Replace("=", "");
+            return token;
+        }
+
         public void AppendRefreshTokenToResponse(RefreshToken newRefreshToken, HttpResponse response)
         {
             _logger.LogInformation($"{this}.AppendRefreshTokenToResponse called.");

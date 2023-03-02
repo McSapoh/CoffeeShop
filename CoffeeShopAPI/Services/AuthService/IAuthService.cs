@@ -11,6 +11,7 @@ namespace CoffeeShopAPI.Services
         public string GenerateJWT(User user);
         public RefreshToken GenerateRefreshToken();
         public string GenerateRandomToken();
+        public string GenerateRandomToken(string codeVerifier);
         public void AppendRefreshTokenToResponse(RefreshToken newRefreshToken, HttpResponse response);
         public Task<IActionResult> ConfirmEmail(ConfirmEmailToken confirmEmailToken);
         public Task<bool> SendConfirmationEmail(User userFromDb, HttpRequest request, IUrlHelper url);
