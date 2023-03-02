@@ -32,9 +32,13 @@ namespace CoffeeShopAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers().AddNewtonsoftJson(options =>
+            services.AddMvc().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
+
+            // Adding session.
+            services.AddSession();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoffeeShopAPI", Version = "v1" });
@@ -110,7 +114,7 @@ namespace CoffeeShopAPI
                 {
                     options.ClientId = Configuration["Auth:Google:ClientId"];
                     options.ClientSecret = Configuration["Auth:Google:ClientSecret"];
-                }); ;
+                });
 
             services.AddAutoMapper(typeof(Program).Assembly);
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
@@ -154,6 +158,9 @@ namespace CoffeeShopAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // Using session.
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
