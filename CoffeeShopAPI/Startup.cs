@@ -103,7 +103,14 @@ namespace CoffeeShopAPI
                         ),
                         ClockSkew = TimeSpan.Zero
                     };
-                });
+                })
+                // External auth.
+                .AddCookie()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = Configuration["Auth:Google:ClientId"];
+                    options.ClientSecret = Configuration["Auth:Google:ClientSecret"];
+                }); ;
 
             services.AddAutoMapper(typeof(Program).Assembly);
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
