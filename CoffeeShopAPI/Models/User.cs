@@ -17,7 +17,6 @@ namespace CoffeeShopAPI.Models
         public string ImagePath { get; set; } = "/User/DefaultUserImage";
         public bool IsConfirmed { get; set; } = false;
         public DateTime RegistrationDate { get; set; }
-        [MinLength(4), Required(ErrorMessage = "Please enter Your password")]
         public string Password { get; set; }
         #endregion
         #region Objects for relationships
