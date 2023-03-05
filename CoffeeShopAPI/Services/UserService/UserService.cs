@@ -16,14 +16,16 @@ namespace CoffeeShopAPI.Services
         private readonly ILogger<UserService> _logger;
         private readonly IImagesService _imagesService;
         private readonly IMapper _mapper;
+        private readonly IAuthService _authService;
 
         public UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger, 
-            IImagesService imagesService, IMapper mapper)
+            IImagesService imagesService, IMapper mapper, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _imagesService = imagesService;
             _mapper = mapper;
+            _authService = authService;
         }
 
         public async Task<IActionResult> Get(int id)
@@ -49,7 +51,7 @@ namespace CoffeeShopAPI.Services
 
             // Building user.
             user.RegistrationDate = DateTime.Now;
-            user.ImagePath = $"/Images/{type}/Default{type}Image.png";
+            user.RefreshToken = _authService.GenerateRefreshToken();
 
             // Creating object.
             _unitOfWork.UserRepository.Create(user);
