@@ -334,6 +334,16 @@ namespace CoffeeShopAPI.Controllers
                         Uri = "https://accounts.google.com/o/oauth2/v2/auth"
                     };
                     break;
+                case "facebook":
+                    parameters = new ExternalAuthorizationRequest
+                    {
+                        ClientId = _config["Auth:Facebook:AppId"],
+                        RedirectUrl = "https://localhost:44300/api/ExternalAuth/facebook",
+                        Scope = "public_profile email",
+                        CodeChallenge = codeChallenge,
+                        Uri = "https://www.facebook.com/v13.0/dialog/oauth"
+                    };
+                    break;
                 default:
                     return StatusCode(500);
             }
