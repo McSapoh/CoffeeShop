@@ -116,6 +116,17 @@ namespace CoffeeShopAPI
                     options.ClientSecret = Configuration["Auth:Google:ClientSecret"];
                 });
 
+            // Adding cors for Angular application.
+            services.AddCors(options => options.AddPolicy(name: "CoffeeShopOrigins",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                    }
+                )
+            );
+
             services.AddAutoMapper(typeof(Program).Assembly);
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             #region Adding services
@@ -162,6 +173,9 @@ namespace CoffeeShopAPI
 
             // Using session.
             app.UseSession();
+
+            //Using Cors.
+            app.UseCors("CoffeeShopOrigins");
 
             app.UseEndpoints(endpoints =>
             {
