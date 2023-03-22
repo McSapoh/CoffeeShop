@@ -22,10 +22,10 @@ namespace CoffeeShopAPI.Services
                     #endregion
                     var fileName = randomSting + Path.GetExtension(photo.FileName);
                     var path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                    string filePath = Path.Combine(path + "\\Images\\" + type, fileName);
+                    string filePath = Path.Combine(path + "\\Images\\", fileName);
                     using Stream fileStream = new FileStream(filePath, FileMode.Create);
                     await photo.CopyToAsync(fileStream);
-                    return $"/{type}/" + fileName;
+                    return fileName;
                 }
                 catch (Exception)
                 {

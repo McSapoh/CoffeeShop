@@ -51,7 +51,7 @@ namespace CoffeeShopAPI.Services
             }
 
             // Building product.
-            product.ImagePath = $"/Images/{product.ProductType}/Default{product.ProductType}Image.png";
+            product.ImagePath = $"{product.ProductType}.png";
 
             // Creating product.
             _unitOfWork.ProductRepository.Create(product);
@@ -133,8 +133,9 @@ namespace CoffeeShopAPI.Services
                     return StatusCode(201);
 
                 // Saving photos.
-                var type = char.ToUpper(productFromDb.ProductType.ToString()[0]) + productFromDb.ProductType.ToString().Substring(1);
-                var imagePath = await _imageService.SavePhoto(type, photo);
+                var imagePath = await _imageService.SavePhoto(
+                    productFromDb.ProductType.ToString(), photo
+                );
                 if (imagePath != null)
                 {
                     _imageService.DeletePhoto(productFromDb.ImagePath);
