@@ -8,7 +8,7 @@ namespace CoffeeShopAPI.Services
 {
     public class ImagesService : IImagesService
     {
-        public async Task<string> SavePhoto(string type, IFormFile photo)
+        public async Task<string> SavePhoto(IFormFile photo)
         {
             if (photo != null && photo.Length > 0)
             {

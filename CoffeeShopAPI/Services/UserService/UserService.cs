@@ -46,9 +46,6 @@ namespace CoffeeShopAPI.Services
 
         public async Task<IActionResult> Create(User user, IFormFile photo)
         {
-            // Creating neccessary variables.
-            var type = "User";
-
             // Building user.
             user.RegistrationDate = DateTime.Now;
             user.RefreshToken = _authService.GenerateRefreshToken();
@@ -60,7 +57,7 @@ namespace CoffeeShopAPI.Services
             if (await _unitOfWork.SaveAsync())
             {
                 // Saving photos.
-                var imagePath = await _imagesService.SavePhoto(type, photo);
+                var imagePath = await _imagesService.SavePhoto(photo);
 
                 // Checking result of saving photo.
                 if (imagePath == null)
@@ -119,7 +116,7 @@ namespace CoffeeShopAPI.Services
 
             // Saving photo and and updating user.ImagePath.
             // Saving photo.
-            var imagePath = await _imagesService.SavePhoto("User", photo);
+            var imagePath = await _imagesService.SavePhoto( photo);
 
             // Chaecking is photo were saved.
             if (imagePath != null)

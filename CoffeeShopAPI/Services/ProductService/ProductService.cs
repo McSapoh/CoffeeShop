@@ -64,7 +64,7 @@ namespace CoffeeShopAPI.Services
 
                 // Saving photos.
                 var type = char.ToUpper(product.ProductType.ToString()[0]) + product.ProductType.ToString().Substring(1);
-                var imagePath = await _imageService.SavePhoto(type, photo);
+                var imagePath = await _imageService.SavePhoto(photo);
                 product.ImagePath = imagePath;
 
                 // Updating product.ImagePath.
@@ -133,9 +133,7 @@ namespace CoffeeShopAPI.Services
                     return StatusCode(201);
 
                 // Saving photos.
-                var imagePath = await _imageService.SavePhoto(
-                    productFromDb.ProductType.ToString(), photo
-                );
+                var imagePath = await _imageService.SavePhoto(photo);
                 if (imagePath != null)
                 {
                     _imageService.DeletePhoto(productFromDb.ImagePath);
