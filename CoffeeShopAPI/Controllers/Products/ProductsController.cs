@@ -36,7 +36,7 @@ namespace CoffeeShopAPI.Controllers.Products
         /// Gets paged list of products.
         /// </summary>
         /// <response code="200">Returns paged list of porudcts</response>
-        [HttpGet("")]
+        [HttpGet(""), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult Get([FromQuery] PagingParameters pagingParameters)
@@ -46,6 +46,7 @@ namespace CoffeeShopAPI.Controllers.Products
                 .GetPagedList(pagingParameters, _productType.ToString());
             var metadata = PagedList<Product>.GetMetadata(objectsFromDb);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            Response.Headers.Add("Access-Control-Expose-Headers", "X-Pagination");
             _logger.LogInformation($"GET {this}.Get finished.");
             return Ok(objectsFromDb);
         }
