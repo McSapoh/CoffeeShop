@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
 
 namespace CoffeeShopAPI
 {
@@ -173,6 +174,14 @@ namespace CoffeeShopAPI
 
             // Using session.
             app.UseSession();
+
+            // Setting middleware for sending images.
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName, "Images")),
+                RequestPath = "/api/images"
+            });
 
             //Using Cors.
             app.UseCors("CoffeeShopOrigins");
