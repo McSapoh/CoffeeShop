@@ -123,6 +123,7 @@ namespace CoffeeShopAPI
                     {
                         policy.WithOrigins("http://localhost:4200")
                         .AllowAnyMethod()
+                        .AllowCredentials()
                         .AllowAnyHeader();
                     }
                 )
