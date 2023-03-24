@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Http;
 
 namespace CoffeeShopAPI
 {
@@ -38,7 +39,11 @@ namespace CoffeeShopAPI
             );
 
             // Adding session.
-            services.AddSession();
+            services.AddSession(options => {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            });
 
             services.AddSwaggerGen(c =>
             {
