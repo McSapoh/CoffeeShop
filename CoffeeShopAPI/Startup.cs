@@ -173,14 +173,6 @@ namespace CoffeeShopAPI
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            // Using session.
-            app.UseSession();
-
             // Setting middleware for sending images.
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -189,8 +181,16 @@ namespace CoffeeShopAPI
                 RequestPath = "/api/images"
             });
 
+            app.UseRouting();
+
             //Using Cors.
             app.UseCors("CoffeeShopOrigins");
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            // Using session.
+            app.UseSession(); 
 
             app.UseEndpoints(endpoints =>
             {
