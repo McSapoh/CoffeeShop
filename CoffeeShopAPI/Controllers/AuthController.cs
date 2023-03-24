@@ -81,12 +81,24 @@ namespace CoffeeShopAPI.Controllers
 
             // Appending RefreshToken to response.
             _authService.AppendRefreshTokenToResponse(RefreshToken, Response);
-
+            HttpContext.Session.SetString("email", userFromDb.Email);
 
             // Appending RefreshToken to userFromDB.
-            userFromDb.RefreshToken.Created = RefreshToken.Created;
-            userFromDb.RefreshToken.Expires = RefreshToken.Expires;
-            userFromDb.RefreshToken.Token = RefreshToken.Token;
+            if (userFromDb.RefreshToken != null)
+            {
+                userFromDb.RefreshToken.Created = RefreshToken.Created;
+                userFromDb.RefreshToken.Expires = RefreshToken.Expires;
+                userFromDb.RefreshToken.Token = RefreshToken.Token;
+            }
+            else
+            {
+                userFromDb.RefreshToken = new RefreshToken
+                {
+                    Created = RefreshToken.Created,
+                    Expires = RefreshToken.Expires,
+                    Token = RefreshToken.Token
+                };
+            }
 
             // Updating userFromDb and saving changes into db.
             _unitOfWork.UserRepository.Update(userFromDb);
@@ -108,7 +120,7 @@ namespace CoffeeShopAPI.Controllers
         /// <response code="200">Returns JWT and refresh token</response>
         /// <response code="401">Unathorized</response>
         /// <response code="500">If unknown error occurred while editing refresh token</response>
-        [HttpPost("refresh-token")]
+        [HttpPost("refresh-token"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -117,7 +129,8 @@ namespace CoffeeShopAPI.Controllers
             _logger.LogInformation($"POST {this}.RefreshToken called.");
 
             // Getting user from context
-            var user = await _authService.GetUserByIdentity(HttpContext);
+            string email = HttpContext.Session.GetString("email");
+            var user = await _unitOfWork.UserRepository.GetByEmail(email);
 
             // Getting refreshToken from cookies.
             var OldRefreshToken = Request.Cookies["refreshToken"];
