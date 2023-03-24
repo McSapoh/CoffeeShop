@@ -126,7 +126,9 @@ namespace CoffeeShopAPI.Services
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = newRefreshToken.Expires
+                Expires = newRefreshToken.Expires,
+                SameSite = SameSiteMode.None,
+                Secure = true
             };
 
             // Appending data to response.
