@@ -36,7 +36,7 @@ namespace CoffeeShopAPI.Controllers.Products
         /// Gets paged list of products.
         /// </summary>
         /// <response code="200">Returns paged list of porudcts</response>
-        [HttpGet(""), AllowAnonymous]
+        [HttpGet("")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult Get([FromQuery] PagingParameters pagingParameters)
