@@ -18,5 +18,8 @@ namespace CoffeeShopAPI.UnitOfWork.Repositories
             .Include(p => p.RefreshToken)
             .Include(p => p.ConfirmEmailToken)
             .FirstOrDefaultAsync(p => p.Email == email);
+        public async Task<User> GetByRefreshToken(string refreshToken) =>
+            await _dbSet.Include(p => p.RefreshToken)
+            .FirstOrDefaultAsync(p => p.RefreshToken.Token == refreshToken);
     }
 }

@@ -81,7 +81,6 @@ namespace CoffeeShopAPI.Controllers
 
             // Appending RefreshToken to response.
             _authService.AppendRefreshTokenToResponse(RefreshToken, Response);
-            HttpContext.Session.SetString("email", userFromDb.Email);
 
             // Appending RefreshToken to userFromDB.
             if (userFromDb.RefreshToken != null)
@@ -128,15 +127,12 @@ namespace CoffeeShopAPI.Controllers
         {
             _logger.LogInformation($"POST {this}.RefreshToken called.");
 
-            // Getting user from context
-            string email = HttpContext.Session.GetString("email");
-            var user = await _unitOfWork.UserRepository.GetByEmail(email);
-
             // Getting refreshToken from cookies.
             var OldRefreshToken = Request.Cookies["refreshToken"];
+            var user = await _unitOfWork.UserRepository.GetByRefreshToken(OldRefreshToken);
 
             // Validation.
-            if (!user.RefreshToken.Token.Equals(OldRefreshToken))
+            if (user == null)
             {
                 _logger.LogError("Invalid Refresh Token");
                 return Unauthorized("Invalid Refresh Token");
