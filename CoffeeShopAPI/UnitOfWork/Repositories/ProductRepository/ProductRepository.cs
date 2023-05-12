@@ -13,7 +13,7 @@ namespace CoffeeShopAPI.UnitOfWork.Repositories
             _dbSet = db.Set<Product>();
         }
         public override Product GetById(int Id) => _dbSet.Include(p => p.Sizes).FirstOrDefault(p => p.Id == Id);
-        public async override Task<Product> GetByIdAsync(int Id) => await _dbSet.Include(p => p.Sizes).FirstOrDefaultAsync(p => p.Id == Id);
+        public async override Task<Product> GetByIdAsync(int Id) => await _dbSet.Include(p => p.Sizes.Where(s => s.IsActive == true)).FirstOrDefaultAsync(p => p.Id == Id);
         public PagedList<Product> GetPagedList(PagingParameters pagingParameters, string type)
         {
             var items = _dbSet.Include(p => p.Sizes.Where(s => s.IsActive == true)).Where(o => o.ProductType == type).ToList();
