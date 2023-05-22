@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32602.291
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoffeeShopAPI", "CoffeeShopAPI\CoffeeShopAPI.csproj", "{7219A43F-55F9-48C3-B179-E5DA447066D5}"
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "CofeeShop.UI(2)", "..\CofeeShop.UI\", "{06480E6E-C56D-4953-A38F-2EA013507262}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_65337"
 		Debug.AspNetCompiler.PhysicalPath = "..\CofeeShop.UI\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_65337\"

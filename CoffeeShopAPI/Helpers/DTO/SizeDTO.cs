@@ -6,7 +6,6 @@ namespace CoffeeShopAPI.Helpers.DTO
 {
     public class SizeDTO
     {
-        [Key]
         public int Id { get; set; }
         [Required(ErrorMessage = "Field Name cannot be empty")]
         public string Name { get; set; }
