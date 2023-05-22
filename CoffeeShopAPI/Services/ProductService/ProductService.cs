@@ -141,7 +141,7 @@ namespace CoffeeShopAPI.Services
                 }
 
                 // Updating product.ImagePath.
-                _unitOfWork.ProductRepository.Update(product);
+                _unitOfWork.ProductRepository.Update(productFromDb);
 
                 if (await _unitOfWork.SaveAsync())
                     return StatusCode(201);
