@@ -1,0 +1,98 @@
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+
+        <div class="card">
+          <div class="card-body">
+
+            <!--datatable-->
+            <!--
+            <table *ngIf="displayTable" id="table" datatable [dtOptions]="dtOptions" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>ImagePath</th>
+                  <th>isConfirmed</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of products">
+                  <td>{{product.name}}</td>
+                  <td>{{product.description}}</td>
+                  <td>{{product.imagePath}}</td>
+                  <td>{{product.isActive}}</td>
+                </tr>
+              </tbody>
+            </table>
+            -->
+            <!--material-->
+            <mat-paginator [pageSize]="pageSizes[0]" [pageSizeOptions]="pageSizes" [length]="totalRecords"
+             showFirstLastButtons="">
+            </mat-paginator>
+
+            <table mat-table [dataSource]="dataSource" class="table table-bordered table-striped">
+
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <th mat-cell *matCellDef="let element">{{element.name}}</th>
+              </ng-container>
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>Description</th>
+                <th mat-cell *matCellDef="let element">{{element.description}}</th>
+              </ng-container>
+              <ng-container matColumnDef="imagePath">
+                <th mat-header-cell *matHeaderCellDef>ImagePath</th>
+                <th mat-cell *matCellDef="let element">
+                  <img src="{{defaultImageUrl}}/{{element.imagePath}}" alt="Coffee"
+                   class="img-fluid" style="max-width: 100px; max-height: 150px;">
+                </th>
+              </ng-container>
+              <ng-container matColumnDef="sizes">
+                <th mat-header-cell *matHeaderCellDef>Sizes</th>
+                <th mat-cell *matCellDef="let element">
+                  <span *ngFor="let size of element.sizes; let isLast=last">
+                    {{ size.name }}{{ isLast ? '' : ', ' }}
+                  </span>
+                </th>
+              </ng-container>
+              <ng-container matColumnDef="isConfirmed">
+                <th mat-header-cell *matHeaderCellDef>Is Confirmed</th>
+                <th mat-cell *matCellDef="let element">{{element.isActive}}</th>
+              </ng-container>
+
+              <ng-container matColumnDef="edit">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <th mat-cell *matCellDef="let element">
+                  <button (click)="openEditPopup(element.id)" class="btn btn-primary btn-block">Edit</button>
+                </th>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+            </table>
+
+
+
+            <div id="placeholder"></div>
+            <!-- onclick button
+            <button (click)="refreshData()"></button>
+            -->
+            
+
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+  <!-- /.container-fluid -->
+</section>
+
+<!--
+"node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
+-->      

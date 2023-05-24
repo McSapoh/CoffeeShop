@@ -1,1 +1,40 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+.mat-paginator-page-size {
+    display: flex;
+    align-items: center;
+  }
+  
+  .mat-select-value {
+    color: #333;
+    font-size: 14px;
+  }
+  
+  .mat-select-arrow {
+    color: #333;
+  }
+  
+  .mat-select-panel {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .mat-option {
+    font-size: 14px;
+    min-height: auto;
+    line-height: 1;
+    padding: 8px 16px;
+  }
+  
+  .mat-option:hover {
+    background-color: #f5f5f5;
+    color: #333;
+  }
+
+  .main-sidebar {
+    z-index: 1000;
+  }
+  .main-header {
+    z-index: 1000;
+  }
