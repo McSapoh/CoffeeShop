@@ -3,6 +3,7 @@ using CoffeeShopAPI.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoffeeShopAPI.Services
@@ -11,6 +12,7 @@ namespace CoffeeShopAPI.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IImagesService _imageService;
+        private readonly SizesService _sizesService;
         private readonly ILogger<ProductService> _logger;
 
         public ProductService(IUnitOfWork unitOfWork, ILogger<ProductService> logger, IImagesService imagesService)
@@ -90,39 +92,39 @@ namespace CoffeeShopAPI.Services
             productFromDb.Description = product.Description;
             productFromDb.IsActive = product.IsActive;
 
-
-            // Disactivating existing sizes.
-            foreach (var productFromDbSize in productFromDb.Sizes)
-            {
-                productFromDbSize.IsActive = false;
-                _unitOfWork.SizeRepository.Update(productFromDbSize);
-            }
-            // Updating / Creating sizes
-            foreach (var productSize in product.Sizes)
-            {
-                var updated = false;
-                productSize.ProductId = productFromDb.Id;
-                foreach (var productFromDbSize in productFromDb.Sizes)
-                {
-                    // Updating size
-                    if (productFromDbSize.Id != 0 && productFromDbSize.Id == productSize.Id)
-                    {
-                        productFromDbSize.Name = productSize.Name;
-                        productFromDbSize.Description = productSize.Description;
-                        productFromDbSize.Price = productSize.Price;
-                        productFromDbSize.IsActive = true;
-                        _unitOfWork.SizeRepository.Update(productFromDbSize);
-                        updated = true;
-                        break;
-                    }
-                }
-                // Creating size
-                if (!updated)
-                {
-                    productFromDb.Sizes.Add(productSize);
-                    _unitOfWork.SizeRepository.Create(productSize);
-                }
-            }
+            _sizesService.SetProductSizes(productFromDb, product.Sizes.ToList());
+            //// Disactivating existing sizes.
+            //foreach (var productFromDbSize in productFromDb.Sizes)
+            //{
+            //    productFromDbSize.IsActive = false;
+            //    _unitOfWork.SizeRepository.Update(productFromDbSize);
+            //}
+            //// Updating / Creating sizes
+            //foreach (var productSize in product.Sizes)
+            //{
+            //    var updated = false;
+            //    productSize.ProductId = productFromDb.Id;
+            //    foreach (var productFromDbSize in productFromDb.Sizes)
+            //    {
+            //        // Updating size
+            //        if (productFromDbSize.Id != 0 && productFromDbSize.Id == productSize.Id)
+            //        {
+            //            productFromDbSize.Name = productSize.Name;
+            //            productFromDbSize.Description = productSize.Description;
+            //            productFromDbSize.Price = productSize.Price;
+            //            productFromDbSize.IsActive = true;
+            //            _unitOfWork.SizeRepository.Update(productFromDbSize);
+            //            updated = true;
+            //            break;
+            //        }
+            //    }
+            //    // Creating size
+            //    if (!updated)
+            //    {
+            //        productFromDb.Sizes.Add(productSize);
+            //        _unitOfWork.SizeRepository.Create(productSize);
+            //    }
+            //}
 
             // Updating product.
             _unitOfWork.ProductRepository.Update(productFromDb);
