@@ -1,12 +1,7 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { throwError } from 'rxjs';
-import { AuthInterceptor } from 'src/app/interceptors/auth.interceptor';
 import { LoginUserDTO } from 'src/app/models/user/login';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { environment } from 'src/environments/environment.development';
 
 @Component({
   selector: 'app-login-page',
@@ -30,4 +25,5 @@ export class LoginPageComponent {
   login() {
     this.service.login(this.form)
   }
+  
 }

@@ -31,6 +31,7 @@ import { AuthWrapperComponent } from './components/auth/auth-wrapper/auth-wrappe
 import { ProductPopupComponent } from './components/popups/product-popup/product-popup.component';
 import { ToastrModule } from 'ngx-toastr';
 import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
+import { InputComponent } from './components/default-page-components/input/input.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
     WrapperComponent,
     SocialAuthComponent,
     AuthWrapperComponent,
-    ProductPopupComponent
+    ProductPopupComponent,
+    InputComponent
   ],
   imports: [
     BrowserModule,

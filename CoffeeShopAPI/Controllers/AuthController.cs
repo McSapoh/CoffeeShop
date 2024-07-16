@@ -185,7 +185,7 @@ namespace CoffeeShopAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Register([FromForm] EditUserDTO objectFromPage, IFormFile photo)
+        public async Task<IActionResult> Register([FromBody] EditUserDTO objectFromPage, IFormFile photo)
         {
             _logger.LogInformation($"POST {this}.Update called.");
 
@@ -203,7 +203,7 @@ namespace CoffeeShopAPI.Controllers
                 return BadRequest(ModelState);
             }
             // Users with the same email.
-            var userFromDb = _unitOfWork.UserRepository.GetByEmail(objectFromPage.Email);
+            var userFromDb = await _unitOfWork.UserRepository.GetByEmail(objectFromPage.Email);
             if (userFromDb != null)
             {
                 _logger.LogError("User with the same email is already exists");
@@ -233,10 +233,15 @@ namespace CoffeeShopAPI.Controllers
                 var IsEmailSend = await _authService.SendConfirmationEmail(user, Request, Url);
 
                 if (IsEmailSend)
-                    result = StatusCode(201, "Email was sended");
+                    result = StatusCode(201, "Email was sent");
                 else
-                    result = StatusCode(201, "Email was not sended");
-            }
+				{
+                    user.IsConfirmed = true;
+                    await _unitOfWork.SaveAsync();
+
+					result = StatusCode(200, "Account created. Please login");
+				}
+			}
 
             _logger.LogInformation($"POST {this}.Update finished.");
 

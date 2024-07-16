@@ -135,5 +135,15 @@ namespace CoffeeShopAPI.Services
 
             return StatusCode(201);
         }
+        public async Task<IActionResult> Delete(int id)
+        {
+            _unitOfWork.UserRepository.Delete(id);
+            if (await _unitOfWork.SaveAsync())
+                return Ok();
+
+            _logger.LogError("Unknown error occurred while deleting");
+            return StatusCode(500);
+        }
+
     }
 }

@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { DisplayProductDTO } from '../../models/products/display-product';
 import { PaginatedResult } from '../../models/pagination/pagination'
@@ -11,9 +11,16 @@ import { FormArray, FormGroup } from '@angular/forms';
   providedIn: 'root'
 })
 export class ProductService {
+  private refreshTableSubject = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient) { }
-  
+
+  refreshTable$ = this.refreshTableSubject.asObservable();
+
+  public triggerRefreshTable() {
+    this.refreshTableSubject.next(true);
+  }
+
   public getPagination(productUrl: string, pageNumber?: number, pageSize?: number)
   : Observable<PaginatedResult<DisplayProductDTO[]>> 
   {
@@ -62,9 +69,35 @@ export class ProductService {
 
   public create(form: FormGroup, productUrl: string) {
     // sending request
+    const formData = new FormData();
+    const formValue = form.getRawValue()
+    // formData.append('objectFromPage', JSON.stringify(form.getRawValue()))
+    for (const field in formValue) {
+      if (field !== 'Sizes') {
+        formData.append(field, formValue[field]);
+      }
+    }
+
+    // Add photo file from input to FormData
+    const photoInput = document.querySelector('input[name="photo"]') as HTMLInputElement;
+    if (photoInput?.files?.length) {
+      const photoFile = photoInput.files[0];
+      formData.append('photo', photoFile);
+    }
+
+
+    const sizesArray = form.get('Sizes') as FormArray;
+    for (let i = 0; i < sizesArray.length; i++) {
+      const sizeGroup = sizesArray.controls[i] as FormGroup;
+      for (const field in sizeGroup.value) {
+        formData.append(`Sizes[${i}].${field}`, sizeGroup.value[field]);
+      }
+    }
+
+
     let url = (`${environment.apiUrl}/${productUrl}`)
     console.log(url);
-    let result = this.http.post(url, form.getRawValue(), {withCredentials : true, responseType: 'text'})
+    let result = this.http.post(url, formData, {withCredentials : true, responseType: 'text'})
     .subscribe((res: string) => {
       return 200
       }, 
@@ -75,6 +108,42 @@ export class ProductService {
     )
   }
 
+  public save(form: FormGroup, productUrl: string, method: string): Observable<any> {
+    // sending request
+    const formData = new FormData();
+    const formValue = form.getRawValue()
+    // formData.append('objectFromPage', JSON.stringify(form.getRawValue()))
+    for (const field in formValue) {
+      if (field !== 'Sizes') {
+        formData.append(field, formValue[field]);
+      }
+    }
+
+    // Add photo file from input to FormData
+    const photoInput = document.querySelector('input[name="photo"]') as HTMLInputElement;
+    if (photoInput?.files?.length) {
+      const photoFile = photoInput.files[0];
+      formData.append('photo', photoFile);
+    }
+
+
+    const sizesArray = form.get('Sizes') as FormArray;
+    for (let i = 0; i < sizesArray.length; i++) {
+      const sizeGroup = sizesArray.controls[i] as FormGroup;
+      for (const field in sizeGroup.value) {
+        formData.append(`Sizes[${i}].${field}`, sizeGroup.value[field]);
+      }
+    }
+
+
+    let url = (`${environment.apiUrl}/${productUrl}`)
+    let result : Observable<any> = new Observable<any>()
+    if (method == 'PUT')
+      result = this.http.put(url, formData, {withCredentials : true, responseType: 'text'})
+    else if (method == 'POST')
+      result = this.http.post(url, formData, {withCredentials : true, responseType: 'text'})
+    return result
+  }
   public update(form: FormGroup, productUrl: string): Observable<any> {
     // sending request
     const formData = new FormData();
@@ -105,5 +174,9 @@ export class ProductService {
 
     let url = (`${environment.apiUrl}/${productUrl}`)
     return this.http.put(url, formData, {withCredentials : true, responseType: 'text'})
+  }
+  public delete(productUrl: string, id: number): Observable<any> {
+    console.log(`${environment.apiUrl}/${productUrl}/${id}`)
+      return this.http.delete(`${environment.apiUrl}/${productUrl}/${id}`, {withCredentials : true, responseType: 'text'})
   }
 }

@@ -57,8 +57,9 @@ namespace CoffeeShopAPI.Services
             // Building Claims array
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.Name),
+                new Claim("name", user.Name),
                 new Claim(ClaimTypes.Email, user.Email),
+                new Claim("profileImagePath", user.ImagePath ?? ""),
             };
 
             // Building JwtSecurityToken.

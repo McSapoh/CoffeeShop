@@ -9,13 +9,13 @@
       <div class="col-3">Name:</div>
       <input type="Name" class="form-control" placeholder="Name" formControlName="Name" required>
       <div class="row">
-        <mat-error *ngIf="form.get('Name')?.hasError('required')">
+        <mat-error *ngIf="form.get('Name')?.hasError('required') && form.get('Name')?.dirty">
           Name is required.
         </mat-error>
-        <mat-error *ngIf="form.get('Name')?.hasError('Name')">
+        <mat-error *ngIf="form.get('Name')?.hasError('Name') && form.get('Name')?.dirty">
           Name is invalid.
         </mat-error>
-        <mat-error *ngIf="form.get('Name')?.hasError('serverError')">
+        <mat-error *ngIf="form.get('Name')?.hasError('serverError') && form.get('Name')?.dirty">
           {{ form.get('Name')?.getError('serverError')[0] }}
         </mat-error>
       </div>
@@ -26,13 +26,13 @@
       <div class="col-3">Description:</div>
       <input type="Description" class="form-control" placeholder="Description" formControlName="Description" required>
       <div class="row">
-        <mat-error *ngIf="form.get('Description')?.hasError('required')">
+        <mat-error *ngIf="form.get('Description')?.hasError('required') && form.get('Description')?.dirty">
           Description is required.
         </mat-error>
-        <mat-error *ngIf="form.get('Description')?.hasError('Description')">
+        <mat-error *ngIf="form.get('Description')?.hasError('Description') && form.get('Description')?.dirty">
           Description is invalid.
         </mat-error>
-        <mat-error *ngIf="form.get('Description')?.hasError('serverError')">
+        <mat-error *ngIf="form.get('Description')?.hasError('serverError') && form.get('Description')?.dirty">
           {{ form.get('Description')?.getError('serverError')[0] }}
         </mat-error>
       </div>
@@ -67,19 +67,19 @@
         <div class="row">
           <div class="col-3">
             <input matInput  type="text" formControlName="Name"  class="form-control" placeholder="Name"/>
-            <mat-error *ngIf="size.get('Name')?.hasError('required')">
+            <mat-error *ngIf="size.get('Name')?.hasError('required') && size.get('Name')?.dirty">
               Name is required.
             </mat-error>
-            <mat-error *ngIf="size.get('Name')?.hasError('serverError')">
+            <mat-error *ngIf="size.get('Name')?.hasError('serverError') && size.get('Name')?.dirty">
               {{ size.get('Name')?.getError('serverError')[0] }}
             </mat-error>
           </div>
           <div class="col-3">
             <input type="text" formControlName="Description"  class="form-control" placeholder="Description"/>
-            <mat-error *ngIf="size.get('Description')?.hasError('required')">
+            <mat-error *ngIf="size.get('Description')?.hasError('required') && size.get('Description')?.dirty">
               Description is required.
             </mat-error>
-            <mat-error *ngIf="size.get('Description')?.hasError('serverError')">
+            <mat-error *ngIf="size.get('Description')?.hasError('serverError') && size.get('Description')?.dirty">
               {{ size.get('Description')?.getError('serverError')[0] }}
             </mat-error>
           </div>
@@ -87,7 +87,7 @@
             <input type="number" formControlName="Price" class="form-control" placeholder="Price"/>
           </div>
           <div class="col-3">
-            <button (click)="removeSizeFormGroup(i)" class="btn btn-danger btn-block">Delete size</button>
+            <button (click)="removeSizeFormGroup(i)" [disabled]="sizes.length < 2" class="btn btn-danger btn-block">Delete size</button>
           </div>
         </div>
         <br />
@@ -97,7 +97,8 @@
 
     <br/>
     <div class="form-group" style="height: 20px;">
-      <button (click)="save()" class="btn btn-success" [disabled]="form.invalid">Save</button>
+      <button (click)="save()" class="btn btn-success">Save</button> 
+      <!-- [disabled]="form.invalid" -->
       <button class="btn btn-secondary" mat-dialog-close>Cancel</button>
     </div>
   </form>

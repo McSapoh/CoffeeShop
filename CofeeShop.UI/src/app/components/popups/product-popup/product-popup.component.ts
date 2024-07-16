@@ -7,6 +7,7 @@ import { ProductService } from 'src/app/services/product/product.service';
 import { Size } from 'src/app/models/size';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { ProductTableComponent } from '../../product-table/product-table.component';
 
 @Component({
   selector: 'app-product-popup',
@@ -18,22 +19,29 @@ export class ProductPopupComponent {
   sizes!: FormArray;
   product: DisplayProductDTO;
   productType = '';
-  id: string = '';
+  id: string | undefined = '' ;
+  table: ProductTableComponent
+  currentPage?: number
+  pageSize?: number
 
   constructor(
     private formBuilder: FormBuilder, 
     private service: ProductService,
     private dialogRef: MatDialogRef<ProductPopupComponent>,
-    private toastr: ToastrService,
+    private toastr: ToastrService, 
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     console.log('popup', data);
     this.product = data.product;
     this.productType = data.productType;
+    this.table = data.table;
+    this.currentPage = data.currentPage;
+    this.pageSize = data.pageSize;
+
     if (!this.product) {
       this.product = new DisplayProductDTO();
     } else {
-      this.id = String(this.product.id);
+      this.id = this.product.id?.toString();
     }
 
     // this.sizes = this.form.get('Sizes') as FormArray;
@@ -74,47 +82,71 @@ export class ProductPopupComponent {
   }
 
   save(): void {
-    const product: DisplayProductDTO = this.form.value;
-    console.log(product);
-    if (!this.id) {
-      this.service.create(this.form, this.productType);
-    } else {
-      this.service.update(this.form, `${this.productType}/${this.id}`)
+    if (this.form.invalid)
+      this.markFormGroupDirty(this.form);
+
+    // Check if the form is valid
+    if (this.form.valid) {
+      const product: DisplayProductDTO = this.form.value;
+      console.log(product);
+      let method: string = 'POST'
+      let url: string = this.productType
+
+      if (this.id) {
+        method = 'PUT'
+        url += `/${this.id}`
+      } 
+      this.service.save(this.form, url, method)
       .subscribe((res: string) => {
-        this.dialogRef.close()
-        this.toastr.success('Successfully saved', res);
-      },
-      ((error: HttpErrorResponse) => {
-        if (error.status == 400) {
-          console.log(error.error);
-          let validationErrors = JSON.parse(error.error);
-          Object.keys(validationErrors).forEach(prop => {
-            if (this.form.get(prop)) {
-              this.form.get(prop)?.setErrors({ serverError: validationErrors[prop] });
-            } else if (prop.startsWith('Sizes[')) {
-              const match = prop.match(/\d+/);
-              if (match) {
-                const index = parseInt(match[0]);
-                const sizeControl = this.sizes.at(index)?.get(prop.split('.')[1]);
-                if (sizeControl) {
-                  sizeControl.setErrors({ serverError: validationErrors[prop] });
+          this.service.triggerRefreshTable();
+          this.dialogRef.close()
+          this.toastr.success('Successfully saved', res);
+        }, ((error: HttpErrorResponse) => {
+          if (error.status == 400) {
+            console.log(error.error);
+            let validationErrors = JSON.parse(error.error);
+            Object.keys(validationErrors).forEach(prop => {
+              if (this.form.get(prop)) {
+                this.form.get(prop)?.setErrors({ serverError: validationErrors[prop] });
+              } else if (prop.startsWith('Sizes[')) {
+                const match = prop.match(/\d+/);
+                if (match) {
+                  const index = parseInt(match[0]);
+                  const sizeControl = this.sizes.at(index)?.get(prop.split('.')[1]);
+                  if (sizeControl) {
+                    sizeControl.setErrors({ serverError: validationErrors[prop] });
+                  }
                 }
               }
-            }
-          });
-          
+            });
+            
 
 
-        } else if (error.status == 404) {
-          this.toastr.error('Not found product with current id', 'Not Found');
-        } else if (error.status == 500) {
-          this.toastr.error('Unknown error occurred while updating. \n Try again later please', 'Error');
-        } else {
-          this.toastr.error(error.message)
-        }
-        console.log(error);
-      })
-    );
+          } else if (error.status == 404) {
+            this.toastr.error('Not found product with current id', 'Not Found');
+          } else if (error.status == 500) {
+            this.toastr.error('Unknown error occurred while updating. \n Try again later please', 'Error');
+          } else {
+            this.toastr.error(error.message)
+          }
+          console.log(error);
+        })
+      )
     }
+  }
+  private markFormGroupDirty(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      if (control instanceof FormArray) {
+        Object.values(control.controls).forEach(arraygroup => {
+          if (arraygroup instanceof FormGroup) {
+            Object.values(arraygroup.controls).forEach(gcontrol => {
+              gcontrol.markAsDirty();
+            });
+          }
+          
+        });
+      }
+      control.markAsDirty();
+    });
   }
 }

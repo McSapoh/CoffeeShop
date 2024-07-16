@@ -6,5 +6,5 @@ export class DisplayProductDTO {
     description = ''
     imagePath = ''
     isActive = true
-    sizes!: Size[]
+    sizes: Size[]  = []
 }
