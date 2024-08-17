@@ -156,14 +156,15 @@ namespace CoffeeShopAPI
             services.AddScoped<IUserRepository,UserRepository>();
             #endregion
 
-            services.AddDbContext<CoffeeShopContext>(options => 
+            services.AddDbContext<CoffeeShopContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
-        }
+		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            DbManagementService.MigrationInitialization(app);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -173,11 +174,10 @@ namespace CoffeeShopAPI
 
             app.UseHttpsRedirection();
 
-            // Setting middleware for sending images.
+            //Setting middleware for sending images.
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName, "Images")),
+                FileProvider = new PhysicalFileProvider(Configuration["ImagesDirPath"]),
                 RequestPath = "/api/images"
             });
 

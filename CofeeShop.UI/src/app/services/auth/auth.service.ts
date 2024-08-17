@@ -13,6 +13,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 })
 export class AuthService {
   private jwtHelper: JwtHelperService
+  private defaultUserImage: string = 'assets/img/DefaultUserImage.png'
   constructor(private http: HttpClient,
     private router: Router,        
     private route: ActivatedRoute,
@@ -61,7 +62,13 @@ export class AuthService {
         localStorage.setItem('accessToken', res);
         let tokenD = this.jwtHelper.decodeToken(res) 
         localStorage.setItem('username', tokenD.name);
-        localStorage.setItem('profileImageUrl', `${environment.apiUrl}/images/${tokenD.profileImagePath}`);
+
+        // setting user image
+        const profileImagePath = tokenD.profileImagePath;
+        const profileImageUrl = profileImagePath
+          ? `${environment.apiUrl}/images/${profileImagePath}`
+          : this.defaultUserImage;
+        localStorage.setItem('profileImageUrl', profileImageUrl);
       
         const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
         this.router.navigateByUrl(returnUrl);

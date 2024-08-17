@@ -1,0 +1,37 @@
+# Use the official ASP.NET Core Runtime as the base image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+
+# Build the application in a separate stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+ARG BUILD_CONFIGURATION=Debug
+WORKDIR /src
+
+# Copy the project files and restore dependencies
+COPY ["CoffeeShopAPI/CoffeeShopAPI.csproj", "CoffeeShopAPI/"]
+RUN dotnet restore "CoffeeShopAPI/CoffeeShopAPI.csproj"
+
+# Copy the remaining source code
+COPY . .
+WORKDIR /src/CoffeeShopAPI
+
+# Build the application
+RUN dotnet build "CoffeeShopAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# Publish the application
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "CoffeeShopAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish
+
+# Final stage: set up the runtime environment
+FROM base AS final
+WORKDIR /app
+
+# Copy the published application
+COPY --from=publish /app/publish .
+
+# Create the Images directory and set the correct permissions
+RUN mkdir -p ./Images && chmod -R 755 ./Images
+
+# Set the entry point for the application
+ENTRYPOINT ["dotnet", "CoffeeShopAPI.dll"]

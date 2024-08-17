@@ -14,7 +14,7 @@ namespace CoffeeShopAPI.Models
         [EmailAddress, Required(ErrorMessage = "Please enter Your email")]
         public string Email { get; set; }
         public string Adress { get; set; }
-        public string ImagePath { get; set; } = "/User/DefaultUserImage";
+        public string ImagePath { get; set; }
         public bool IsConfirmed { get; set; } = false;
         public DateTime RegistrationDate { get; set; }
         public string Password { get; set; }

@@ -1,0 +1,30 @@
+version: "3"
+services:
+  mssql-server:
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Docker_2021"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+
+  coffee-shop-api:
+    build: 
+      context: .
+      dockerfile: Dockerfile.api
+    environment:
+      ImagesDirPath: "/app/Images"
+      ConnectionStrings__DefaultConnection: "Server=mssql-server,1433;Initial Catalog=CoffeeShopDB;User ID=SA;Password=Docker_2021;"
+    ports:
+      - "8090:80"
+    volumes:
+      - images-data:/app/Images
+    depends_on:
+      - mssql-server
+
+volumes:
+  sqlserver-data:
+  images-data:

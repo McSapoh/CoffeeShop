@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,11 @@ namespace CoffeeShopAPI.Services
 {
     public class ImagesService : IImagesService
     {
+        private readonly IConfiguration _config;
+        public ImagesService(IConfiguration _config) 
+        {
+            this._config = _config;
+        }
         public async Task<string> SavePhoto(IFormFile photo)
         {
             if (photo != null && photo.Length > 0)
@@ -21,15 +27,21 @@ namespace CoffeeShopAPI.Services
                         .Select(s => s[random.Next(s.Length)]).ToArray());
                     #endregion
                     var fileName = randomSting + Path.GetExtension(photo.FileName);
-                    var path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-                    string filePath = Path.Combine(path + "\\Images\\", fileName);
+
+                    string configPath = _config.GetValue<string>("ImagesDirPath");
+                    string filePath = "";
+                    if (string.IsNullOrWhiteSpace(configPath))
+                        throw new Exception("Cannot find ImagesDirPath");
+
+                    filePath = Path.Combine(configPath, fileName);
+                    
                     using Stream fileStream = new FileStream(filePath, FileMode.Create);
                     await photo.CopyToAsync(fileStream);
                     return fileName;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    return null;
+                    return ex.Message;
                 }
             }
             return null;

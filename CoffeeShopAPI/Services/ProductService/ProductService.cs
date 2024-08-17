@@ -50,9 +50,6 @@ namespace CoffeeShopAPI.Services
                 }
             }
 
-            // Building product.
-            product.ImagePath = $"{product.ProductType}.png";
-
             // Creating product.
             _unitOfWork.ProductRepository.Create(product);
 

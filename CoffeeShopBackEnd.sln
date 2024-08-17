@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoffeeShopAPI", "CoffeeShopAPI\CoffeeShopAPI.csproj", "{7219A43F-55F9-48C3-B179-E5DA447066D5}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "CofeeShop.UI(1)", "CofeeShop.UI\", "{D404FF92-FC94-4A01-8266-4F9289879F9E}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "CofeeShop.UI", "CofeeShop.UI\", "{D404FF92-FC94-4A01-8266-4F9289879F9E}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_51604"
@@ -23,6 +23,12 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "CofeeShop.UI(1)", "CofeeSho
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "51604"
+		SlnRelativePath = "CofeeShop.UI\"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{76A150DF-FE5B-45F7-98F9-233083ACD650}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
 Global

@@ -22,7 +22,6 @@ export class ProductTableComponent {
   title = 'CofeeShop.UI';
   products: DisplayProductDTO[] = []
   defaultImageUrl = environment.apiUrl + '/images'
-  path = 'https://localhost:44300/api/images/DefaultCoffeeImage.png'
   currentPage?: number
   pageSize?: number
   

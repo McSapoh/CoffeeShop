@@ -53,8 +53,12 @@
               <ng-container matColumnDef="imagePath">
                 <th mat-header-cell *matHeaderCellDef style="width: 150px;">Image</th>
                 <th mat-cell *matCellDef="let element" style=" height: 150px;">
-                  <img *ngIf="element.imagePath" src="{{defaultImageUrl}}/{{element.imagePath}}" alt={{productType}}
-                   class="img-fluid" style="width: 150px; height: 150px;">
+                  <img
+                    [src]="element.imagePath ? (defaultImageUrl + '/' + element.imagePath) : ('assets/img/' + productType + '.png')"
+                    alt="{{productType}}"
+                    class="img-fluid"
+                    style="width: 150px; height: 150px;"
+                  >                
                 </th>
               </ng-container>
               <ng-container matColumnDef="sizes">
