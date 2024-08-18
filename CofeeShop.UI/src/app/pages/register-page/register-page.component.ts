@@ -15,13 +15,31 @@ export class RegisterPageComponent {
   ) {}
 
   ngOnInit() {
-    let model = new EditUserDTO()
+    let model = new EditUserDTO();
     this.form = this.formBuilder.group({
       Name: [model.Name, Validators.required],
-      Adress: [model.Adress],
       Email: [model.Email, [Validators.required, Validators.email]],
-      Password: [model.Password, Validators.required]
-    })
+      Password: [model.Password, Validators.required],
+    });
+
+    // Subscribe to value changes to remove errors when inputs are valid
+    this.form.get('Name')?.valueChanges.subscribe(() => {
+      if (this.form.get('Name')?.valid && this.form.get('Name')?.touched) {
+        this.form.get('Name')?.setErrors(null);
+      }
+    });
+
+    this.form.get('Email')?.valueChanges.subscribe(() => {
+      if (this.form.get('Email')?.valid && this.form.get('Email')?.touched) {
+        this.form.get('Email')?.setErrors(null);
+      }
+    });
+
+    this.form.get('Password')?.valueChanges.subscribe(() => {
+      if (this.form.get('Password')?.valid && this.form.get('Password')?.touched) {
+        this.form.get('Password')?.setErrors(null);
+      }
+    });
   }
 
   register() {

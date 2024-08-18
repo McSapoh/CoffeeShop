@@ -12,13 +12,10 @@
     </div>
 
     <!-- Name errors-->
-    <mat-error *ngIf="form.get('Name')?.hasError('required')">
+    <mat-error *ngIf="form.get('Name')?.touched && form.get('Name')?.hasError('required')">
       Name is required.
     </mat-error>
-    <mat-error *ngIf="form.get('Name')?.hasError('email')">
-      Name is invalid.
-    </mat-error>
-    <mat-error *ngIf="form.get('Name')?.hasError('serverError')">
+    <mat-error *ngIf="form.get('Name')?.dirty && form.get('Name')?.hasError('serverError')">
       {{ form.get('Name')?.getError('serverError')[0] }}
     </mat-error>
 
@@ -33,13 +30,13 @@
     </div>
 
     <!-- Email errors-->
-    <mat-error *ngIf="form.get('Email')?.hasError('required')">
+    <mat-error *ngIf="form.get('Email')?.touched && form.get('Email')?.hasError('required')">
       Email is required.
     </mat-error>
-    <mat-error *ngIf="form.get('Email')?.hasError('email')">
+    <mat-error *ngIf="form.get('Email')?.dirty && form.get('Email')?.hasError('email')">
       Email is invalid.
     </mat-error>
-    <mat-error *ngIf="form.get('Email')?.hasError('serverError')">
+    <mat-error *ngIf="form.get('Email')?.dirty && form.get('Email')?.hasError('serverError')">
       {{ form.get('Email')?.getError('serverError')[0] }}
     </mat-error>
 
@@ -54,13 +51,10 @@
     </div>
 
     <!-- Password errors-->
-    <mat-error *ngIf="form.get('Password')?.hasError('required')">
+    <mat-error *ngIf="form.get('Password')?.touched && form.get('Password')?.hasError('required')">
       Password is required.
     </mat-error>
-    <mat-error *ngIf="form.get('Password')?.hasError('email')">
-      Password is invalid.
-    </mat-error>
-    <mat-error *ngIf="form.get('Password')?.hasError('serverError')">
+    <mat-error *ngIf="form.get('Password')?.dirty && form.get('Password')?.hasError('serverError')">
       {{ form.get('Password')?.getError('serverError')[0] }}
     </mat-error>
 
@@ -74,6 +68,6 @@
   <app-social-auth></app-social-auth>
 
   <p class="mb-0">
-    <a href="login.html" class="text-center">I already have a membership</a>
+    <a href="/Login" class="text-center">I already have a membership</a>
   </p>
 </app-auth-wrapper>

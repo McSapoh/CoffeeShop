@@ -12,13 +12,13 @@
     </div>
 
     <!-- Email errors-->
-    <mat-error *ngIf="form.get('Email')?.hasError('required')">
+    <mat-error *ngIf="form.get('Email')?.touched && form.get('Email')?.hasError('required')">
       Email is required.
     </mat-error>
-    <mat-error *ngIf="form.get('Email')?.hasError('email')">
+    <mat-error *ngIf="form.get('Email')?.dirty && form.get('Email')?.hasError('email')">
       Email is invalid.
     </mat-error>
-    <mat-error *ngIf="form.get('Email')?.hasError('serverError')">
+    <mat-error *ngIf="form.get('Email')?.dirty && form.get('Email')?.hasError('serverError')">
       {{ form.get('Email')?.getError('serverError')[0] }}
     </mat-error>
 
@@ -34,10 +34,10 @@
     </div>
 
     <!--Password error-->
-    <mat-error *ngIf="form.get('Password')?.hasError('required')">
+    <mat-error *ngIf="form.get('Password')?.touched && form.get('Password')?.hasError('required')">
       Password is required.
     </mat-error>
-    <mat-error *ngIf="form.get('Password')?.hasError('serverError')">
+    <mat-error *ngIf="form.get('Password')?.dirty && form.get('Password')?.hasError('serverError')">
       {{ form.get('Password')?.getError('serverError')[0] }}
     </mat-error>
 

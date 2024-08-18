@@ -15,15 +15,34 @@ export class LoginPageComponent {
   ) {}
 
   ngOnInit() {
-    let model = new LoginUserDTO()
+    let model = new LoginUserDTO();
     this.form = this.formBuilder.group({
       Email: [model.Email, [Validators.required, Validators.email]],
-      Password: [model.Password, Validators.required]
-    })
+      Password: [model.Password, Validators.required],
+    });
+
+    // Subscribe to value changes to remove errors when inputs are valid
+    this.form.get('Email')?.valueChanges.subscribe(() => {
+      if (this.form.get('Email')?.valid && this.form.get('Email')?.touched) {
+        this.form.get('Email')?.setErrors(null);
+      }
+    });
+
+    this.form.get('Password')?.valueChanges.subscribe(() => {
+      if (this.form.get('Password')?.valid && this.form.get('Password')?.touched) {
+        this.form.get('Password')?.setErrors(null);
+      }
+    });
   }
+  
+
 
   login() {
-    this.service.login(this.form)
+    if (this.form.valid) {
+      this.service.login(this.form)
+    } else {
+      this.form.markAllAsTouched();
+    }
   }
   
 }
