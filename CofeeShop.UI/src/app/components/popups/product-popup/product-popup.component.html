@@ -1,13 +1,11 @@
-<div  style="overflow-y: auto; height: 100%; padding: 20px;">
-  <app-title title="{{productType}}"></app-title>
+<div style="overflow-y: auto; height: 100%; padding: 20px;">
+  <app-title title="{{ productType }}"></app-title>
 
-  
-
-  <form [formGroup]="form" >
-
+  <form [formGroup]="form">
+    <!-- Name Field -->
     <div class="" style="height: 76px;">
       <div class="col-3">Name:</div>
-      <input type="Name" class="form-control" placeholder="Name" formControlName="Name" required>
+      <input type="text" class="form-control" placeholder="Name" formControlName="Name" required>
       <div class="row">
         <mat-error *ngIf="form.get('Name')?.hasError('required') && form.get('Name')?.dirty">
           Name is required.
@@ -21,10 +19,10 @@
       </div>
     </div>
 
-    
+    <!-- Description Field -->
     <div class="" style="height: 76px;">
       <div class="col-3">Description:</div>
-      <input type="Description" class="form-control" placeholder="Description" formControlName="Description" required>
+      <input type="text" class="form-control" placeholder="Description" formControlName="Description" required>
       <div class="row">
         <mat-error *ngIf="form.get('Description')?.hasError('required') && form.get('Description')?.dirty">
           Description is required.
@@ -38,25 +36,28 @@
       </div>
     </div>
 
-
-
+    <!-- Active and Image Upload Fields -->
     <div class="row">
-      <div class="col-3 input-group mb-3">Active: 
+      <!-- <div class="col-3 input-group mb-3">Active: 
         <input type="checkbox" formControlName="IsActive">
-      </div>
+      </div> -->
       <div class="col-9 input-group mb-3">Image: 
-        <input type="file" name="photo" accept="image/*">
+        <input type="file" name="photo" accept="image/*" (change)="onFileSelected($event)">
       </div>
     </div>
 
+    <!-- Image Preview -->
+    <div class="row">
+      <div class="col-12">
+        <img *ngIf="imageUrl" [src]="imageUrl" alt="Product Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;">
+      </div>
+    </div>
 
-    <label>
-      Sizes:
-    </label>
+    <!-- Sizes Field -->
+    <label>Sizes:</label>
     <button class="btn btn-primary" (click)="addSizeFormGroup()">Add size</button>
 
-    <!-- <div formArrayName="Sizes" style="overflow-y: auto; overflow-x: hidden; height: 140px;">  -->
-    <div formArrayName="Sizes" style="overflow-y: hidden; overflow-x: hidden; height: auto;"> 
+    <div formArrayName="Sizes" style="overflow-y: hidden; overflow-x: hidden; height: auto;">
       <div *ngFor="let size of sizes.controls; let i = index" [formGroupName]="i" style="height: 75px;">
         <div class="row">
           <div class="col-3">Name:</div>
@@ -66,7 +67,7 @@
         </div>
         <div class="row">
           <div class="col-3">
-            <input matInput  type="text" formControlName="Name"  class="form-control" placeholder="Name"/>
+            <input matInput type="text" formControlName="Name" class="form-control" placeholder="Name"/>
             <mat-error *ngIf="size.get('Name')?.hasError('required') && size.get('Name')?.dirty">
               Name is required.
             </mat-error>
@@ -75,7 +76,7 @@
             </mat-error>
           </div>
           <div class="col-3">
-            <input type="text" formControlName="Description"  class="form-control" placeholder="Description"/>
+            <input type="text" formControlName="Description" class="form-control" placeholder="Description"/>
             <mat-error *ngIf="size.get('Description')?.hasError('required') && size.get('Description')?.dirty">
               Description is required.
             </mat-error>
@@ -94,13 +95,11 @@
       </div>
     </div>
 
-
+    <!-- Save and Cancel Buttons -->
     <br/>
     <div class="form-group" style="height: 20px;">
       <button (click)="save()" class="btn btn-success">Save</button> 
-      <!-- [disabled]="form.invalid" -->
       <button class="btn btn-secondary" mat-dialog-close>Cancel</button>
     </div>
   </form>
-
 </div>

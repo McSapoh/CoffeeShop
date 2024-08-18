@@ -159,7 +159,7 @@ export class ProductTableComponent {
       getProductResult = res
       console.log('openEditPopup sub', res);
       this.dialogRef.open(ProductPopupComponent, {
-         height: 'auto',   //width: 'inherit', 
+        maxHeight: '100vh',   //width: 'inherit', 
         data: {product: getProductResult, productType: this.productType}})
     })
     // this.dialogRef.open(ProductPopupComponent, {data: {productType: this.productType, id: id }})

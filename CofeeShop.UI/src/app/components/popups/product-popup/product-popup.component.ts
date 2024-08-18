@@ -8,6 +8,7 @@ import { Size } from 'src/app/models/size';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { ProductTableComponent } from '../../product-table/product-table.component';
+import { environment } from 'src/environments/environment.development';
 
 @Component({
   selector: 'app-product-popup',
@@ -23,6 +24,8 @@ export class ProductPopupComponent {
   table: ProductTableComponent
   currentPage?: number
   pageSize?: number
+  imageUrl: string | ArrayBuffer | null = null;
+  defaultImageUrl = environment.apiUrl + '/images'
 
   constructor(
     private formBuilder: FormBuilder, 
@@ -59,10 +62,22 @@ export class ProductPopupComponent {
       Description: [this.product.description, Validators.required],
       IsActive: [this.product.isActive],
       Sizes: this.sizes,
+      
     });
+    this.imageUrl = this.product.imagePath ? (this.defaultImageUrl + '/' + this.product.imagePath) : ('assets/img/' + this.productType + '.png');
+
     this.sizes = this.form.get('Sizes') as FormArray;
   }
-
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imageUrl = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
   createSizeFormGroup(size: Size = new Size()): FormGroup {
     return this.formBuilder.group({
       Id: [size.id],
