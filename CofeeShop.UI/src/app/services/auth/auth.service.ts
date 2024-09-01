@@ -124,32 +124,34 @@ export class AuthService {
     this.router.navigate(['/Login'])
   }
   externalLogin(provider: string = 'google') {
-    let url = (`${environment.apiUrl}/ExternalAuth/signin-by-${provider}`)
-    this.http.get(url, {withCredentials : true, responseType: 'text'})
-      .subscribe((res: string) => {
-        localStorage.setItem('accessToken', res);
-        let tokenD = this.jwtHelper.decodeToken(res) 
-        localStorage.setItem('username', tokenD.name);
-        localStorage.setItem('profileImageUrl', `${environment.apiUrl}/images/${tokenD.profileImagePath}`);
+    const url = `${environment.apiUrl}/ExternalAuth/signin-by-${provider}`;
+    window.location.href = url;
+    // let url = (`${environment.apiUrl}/ExternalAuth/signin-by-${provider}`)
+    // this.http.get(url, {withCredentials : true, responseType: 'text'})
+    //   .subscribe((res: string) => {
+    //     localStorage.setItem('accessToken', res);
+    //     let tokenD = this.jwtHelper.decodeToken(res) 
+    //     localStorage.setItem('username', tokenD.name);
+    //     localStorage.setItem('profileImageUrl', `${environment.apiUrl}/images/${tokenD.profileImagePath}`);
       
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-        this.router.navigateByUrl(returnUrl);
-      }, 
-      ((error: HttpErrorResponse) => {
-        // Here you can handle the error and retrieve the HTTP status code
-        const statusCode = error.status;
+    //     const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    //     this.router.navigateByUrl(returnUrl);
+    //   }, 
+    //   ((error: HttpErrorResponse) => {
+    //     // Here you can handle the error and retrieve the HTTP status code
+    //     const statusCode = error.status;
 
-        // NotFound result
-        if (statusCode == 404) {
-          this.toastr.error('Not found user with current', 'Not Found');
-        }
-        // Validation error
-        if (statusCode == 400) {
+    //     // NotFound result
+    //     if (statusCode == 404) {
+    //       this.toastr.error('Not found user with current', 'Not Found');
+    //     }
+    //     // Validation error
+    //     if (statusCode == 400) {
           
-        }
-        // Do something with the status code
-        return throwError(error);
-      })
-    )
+    //     }
+    //     // Do something with the status code
+    //     return throwError(error);
+    //   })
+    // )
   }
 }

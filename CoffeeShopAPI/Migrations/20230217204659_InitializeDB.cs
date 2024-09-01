@@ -52,7 +52,7 @@ namespace CoffeeShopAPI.Migrations
                     ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
