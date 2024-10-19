@@ -33,6 +33,9 @@ import { ToastrModule } from 'ngx-toastr';
 import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
 import { InputComponent } from './components/default-page-components/input/input.component';
 import { AuthCallbackComponent } from './components/auth/auth-callback/auth-callback.component';
+import { SandwichesPageComponent } from './pages/product-pages/sandwiches-page/sandwiches-page.component';
+import { SnacksPageComponent } from './pages/product-pages/snacks-page/snacks-page.component';
+import { TeasPageComponent } from './pages/product-pages/teas-page/teas-page.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +54,10 @@ import { AuthCallbackComponent } from './components/auth/auth-callback/auth-call
     AuthWrapperComponent,
     ProductPopupComponent,
     InputComponent,
-    AuthCallbackComponent
+    AuthCallbackComponent,
+    SandwichesPageComponent,
+    SnacksPageComponent,
+    TeasPageComponent
   ],
   imports: [
     BrowserModule,
