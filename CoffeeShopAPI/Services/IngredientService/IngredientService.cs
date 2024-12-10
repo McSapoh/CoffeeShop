@@ -83,7 +83,7 @@ namespace CoffeeShopAPI.Services
             var ingredient = _unitOfWork.IngredientRepository.GetById(id);
 
             // Validation.
-            if (ingredient != null)
+            if (ingredient == null)
             {
                 _logger.LogError($"Cannot find object with id = {id}");
                 return NotFound();

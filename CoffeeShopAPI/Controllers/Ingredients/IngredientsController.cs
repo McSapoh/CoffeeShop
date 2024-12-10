@@ -67,6 +67,7 @@ namespace CoffeeShopAPI.Controllers.Ingredients
                 .GetPagedList(pagingParameters, _ingredientType.ToString());
             var metadata = PagedList<Ingredient>.GetMetadata(objectsFromDb);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            Response.Headers.Add("Access-Control-Expose-Headers", "X-Pagination");
             _logger.LogInformation($"GET {this}.Get finished.");
             return Ok(objectsFromDb);
         }

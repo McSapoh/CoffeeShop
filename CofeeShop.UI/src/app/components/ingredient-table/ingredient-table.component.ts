@@ -1,26 +1,21 @@
 import { Component, Input, ViewChild, AfterViewInit } from '@angular/core';
-import { DisplayIngredientDTO } from 'src/app/models/ingredients/display-ingredient';
-import { ProductService } from 'src/app/services/product/product.service';
-import {catchError, map, startWith, Subject, switchMap} from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table'
 import { MatPaginator, PageEvent } from '@angular/material/paginator'
 import { PaginatedResult } from 'src/app/models/pagination/pagination';
 import { environment } from 'src/environments/environment.development';
 import { MatDialog } from '@angular/material/dialog';
-import { ProductPopupComponent } from '../popups/product-popup/product-popup.component';
-import { Size } from "../../models/size"
 import Swal from 'sweetalert2';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DisplayIngredientDTO } from 'src/app/models/ingredients/display-ingredient';
 import { IngredientService } from 'src/app/services/ingredient/ingredient.service';
-
-
+import { IngredientPopupComponent } from '../popups/ingredient-popup/ingredient-popup.component';
 
 @Component({
-  selector: 'app-product-table',
-  templateUrl: './product-table.component.html'
+  selector: 'app-ingredient-table',
+  templateUrl: './ingredient-table.component.html',
 })
-export class ProductTableComponent {
-  title = 'CofeeShop.UI';
+export class IngredientTableComponent {
+  itle = 'CofeeShop.UI';
   products: DisplayIngredientDTO[] = []
   defaultImageUrl = environment.apiUrl + '/images'
   currentPage?: number
@@ -32,7 +27,7 @@ export class ProductTableComponent {
 
 
   // material
-  displayedColumns: string[] = ['name', 'description', 'imagePath', 'sizes', 'edit']
+  displayedColumns: string[] = ['name', 'price', 'edit']
   dataSource = new MatTableDataSource(this.products)
   @ViewChild(MatPaginator) paginator!: MatPaginator
   pageSizes = [10, 25, 50];
@@ -40,7 +35,7 @@ export class ProductTableComponent {
 
 
   @Input()
-  public productType: string = ''
+  public ingredientType: string = ''
 
 
   constructor(private service: IngredientService, private dialogRef: MatDialog) {}
@@ -52,22 +47,6 @@ export class ProductTableComponent {
     this.service.refreshTable$.subscribe(() => {
       this.refreshData(this.currentPage, this.pageSize);
     });
-    /*this.service.getProducts(this.productType)
-      .subscribe(
-        (result: DisplayIngredientDTO[]) => {
-          this.products = result
-          this.displayTable = true;
-
-
-          this.dataSource = new MatTableDataSource(this.products)
-
-
-          this.paginator.this.pageSizeOptions = this.this.pageSizes
-          this.paginator.length = this.totalRecordsData
-          this.dataSource.paginator = this.paginator
-        }
-      )*/
-
     this.refreshData()
   }
 
@@ -78,7 +57,7 @@ export class ProductTableComponent {
       this.currentPage = 1
       this.pageSize = this.pageSizes[0]
     }
-    this.service.getPagination(this.productType, this.currentPage, this.pageSize).subscribe(
+    this.service.getPagination(this.ingredientType, this.currentPage, this.pageSize).subscribe(
       (result: PaginatedResult<DisplayIngredientDTO[]>) => {
         console.log(result);
 
@@ -93,32 +72,6 @@ export class ProductTableComponent {
         this.totalRecords = result.pagination.TotalCount
       }
     )
-
-
-    /*
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 5,
-      lengthMenu: [5, 50, 100],
-      paging: true,
-      searching: true,
-      ordering: true,
-      info: true,
-    }
-
-
-    this.service.getProducts(this.productType)
-      .subscribe(
-        (result: DisplayIngredientDTO[]) => {
-          this.products = result
-          this.displayTable = true;
-
-
-          this.dataSource = new MatTableDataSource(this.products)
-          this.dataSource.paginator = this.paginator
-        }
-      )
-    */
   }
   delete(id: number): void {
     Swal.fire({
@@ -130,7 +83,7 @@ export class ProductTableComponent {
       cancelButtonText: 'No, cancel!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.service.delete(this.productType, id).subscribe((res: string) => {
+        this.service.delete(this.ingredientType, id).subscribe((res: string) => {
           this.service.triggerRefreshTable();
           Swal.fire('Deleted!', 'Your item has been deleted.', 'success');
           
@@ -156,24 +109,22 @@ export class ProductTableComponent {
   openEditPopup(id: number) {
     console.log(id);
     let getProductResult: DisplayIngredientDTO = new DisplayIngredientDTO()
-    this.service.getIngredient(this.productType, id).subscribe(res => {
+    this.service.getIngredient(this.ingredientType, id).subscribe(res => {
       getProductResult = res
       console.log('openEditPopup sub', res);
-      this.dialogRef.open(ProductPopupComponent, {
+      this.dialogRef.open(IngredientPopupComponent, {
         maxHeight: '100vh',   //width: 'inherit', 
-        data: {product: getProductResult, productType: this.productType}})
+        data: {product: getProductResult, ingredientType: this.ingredientType}})
     })
-    // this.dialogRef.open(ProductPopupComponent, {data: {productType: this.productType, id: id }})
   }
   openCreatePopup() {
     console.log();
     let getProductResult: DisplayIngredientDTO = new DisplayIngredientDTO()
     console.log('openCreatePopup sub', getProductResult);
-    this.dialogRef.open(ProductPopupComponent, {
+    this.dialogRef.open(IngredientPopupComponent, {
       height: 'auto',   //width: 'inherit', 
-      data: {product: getProductResult, productType: this.productType}
+      data: {product: getProductResult, ingredientType: this.ingredientType}
     })
-    // this.dialogRef.open(ProductPopupComponent, {data: {productType: this.productType, id: id }})
   }
   ngAfterViewInit() {
     this.paginator.page.subscribe(page => {

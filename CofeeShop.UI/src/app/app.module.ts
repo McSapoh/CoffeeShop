@@ -36,6 +36,10 @@ import { AuthCallbackComponent } from './components/auth/auth-callback/auth-call
 import { SandwichesPageComponent } from './pages/product-pages/sandwiches-page/sandwiches-page.component';
 import { SnacksPageComponent } from './pages/product-pages/snacks-page/snacks-page.component';
 import { TeasPageComponent } from './pages/product-pages/teas-page/teas-page.component';
+import { AlcoholPageComponent } from './pages/ingredient-pages/alcohol-page/alcohol-page.component';
+import { IngredientPageComponent } from './pages/generic-pages/ingredient-page/ingredient-page.component';
+import { IngredientTableComponent } from './components/ingredient-table/ingredient-table.component';
+import { IngredientPopupComponent } from './components/popups/ingredient-popup/ingredient-popup.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +61,11 @@ import { TeasPageComponent } from './pages/product-pages/teas-page/teas-page.com
     AuthCallbackComponent,
     SandwichesPageComponent,
     SnacksPageComponent,
-    TeasPageComponent
+    TeasPageComponent,
+    AlcoholPageComponent,
+    IngredientPageComponent,
+    IngredientTableComponent,
+    IngredientPopupComponent
   ],
   imports: [
     BrowserModule,

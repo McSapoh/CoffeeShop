@@ -1,0 +1,49 @@
+<div class="row col-12">
+    <app-title class="m-auto col-10" title="{{ingredientType}}">
+    </app-title>
+    <div class="m-auto col-2">
+      <button (click)="openCreatePopup()" class="btn btn-primary btn-block m-50">Create</button>
+    </div>
+  </div>
+  <section class="content" >
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+  
+          <div class="card">
+            <div class="card-body">  
+              <mat-paginator [pageSize]="pageSizes[0]" [pageSizeOptions]="pageSizes" [length]="totalRecords"
+               showFirstLastButtons="">
+              </mat-paginator>
+  
+              <table mat-table [dataSource]="dataSource" class="table table-bordered table-striped" style="overflow-y: auto;">
+  
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef style="width: 20%;">Name</th>
+                  <th mat-cell *matCellDef="let element">{{element.name}}</th>
+                </ng-container>
+                <ng-container matColumnDef="price">
+                  <th mat-header-cell *matHeaderCellDef style="width: 40%;">Price</th>
+                  <th mat-cell *matCellDef="let element">{{element.price}}</th>
+                </ng-container>
+  
+                <ng-container matColumnDef="edit">
+                  <th mat-header-cell *matHeaderCellDef style="width: 10%;"></th>
+                  <th mat-cell *matCellDef="let element">
+                    <button (click)="openEditPopup(element.id)" class="btn btn-primary btn-block">Edit</button>
+                    <button *ngIf="element.isActive" (click)="delete(element.id)" class="btn btn-danger btn-block">Delete</button>
+                  </th>
+                </ng-container>
+  
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  
+              </table>
+  
+              <div id="placeholder"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

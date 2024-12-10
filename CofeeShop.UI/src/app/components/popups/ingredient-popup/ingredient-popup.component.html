@@ -1,0 +1,47 @@
+<div style="overflow-y: auto; height: 100%; padding: 20px;">
+    <app-title title="{{ ingredientType }}"></app-title>
+  
+    <form [formGroup]="form">
+      <!-- Name Field -->
+      <div class="" style="height: 76px;">
+        <div class="col-3">Name:</div>
+        <input type="text" class="form-control" placeholder="Name" formControlName="Name" required>
+        <div class="row">
+          <mat-error *ngIf="form.get('Name')?.hasError('required') && form.get('Name')?.dirty">
+            Name is required.
+          </mat-error>
+          <mat-error *ngIf="form.get('Name')?.hasError('Name') && form.get('Name')?.dirty">
+            Name is invalid.
+          </mat-error>
+          <mat-error *ngIf="form.get('Name')?.hasError('serverError') && form.get('Name')?.dirty">
+            {{ form.get('Name')?.getError('serverError')[0] }}
+          </mat-error>
+        </div>
+      </div>
+  
+      <!-- Price Field -->
+      <div class="" style="height: 76px;">
+        <div class="col-3">Price:</div>
+        <input type="text" class="form-control" placeholder="Price" formControlName="Price" required>
+        <div class="row">
+          <mat-error *ngIf="form.get('Price')?.hasError('required') && form.get('Price')?.dirty">
+            Price is required.
+          </mat-error>
+          <mat-error *ngIf="form.get('Price')?.hasError('Price') && form.get('Price')?.dirty">
+            Price is invalid.
+          </mat-error>
+          <mat-error *ngIf="form.get('Price')?.hasError('serverError') && form.get('Price')?.dirty">
+            {{ form.get('Price')?.getError('serverError')[0] }}
+          </mat-error>
+        </div>
+      </div>
+    
+      <!-- Save and Cancel Buttons -->
+      <br/>
+      <div class="form-group" style="height: 20px;">
+        <button (click)="save()" class="btn btn-success">Save</button> 
+        <button class="btn btn-secondary" mat-dialog-close>Cancel</button>
+      </div>
+    </form>
+  </div>
+  

@@ -16,7 +16,7 @@ namespace CoffeeShopAPI.UnitOfWork.Repositories
         public async override Task<Ingredient> GetByIdAsync(int Id) => await _dbSet.FirstOrDefaultAsync(p => p.Id == Id);
         public PagedList<Ingredient> GetPagedList(PagingParameters pagingParameters, string type)
         {
-            var items = _dbSet.Where(o => o.IngredientType == type).ToList();
+            var items = _dbSet.Where(o => o.IngredientType == type && o.IsActive).ToList();
             var resultList = items.Skip(
                 (pagingParameters.PageNumber - 1) * pagingParameters.PageSize).Take(pagingParameters.PageSize
             ).ToList();
